@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/selectedStocks">
+
+    <fragment
+        android:id="@+id/selectedStocks"
+        android:name="il.kod.movingaverageapplication1.SelectedStocks"
+        android:label="fragment_selected_stocks"
+        tools:layout="@layout/fragment_selected_stocks" >
+        <action
+            android:id="@+id/action_selectedStocks_to_stockSelection3"
+            app:destination="@id/stockSelection3" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockSelection3"
+        android:name="il.kod.movingaverageapplication1.StockSelection"
+        android:label="StockSelection" >
+        <action
+            android:id="@+id/action_stockSelection3_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
+    </fragment>
+</navigation>
