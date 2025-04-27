@@ -1,15 +1,10 @@
 package il.kod.movingaverageapplication1
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import android.net.Uri
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Stock(
     val symbol: String,
     val name: String,
@@ -18,7 +13,10 @@ data class Stock(
     val peRatio: Double,
     val dividend: Boolean,
     val movingAverage: Double = 0.0,
-) {
+    internal var imageUri: Uri? =null,
+    internal var imagedraw: Int? =null
+
+): Parcelable {
     companion object {
         val stockList: MutableList<Stock> = mutableListOf()
     }
