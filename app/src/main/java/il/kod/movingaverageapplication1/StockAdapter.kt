@@ -1,5 +1,6 @@
 package il.kod.movingaverageapplication1
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,9 @@ import il.kod.movingaverageapplication1.StockAdapter.ItemViewHolder
 
 
 
-class StockAdapter(private val stocks: List<Stock>, private val callBack: ItemListener) : RecyclerView.Adapter<ItemViewHolder>() {
+class StockAdapter(private var stocks: List<Stock>, private val callBack: ItemListener) : RecyclerView.Adapter<ItemViewHolder>() {
+
+
 
     interface ItemListener {
         fun onItemClicked(index: Int)
@@ -20,8 +23,10 @@ class StockAdapter(private val stocks: List<Stock>, private val callBack: ItemLi
     inner class ItemViewHolder(private val binding: ItemLayoutBinding) :RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener
     {
         init {
+
             binding.root.setOnClickListener(this)
             binding.root.setOnLongClickListener(this)
+
             }
 
         override fun onClick(p0: View?) {
@@ -40,6 +45,8 @@ class StockAdapter(private val stocks: List<Stock>, private val callBack: ItemLi
 
 
         fun bind(stock : Stock){
+
+
             binding.itemTitle.text= stock.name
             binding.itemDescription.text = "Marketcap: ${stock.symbol} - Price: ${stock.price} -${stock.peRatio}"
             Glide.with(binding.root)
@@ -55,6 +62,7 @@ class StockAdapter(private val stocks: List<Stock>, private val callBack: ItemLi
 
 
     override fun onCreateViewHolder(
+
         parent: ViewGroup,
         viewType: Int
     )=ItemViewHolder(ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -78,10 +86,14 @@ class StockAdapter(private val stocks: List<Stock>, private val callBack: ItemLi
 
     }
 
+
     override fun getItemCount() = stocks.size
 
 
-
+    fun updateData(newStocks: List<Stock>) {
+        stocks = newStocks
+        notifyDataSetChanged()
+    }
 
 
 

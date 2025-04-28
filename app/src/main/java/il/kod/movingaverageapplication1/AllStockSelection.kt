@@ -1,18 +1,18 @@
 package il.kod.movingaverageapplication1
 
+import AllStocksViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 
 class AllStockSelection : Fragment() {
@@ -20,31 +20,62 @@ class AllStockSelection : Fragment() {
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
 
+        //shared viewmodel
+    private val viewModelSelectedStock: SelectedStocksViewModel by activityViewModels()
+
+    //not shared viewmodel
+    private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+
+
+
     var bundle :Bundle = Bundle()
 
 
     override fun onCreateView(
+
+
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
+
         _binding = FragmentAllStockSelectionBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.adapter = StockAdapter(ExampleStocks.stockList,
-            callBack = object : StockAdapter.ItemListener {
 
 
-            override fun onItemClicked(index: Int) {
-            val clickedStock = ExampleStocks.stockList[index]
+//if a new stock is added to the allstocklist, it will be added to the recycler view
 
-            Toast.makeText(requireContext(), "Successfully added: ${clickedStock.name}", Toast.LENGTH_SHORT).show()
-            SelectedStocks.selectedStList.add(clickedStock)
+        viewModelAllStocks.stockList.observe(viewLifecycleOwner)
+        {
+            binding.recyclerView.adapter = StockAdapter(
+                viewModelAllStocks.stockList.value ?: emptyList(),
+                callBack = object : StockAdapter.ItemListener {
+
+
+                    override fun onItemClicked(index: Int) {
+                        val clickedStock = viewModelAllStocks.stockList.value?.get(index)
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Successfully added: ${clickedStock?.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        viewModelSelectedStock.addStock(clickedStock)
+                        viewModelAllStocks.removeStock(clickedStock)
+                        //bundle.putParcelable("stock", clickedStock)
+
+                    }
+
+                    override fun onItemLongClicked(index: Int) {}
+                })
 
         }
-            override fun onItemLongClicked(index: Int) {}
-        })
+
 
 
 
@@ -69,9 +100,6 @@ class AllStockSelection : Fragment() {
                 Toast.makeText(requireContext(), "You cannot remove an object from that list", Toast.LENGTH_SHORT).show()
             }
         }).attachToRecyclerView(binding.recyclerView)
-
-
-
 
 
 
