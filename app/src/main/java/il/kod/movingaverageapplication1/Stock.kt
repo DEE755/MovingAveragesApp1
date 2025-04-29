@@ -1,16 +1,5 @@
 package il.kod.movingaverageapplication1
 
-import StockItem
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-
 data class Stock(
     val symbol: String,
     val name: String,
@@ -33,21 +22,4 @@ data class Stock(
     }
 }
 
-@Composable
-fun StockItem(stock: Stock) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        Text(text = stock.symbol, fontWeight = FontWeight.Bold)
-        Text(text = stock.name)
-        Text(text = "Price: \$${stock.price}")
-    }
-}
-
-@Composable
-fun StockList(stockList: List<Stock>) {
-    LazyColumn {
-        items(stockList) { stock ->
-            StockItem(stock = stock)
-        }
-    }
-}
 
