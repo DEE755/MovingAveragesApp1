@@ -7,7 +7,6 @@ data class Stock(
     val marketCap: Long,
     val peRatio: Double,
     val dividend: Boolean,
-    val movingAverage: Double = 0.0,
 ) {
     companion object {
         val stockList: MutableList<Stock> = mutableListOf()
