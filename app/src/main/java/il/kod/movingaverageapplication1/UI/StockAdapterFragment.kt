@@ -1,19 +1,18 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.UI
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import il.kod.movingaverageapplication1.StockAdapter.ItemViewHolder
+import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.UI.StockAdapterFragment.ItemViewHolder
 
 
 
-class StockAdapter(private var stocks: List<Stock>, private val callBack: ItemListener) : RecyclerView.Adapter<ItemViewHolder>() {
-
-
+class StockAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener) : RecyclerView.Adapter<ItemViewHolder>() {
 
     interface ItemListener {
         fun onItemClicked(index: Int)
@@ -42,10 +41,7 @@ class StockAdapter(private var stocks: List<Stock>, private val callBack: ItemLi
 
 
 
-
-
         fun bind(stock : Stock){
-
 
             binding.itemTitle.text= stock.name
             binding.itemDescription.text = "Marketcap: ${stock.symbol} - Price: ${stock.price} -${stock.peRatio}"

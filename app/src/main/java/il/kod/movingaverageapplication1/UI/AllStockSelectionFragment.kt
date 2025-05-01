@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.UI
 
 import AllStocksViewModel
 import android.os.Bundle
@@ -6,16 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 
-class AllStockSelection : Fragment() {
+class AllStockSelectionFragment : Fragment() {
 
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
@@ -52,12 +54,25 @@ class AllStockSelection : Fragment() {
 
         viewModelAllStocks.stockList.observe(viewLifecycleOwner)
         {
-            binding.recyclerView.adapter = StockAdapter(
+            binding.recyclerView.adapter = StockAdapterFragment(
                 viewModelAllStocks.stockList.value ?: emptyList(),
-                callBack = object : StockAdapter.ItemListener {
+                callBack = object : StockAdapterFragment.ItemListener {
 
 
                     override fun onItemClicked(index: Int) {
+                        val clickedStock = viewModelAllStocks.onItemClicked(index)//returns the object clicked
+                        clickedStock?.let {
+                            findNavController().navigate(
+                                R.id.action_stockSelection3_to_detailsItemFragment,
+                                bundleOf("item" to index)
+                            )
+                        }
+                    }
+
+                    override fun onItemLongClicked(index: Int) {
+
+
+
                         val clickedStock = viewModelAllStocks.stockList.value?.get(index)
 
                         Toast.makeText(
@@ -68,10 +83,11 @@ class AllStockSelection : Fragment() {
                         viewModelSelectedStock.addStock(clickedStock)
                         viewModelAllStocks.removeStock(clickedStock)
                         //bundle.putParcelable("stock", clickedStock)
-
                     }
 
-                    override fun onItemLongClicked(index: Int) {}
+
+
+
                 })
 
         }

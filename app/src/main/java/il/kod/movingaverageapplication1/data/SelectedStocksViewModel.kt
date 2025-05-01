@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,4 +22,5 @@ class SelectedStocksViewModel : ViewModel() {
             _selectedStList.value = _selectedStList.value // Trigger LiveData update
         }
     }
+
 }

@@ -1,22 +1,40 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.data
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "stocks")
+
 data class Stock(
+    @ColumnInfo(name="symbol")
     val symbol: String,
+    @ColumnInfo(name="name")
     val name: String,
+    @ColumnInfo(name="price")
     val price: Double,
+    @ColumnInfo(name="marketCap")
     val marketCap: Long,
+    @ColumnInfo(name="peRatio")
     val peRatio: Double,
+    @ColumnInfo(name="dividend")
     val dividend: Boolean,
+    @ColumnInfo(name="dividendYield")
     val movingAverage: Double = 0.0,
+    @ColumnInfo(name="imageUri")
     internal var imageUri: Uri? =null,
+    @ColumnInfo(name="image_Drawable")
     internal var imagedraw: Int? =null
 
 ): Parcelable {
+
+    @PrimaryKey(autoGenerate = true)
+
+    var id : Int =0
     companion object {
         val stockList: MutableList<Stock> = mutableListOf()
     }

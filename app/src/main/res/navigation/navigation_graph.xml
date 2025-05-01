@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/stockSelection3">
+    app:startDestination="@id/selectedStocks">
 
     <fragment
         android:id="@+id/selectedStocks"
-        android:name="il.kod.movingaverageapplication1.SelectedStocks"
+        android:name="il.kod.movingaverageapplication1.UI.SelectedStocksFragment"
         android:label="fragment_selected_stocks"
         tools:layout="@layout/fragment_selected_stocks" >
         <action
@@ -17,10 +17,16 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/to_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_selectedStocks_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment" />
+        <action
+            android:id="@+id/action_selectedStocks_to_detailsItemFragment2"
+            app:destination="@id/detailsItemFragment" />
     </fragment>
     <fragment
         android:id="@+id/stockSelection3"
-        android:name="il.kod.movingaverageapplication1.AllStockSelection"
+        android:name="il.kod.movingaverageapplication1.UI.AllStockSelectionFragment"
         android:label="StockSelection" >
         <action
             android:id="@+id/action_stockSelection3_to_selectedStocks"
@@ -29,5 +35,19 @@
             app:exitAnim="@anim/from_right"
             app:popEnterAnim="@anim/to_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_stockSelection3_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsItemFragment"
+        android:name="il.kod.movingaverageapplication1.UI.DetailsItemFragment"
+        android:label="details_stock_layout"
+        tools:layout="@layout/details_stock_layout" >
+        <action
+            android:id="@+id/action_detailsItemFragment_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
     </fragment>
 </navigation>

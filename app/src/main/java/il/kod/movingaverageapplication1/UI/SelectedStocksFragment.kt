@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.UI
 
 import AllStocksViewModel
 import android.os.Bundle
@@ -7,18 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
+import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import kotlin.collections.get
-import kotlin.collections.remove
+import showConfirmationDialog
 
 
-class SelectedStocks : Fragment() {
+class SelectedStocksFragment : Fragment() {
 
     private var _binding: FragmentSelectedStocksBinding? = null
 
@@ -27,6 +30,8 @@ class SelectedStocks : Fragment() {
     private val viewModel: SelectedStocksViewModel by activityViewModels()
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+
+
 
 
 
@@ -55,21 +60,31 @@ class SelectedStocks : Fragment() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.adapter = StockAdapter(
+        binding.recyclerView.adapter = StockAdapterFragment(
             emptyList(),
-            callBack = object : StockAdapter.ItemListener {
+            callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Clicked: ${viewModel.selectedStList.value?.get(index)?.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val clickedStock = viewModelAllStocks.onItemClicked(index)//returns the object clicked
+                    clickedStock?.let {
+                        findNavController().navigate(
+                            R.id.action_stockSelection3_to_detailsItemFragment,
+                            bundleOf("item" to index)
+                        )
+                    }
                 }
 
                 override fun onItemLongClicked(index: Int) {
+
                     val clickedStock = viewModel.selectedStList.value?.get(index)
+
+            showConfirmationDialog(
+                context=requireContext(),
+                title="Deletion of Stock",
+                message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
+                onYes= {
+
                     viewModel.removeStock(clickedStock)
-                    (binding.recyclerView.adapter as? StockAdapter)?.notifyItemRemoved(index)
+                    (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(index)
 
                     viewModelAllStocks.addStock(clickedStock)
                     Toast.makeText(
@@ -77,13 +92,22 @@ class SelectedStocks : Fragment() {
                         "Successfully removed: ${clickedStock?.name}",
                         Toast.LENGTH_SHORT
                     ).show()
+                },
+                onNo = {}
+
+                    )
+
+
                 }
             }
         )
 
         viewModel.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            (binding.recyclerView.adapter as? StockAdapter)?.updateData(selectedStocks)
+            (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
         }
+
+
+
 
 
 
