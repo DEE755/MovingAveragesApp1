@@ -1,10 +1,13 @@
 package il.kod.movingaverageapplication1.data
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.parcelize.Parcelize
 
 class SelectedStocksViewModel : ViewModel() {
+
 
     private val _selectedStList = MutableLiveData<MutableList<Stock>>(mutableListOf())
     val selectedStList: LiveData<MutableList<Stock>> get() = _selectedStList
@@ -23,4 +26,8 @@ class SelectedStocksViewModel : ViewModel() {
         }
     }
 
+
+    fun onItemClicked(index: Int): Stock? {
+        return selectedStList.value?.get(index)
+    }
 }

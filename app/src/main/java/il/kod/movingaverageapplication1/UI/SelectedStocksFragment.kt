@@ -2,6 +2,7 @@ package il.kod.movingaverageapplication1.UI
 
 import AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,14 +33,9 @@ class SelectedStocksFragment : Fragment() {
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
 
-
-
-
-
-    companion object{
-         val selectedStList: MutableList<Stock> = mutableListOf()
+    companion object {
+        val selectedStList: MutableList<Stock> = mutableListOf()
     }
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +44,8 @@ class SelectedStocksFragment : Fragment() {
         //viewModel = ViewModelProvider(this)[SelectedStocksViewModel::class.java]
 
 
-
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,12 +60,15 @@ class SelectedStocksFragment : Fragment() {
             emptyList(),
             callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
-                    val clickedStock = viewModelAllStocks.onItemClicked(index)//returns the object clicked
+
+                    val clickedStock =
+                        viewModel.onItemClicked(index)//returns the object clicked
+                    Log.d("SelectedStocksFragment", "onItemClicked: ${clickedStock}")
                     clickedStock?.let {
                         findNavController().navigate(
-                            R.id.action_stockSelection3_to_detailsItemFragment,
-                            bundleOf("item" to index)
-                        )
+                            R.id.action_selectedStocks_to_detailsItemFragment,
+                            bundleOf(
+                                "stock" to clickedStock, "displayaddstockbutton" to false))//flag to don't display add stock button
                     }
                 }
 
@@ -77,23 +76,25 @@ class SelectedStocksFragment : Fragment() {
 
                     val clickedStock = viewModel.selectedStList.value?.get(index)
 
-            showConfirmationDialog(
-                context=requireContext(),
-                title="Deletion of Stock",
-                message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
-                onYes= {
+                    showConfirmationDialog(
+                        context = requireContext(),
+                        title = "Deletion of Stock",
+                        message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
+                        onYes = {
 
-                    viewModel.removeStock(clickedStock)
-                    (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(index)
+                            viewModel.removeStock(clickedStock)
+                            (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
+                                index
+                            )
 
-                    viewModelAllStocks.addStock(clickedStock)
-                    Toast.makeText(
-                        requireContext(),
-                        "Successfully removed: ${clickedStock?.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-                onNo = {}
+                            viewModelAllStocks.addStock(clickedStock)
+                            Toast.makeText(
+                                requireContext(),
+                                "Successfully removed: ${clickedStock?.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        onNo = {}
 
                     )
 
@@ -107,11 +108,28 @@ class SelectedStocksFragment : Fragment() {
         }
 
 
+        viewModel.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+            if (viewModel.selectedStList.value?.isEmpty() == false) {
+                binding.addStockButtonBig.visibility = View.GONE
+                binding.isEmptytextView.visibility = View.GONE
+                binding.addStockButtonSmall.visibility = View.VISIBLE
+            } else {
+                binding.addStockButtonBig.visibility = View.VISIBLE
+                binding.isEmptytextView.visibility = View.VISIBLE
+                binding.addStockButtonSmall.visibility = View.GONE
+            }
+        }
 
 
 
 
-        binding.addStockButton.setOnClickListener {
+
+        binding.addStockButtonBig.setOnClickListener {
+
+            findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
+        }
+
+        binding.addStockButtonSmall.setOnClickListener {
 
             findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
         }
@@ -119,9 +137,17 @@ class SelectedStocksFragment : Fragment() {
         arguments?.getString("position")?.let {
             Toast.makeText(requireActivity(), "Added: $it ", Toast.LENGTH_LONG).show()
         }
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
 
 
-        ItemTouchHelper(object: ItemTouchHelper.Callback() {
+        /*ItemTouchHelper(object: ItemTouchHelper.Callback() {
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
@@ -139,32 +165,24 @@ class SelectedStocksFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int
             ) {
-                /*val to_remove = viewModel.selectedStList.value?.get(viewHolder.adapterPosition)
+                *//*val to_remove = viewModel.selectedStList.value?.get(viewHolder.adapterPosition)
                 viewModel.removeStock(to_remove)
                 binding.recyclerView.adapter!!.notifyItemRemoved(viewHolder.adapterPosition)
-                Toast.makeText(requireContext(), "Item deleted: ${to_remove?.name}", Toast.LENGTH_SHORT).show()*/
+                Toast.makeText(requireContext(), "Item deleted: ${to_remove?.name}", Toast.LENGTH_SHORT).show()*//*
             }
         }).attachToRecyclerView(binding.recyclerView)
 
 
-        return binding.root
-
-
-    }
 
 
 
+    }*/
 
 
 
-    fun onItemClicked(clickedStock: Stock) {
 
 
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-}
+
+
 

@@ -2,6 +2,7 @@ package il.kod.movingaverageapplication1.UI
 
 import AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
+import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 
 class DetailsItemFragment: Fragment() {
@@ -37,38 +38,45 @@ class DetailsItemFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.getInt("item")?.let {
-            binding.stockSymbol.text = viewModelAllStocks.stockList.value?.get(it)?.symbol
 
-
-            binding.stockCompany.text = viewModelAllStocks.stockList.value?.get(it)?.name?:"N/A"
-            binding.stockPrice.text = viewModelAllStocks.stockList.value?.get(it)?.price.toString()
-            binding.numberOfShares.text = viewModelAllStocks.stockList.value?.get(it)?.movingAverage.toString()
-            Glide.with(requireContext()).load(viewModelAllStocks.stockList.value?.get(it)?.imageUri).into(binding.itemImage)
-
-
-        binding.okayButton.setOnClickListener {
-            //findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
-            findNavController().popBackStack()
+        arguments?.getBoolean("displayaddstockbutton", true)?.let {
+            if (it) {
+                binding.addButton.visibility = View.VISIBLE
+            } else {
+                binding.addButton.visibility = View.GONE
+            }
         }
+        arguments?. getParcelable<Stock>("stock")?.let {
+
+            val clickedStock = it
+            binding.stockSymbol.text =clickedStock.symbol
+
+            //Log.d("DetailsItemFragment", "Stock symbol: ${reference_list.getOrNull(it)}")
+            binding.stockCompany.text =clickedStock.name?:"N/A"
+            binding.stockPrice.text = clickedStock.price.toString()
+            binding.numberOfShares.text = clickedStock.movingAverage.toString()
+            Glide.with(requireContext()).load(clickedStock.imageUri).into(binding.itemImage)
+
 
             binding.addButton.setOnClickListener {
-                arguments?.getInt("item")?.let { index ->
-                    val clickedStock = viewModelAllStocks.onItemClicked(index)
-                    clickedStock?.let { stock ->
-                        viewModelSelectedStocks.addStock(stock)
-                        viewModelAllStocks.removeStock(stock)
+
+                        viewModelSelectedStocks.addStock(clickedStock)
+                        viewModelAllStocks.removeStock(clickedStock)
 
                         findNavController().popBackStack()
                         Toast.makeText(requireContext(), "${clickedStock.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()
-                    }
+
                 }
 
+            binding.okayButton.setOnClickListener {
+                //findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
+                findNavController().popBackStack()
+            }
+
 
 
         }
         }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

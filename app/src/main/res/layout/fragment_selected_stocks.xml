@@ -8,21 +8,11 @@
 
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:text="Here you can see the selected stocks" />
-
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         android:id="@+id/recyclerView" />
-
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
@@ -41,20 +31,39 @@
         android:layout_margin="50dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="152dp"
-        android:src="@mipmap/button_add_round"
+        android:src="@drawable/baseline_add_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/isEmptytextView"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:text="@string/you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks"
+        app:layout_constraintBottom_toTopOf="@id/addStockButtonBig"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </TextView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addStockButton"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_margin="50dp"
+        android:id="@+id/addStockButtonBig"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="300dp"
+        android:contentDescription="Start Adding Stocks"
+        android:scaleType="fitCenter"
+        android:src="@drawable/baseline_add_24"
+        app:fabCustomSize="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        android:gravity= "center"
-        android:src="@mipmap/button_add_round"
-        app:layout_constraintBottom_toBottomOf="parent"
 
-        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -268,7 +268,7 @@ class AllStocksViewModel : ViewModel() {
         )
 
 
-    fun onItemClicked(index: Int): Stock? {
+    fun getListofStocks(index: Int): Stock? {
         return stockList.value?.get(index)
     }
 

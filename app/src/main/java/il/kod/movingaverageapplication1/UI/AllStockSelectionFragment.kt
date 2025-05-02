@@ -5,14 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
@@ -60,28 +57,26 @@ class AllStockSelectionFragment : Fragment() {
 
 
                     override fun onItemClicked(index: Int) {
-                        val clickedStock = viewModelAllStocks.onItemClicked(index)//returns the object clicked
+                        val clickedStock = viewModelAllStocks.getListofStocks(index)//returns the object clicked
                         clickedStock?.let {
                             findNavController().navigate(
                                 R.id.action_stockSelection3_to_detailsItemFragment,
-                                bundleOf("item" to index)
-                            )
+                                bundleOf(
+                                    "stock" to clickedStock))
                         }
                     }
 
                     override fun onItemLongClicked(index: Int) {
+                            return
+                        //val clickedStock = viewModelAllStocks.onItemClicked(index)
 
-
-
-                        val clickedStock = viewModelAllStocks.stockList.value?.get(index)
-
-                        Toast.makeText(
-                            requireContext(),
-                            "Successfully added: ${clickedStock?.name}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        viewModelSelectedStock.addStock(clickedStock)
-                        viewModelAllStocks.removeStock(clickedStock)
+                        //Toast.makeText(
+                            //requireContext(),
+                            //"Successfully added: ${clickedStock?.name}",
+                           // Toast.LENGTH_SHORT
+                        //).show()
+                        //viewModelSelectedStock.addStock(clickedStock)
+                        //viewModelAllStocks.removeStock(clickedStock)
                         //bundle.putParcelable("stock", clickedStock)
                     }
 
@@ -95,7 +90,7 @@ class AllStockSelectionFragment : Fragment() {
 
 
 
-        ItemTouchHelper(object: ItemTouchHelper.Callback() {
+        /*ItemTouchHelper(object: ItemTouchHelper.Callback() {
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
@@ -115,7 +110,7 @@ class AllStockSelectionFragment : Fragment() {
             ) {
                 Toast.makeText(requireContext(), "You cannot remove an object from that list", Toast.LENGTH_SHORT).show()
             }
-        }).attachToRecyclerView(binding.recyclerView)
+        }).attachToRecyclerView(binding.recyclerView)*/
 
 
 

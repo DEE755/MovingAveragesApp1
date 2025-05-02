@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/selectedStocks">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/selectedStocks"
@@ -49,5 +49,23 @@
         <action
             android:id="@+id/action_detailsItemFragment_to_selectedStocks"
             app:destination="@id/selectedStocks" />
+        <action
+            android:id="@+id/action_detailsItemFragment_self"
+            app:destination="@id/detailsItemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="il.kod.movingaverageapplication1.UI.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_navigation_graph_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
+        <action
+            android:id="@+id/action_navigation_graph_to_selectedStocks2"
+            app:destination="@id/selectedStocks"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 </navigation>
