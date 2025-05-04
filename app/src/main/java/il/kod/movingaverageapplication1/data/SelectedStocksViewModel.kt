@@ -1,33 +1,29 @@
 package il.kod.movingaverageapplication1.data
 
-import android.os.Parcelable
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import kotlinx.parcelize.Parcelize
+import il.kod.movingaverageapplication1.data.repository.StocksRepository
 
-class SelectedStocksViewModel : ViewModel() {
+class SelectedStocksViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val repository=StocksRepository(application)
+    val _selectedStList=repository._selectedStList
+    val selectedStList : LiveData<List<Stock>> = repository.getSelectedStocks()
 
-    private val _selectedStList = MutableLiveData<MutableList<Stock>>(mutableListOf())
-    val selectedStList: LiveData<MutableList<Stock>> get() = _selectedStList
-
-    fun addStock(stock: Stock?) {
-        stock?.let {
-            _selectedStList.value?.add(it)
-            _selectedStList.value = _selectedStList.value // Trigger LiveData update
-        }
+    fun followStock(stock: Stock) {
+        stock.let{stock?.isSelected=true
+            repository.updateStock(stock)}
     }
 
-    fun removeStock(stock: Stock?) {
-        stock?.let {
-            _selectedStList.value?.remove(it)
-            _selectedStList.value = _selectedStList.value // Trigger LiveData update
-        }
+    fun unfollowStock(stock: Stock) {
+        stock.let{stock?.isSelected=false
+            repository.updateStock(stock)}
     }
-
 
     fun onItemClicked(index: Int): Stock? {
         return selectedStList.value?.get(index)
     }
+
+
 }

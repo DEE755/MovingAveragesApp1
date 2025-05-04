@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.UI
+package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
@@ -11,10 +11,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.data.Stock
@@ -28,9 +25,12 @@ class SelectedStocksFragment : Fragment() {
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
 
-    private val viewModel: SelectedStocksViewModel by activityViewModels()
+    private val viewModelSelectedStock: SelectedStocksViewModel by activityViewModels()
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+
+
+
 
 
     companion object {
@@ -40,6 +40,7 @@ class SelectedStocksFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         //viewModel = ViewModelProvider(this)[SelectedStocksViewModel::class.java]
 
@@ -62,19 +63,19 @@ class SelectedStocksFragment : Fragment() {
                 override fun onItemClicked(index: Int) {
 
                     val clickedStock =
-                        viewModel.onItemClicked(index)//returns the object clicked
+                        viewModelSelectedStock.onItemClicked(index)//returns the object clicked
                     Log.d("SelectedStocksFragment", "onItemClicked: ${clickedStock}")
                     clickedStock?.let {
                         findNavController().navigate(
                             R.id.action_selectedStocks_to_detailsItemFragment,
                             bundleOf(
-                                "stock" to clickedStock, "displayaddstockbutton" to false))//flag to don't display add stock button
+                                "stock" to clickedStock))
                     }
                 }
 
                 override fun onItemLongClicked(index: Int) {
 
-                    val clickedStock = viewModel.selectedStList.value?.get(index)
+                    val clickedStock = viewModelSelectedStock.selectedStList.value?.get(index)
 
                     showConfirmationDialog(
                         context = requireContext(),
@@ -82,15 +83,14 @@ class SelectedStocksFragment : Fragment() {
                         message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
                         onYes = {
 
-                            viewModel.removeStock(clickedStock)
+                            viewModelSelectedStock.unfollowStock(clickedStock!!)
                             (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
                                 index
                             )
 
-                            viewModelAllStocks.addStock(clickedStock)
                             Toast.makeText(
                                 requireContext(),
-                                "Successfully removed: ${clickedStock?.name}",
+                                "Successfully removed: ${clickedStock.name}",
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
@@ -103,13 +103,13 @@ class SelectedStocksFragment : Fragment() {
             }
         )
 
-        viewModel.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+        viewModelSelectedStock.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
             (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
         }
 
 
-        viewModel.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            if (viewModel.selectedStList.value?.isEmpty() == false) {
+        viewModelSelectedStock.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+            if (viewModelSelectedStock.selectedStList.value?.isEmpty() == false) {
                 binding.addStockButtonBig.visibility = View.GONE
                 binding.isEmptytextView.visibility = View.GONE
                 binding.addStockButtonSmall.visibility = View.VISIBLE

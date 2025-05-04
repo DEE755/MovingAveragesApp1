@@ -1,8 +1,7 @@
-package il.kod.movingaverageapplication1.UI
+package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
+import androidx.core.net.toUri
 
 class DetailsItemFragment: Fragment() {
     var _binding : DetailsStockLayoutBinding?= null
@@ -39,29 +39,28 @@ class DetailsItemFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.getBoolean("displayaddstockbutton", true)?.let {
-            if (it) {
+
+        arguments?. getParcelable<Stock>("stock")?.let {
+
+            val clickedStock = it
+            if (!clickedStock.isSelected){
                 binding.addButton.visibility = View.VISIBLE
             } else {
                 binding.addButton.visibility = View.GONE
             }
-        }
-        arguments?. getParcelable<Stock>("stock")?.let {
-
-            val clickedStock = it
             binding.stockSymbol.text =clickedStock.symbol
 
             //Log.d("DetailsItemFragment", "Stock symbol: ${reference_list.getOrNull(it)}")
             binding.stockCompany.text =clickedStock.name?:"N/A"
             binding.stockPrice.text = clickedStock.price.toString()
             binding.numberOfShares.text = clickedStock.movingAverage.toString()
-            Glide.with(requireContext()).load(clickedStock.imageUri).into(binding.itemImage)
+            Glide.with(requireContext()).load(clickedStock.imageUri?.toUri()).into(binding.itemImage)
 
 
             binding.addButton.setOnClickListener {
 
-                        viewModelSelectedStocks.addStock(clickedStock)
-                        viewModelAllStocks.removeStock(clickedStock)
+                        viewModelSelectedStocks.followStock(clickedStock)
+                        //viewModelAllStocks.removeStock(clickedStock)
 
                         findNavController().popBackStack()
                         Toast.makeText(requireContext(), "${clickedStock.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()

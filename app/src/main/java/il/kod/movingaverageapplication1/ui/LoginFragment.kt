@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.UI
+package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
-import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import il.kod.movingaverageapplication1.databinding.LoginFragmentBinding
 import kotlin.getValue
 

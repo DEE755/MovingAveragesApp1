@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/selectedStocks"
-        android:name="il.kod.movingaverageapplication1.UI.SelectedStocksFragment"
+        android:name="il.kod.movingaverageapplication1.ui.SelectedStocksFragment"
         android:label="fragment_selected_stocks"
         tools:layout="@layout/fragment_selected_stocks" >
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/stockSelection3"
-        android:name="il.kod.movingaverageapplication1.UI.AllStockSelectionFragment"
+        android:name="il.kod.movingaverageapplication1.ui.AllStockSelectionFragment"
         android:label="StockSelection" >
         <action
             android:id="@+id/action_stockSelection3_to_selectedStocks"
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsItemFragment"
-        android:name="il.kod.movingaverageapplication1.UI.DetailsItemFragment"
+        android:name="il.kod.movingaverageapplication1.ui.DetailsItemFragment"
         android:label="details_stock_layout"
         tools:layout="@layout/details_stock_layout" >
         <action
@@ -56,7 +56,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="il.kod.movingaverageapplication1.UI.LoginFragment"
+        android:name="il.kod.movingaverageapplication1.ui.LoginFragment"
         android:label="login_fragment"
         tools:layout="@layout/login_fragment">
         <action

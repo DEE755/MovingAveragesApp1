@@ -2,6 +2,7 @@ package il.kod.movingaverageapplication1.data
 
 import android.net.Uri
 import android.os.Parcelable
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "stocks")
-
 data class Stock(
     @ColumnInfo(name="symbol")
     val symbol: String,
@@ -26,9 +26,10 @@ data class Stock(
     @ColumnInfo(name="dividendYield")
     val movingAverage: Double = 0.0,
     @ColumnInfo(name="imageUri")
-    internal var imageUri: Uri? =null,
-    @ColumnInfo(name="image_Drawable")
-    internal var imagedraw: Int? =null
+    
+    internal var imageUri: String? =null,
+    @ColumnInfo(name="isSelected")
+    var isSelected: Boolean = false
 
 ): Parcelable {
 

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="40dp"
     android:background="#F810AEC3"
-    tools:context=".UI.DetailsItemFragment">
+    tools:context=".ui.DetailsItemFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

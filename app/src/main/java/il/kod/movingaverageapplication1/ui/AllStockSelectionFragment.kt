@@ -1,7 +1,8 @@
-package il.kod.movingaverageapplication1.UI
+package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +20,14 @@ class AllStockSelectionFragment : Fragment() {
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
 
-        //shared viewmodel
+
+
+        //shared viewmodels
     private val viewModelSelectedStock: SelectedStocksViewModel by activityViewModels()
 
-    //not shared viewmodel
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+
+    private val stockViewModel: StocksViewModel by activityViewModels()
 
 
 
@@ -49,15 +53,16 @@ class AllStockSelectionFragment : Fragment() {
 
 //if a new stock is added to the allstocklist, it will be added to the recycler view
 
-        viewModelAllStocks.stockList.observe(viewLifecycleOwner)
+        viewModelAllStocks.unselectedStockList?.observe(viewLifecycleOwner)
         {
+
             binding.recyclerView.adapter = StockAdapterFragment(
-                viewModelAllStocks.stockList.value ?: emptyList(),
+                viewModelAllStocks.unselectedStockList?.value ?: emptyList(),
                 callBack = object : StockAdapterFragment.ItemListener {
 
-
                     override fun onItemClicked(index: Int) {
-                        val clickedStock = viewModelAllStocks.getListofStocks(index)//returns the object clicked
+                        val clickedStock = viewModelAllStocks.unselectedStockList?.value?.get(index)
+                        Log.d("Cliked", "clicked:$clickedStock, index: $index")
                         clickedStock?.let {
                             findNavController().navigate(
                                 R.id.action_stockSelection3_to_detailsItemFragment,
