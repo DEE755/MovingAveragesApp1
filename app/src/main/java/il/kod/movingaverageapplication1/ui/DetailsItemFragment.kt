@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
@@ -22,7 +21,6 @@ class DetailsItemFragment: Fragment() {
     //private val viewModel: SelectedStocksViewModel by activityViewModels()
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
-    private val viewModelSelectedStocks : SelectedStocksViewModel by activityViewModels()
 
 
 
@@ -59,8 +57,8 @@ class DetailsItemFragment: Fragment() {
 
             binding.addButton.setOnClickListener {
 
-                        viewModelSelectedStocks.followStock(clickedStock)
-                        //viewModelAllStocks.removeStock(clickedStock)
+                        viewModelAllStocks.followStock(clickedStock)
+
 
                         findNavController().popBackStack()
                         Toast.makeText(requireContext(), "${clickedStock.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()
@@ -68,12 +66,8 @@ class DetailsItemFragment: Fragment() {
                 }
 
             binding.okayButton.setOnClickListener {
-                //findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
                 findNavController().popBackStack()
             }
-
-
-
         }
         }
 

@@ -3,6 +3,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.repository.StocksRepository
+import kotlin.collections.get
 
 class AllStocksViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -11,27 +12,44 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository = StocksRepository(application)
 
     val unselectedStockList : LiveData<List<Stock>> = repository.getUnselectedStocks()
-
-    fun addStock(stock: Stock?)=stock.let{stock?.isSelected=false}
-    fun removeStock(stock: Stock?) =stock.let{stock?.isSelected=true}
+    val selectedStList : LiveData<List<Stock>> = repository.getSelectedStocks()
 
 
+    fun addStock(stock: Stock)=repository.addStock(stock)
+    fun removeStock(stock: Stock) =repository.removeStock(stock)
 
-/*
-    fun addStock(stock: Stock?) {
-        stock?.let {
-            stock.isSelected=false
-            stockList.value?.add(it)
-            stockList.value = stockList.value // Trigger LiveData update
-        }
+
+    fun followStock(stock: Stock) {
+        stock.let{stock.isSelected=true
+            repository.updateStock(stock)}
     }
 
-    fun removeStock(stock: Stock?) {
-        stock?.let {
-            stockList.value?.remove(it)
-            stockList.value =stockList.value // Trigger LiveData update
-        }
+    fun unfollowStock(stock: Stock) {
+        stock.let{stock.isSelected=false
+            repository.updateStock(stock)}
     }
 
-            }*/
+    fun onItemClicked(index: Int): Stock? {
+        return selectedStList.value?.get(index)
+    }
+
+
+
+    /*
+        fun addStock(stock: Stock?) {
+            stock?.let {
+                stock.isSelected=false
+                stockList.value?.add(it)
+                stockList.value = stockList.value // Trigger LiveData update
+            }
+        }
+
+        fun removeStock(stock: Stock?) {
+            stock?.let {
+                stockList.value?.remove(it)
+                stockList.value =stockList.value // Trigger LiveData update
+            }
+        }
+
+                }*/
 }

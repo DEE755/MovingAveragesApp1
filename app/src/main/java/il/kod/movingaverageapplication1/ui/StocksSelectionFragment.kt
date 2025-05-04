@@ -12,22 +12,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 
-class AllStockSelectionFragment : Fragment() {
+class StocksSelectionFragment : Fragment() {
 
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
 
 
 
-        //shared viewmodels
-    private val viewModelSelectedStock: SelectedStocksViewModel by activityViewModels()
-
+        //shared viewmodel
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
-    private val stockViewModel: StocksViewModel by activityViewModels()
 
 
 

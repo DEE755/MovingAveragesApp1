@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/selectedStocks"
-        android:name="il.kod.movingaverageapplication1.ui.SelectedStocksFragment"
+        android:name="il.kod.movingaverageapplication1.ui.FollowedStocksFragment"
         android:label="fragment_selected_stocks"
         tools:layout="@layout/fragment_selected_stocks" >
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/stockSelection3"
-        android:name="il.kod.movingaverageapplication1.ui.AllStockSelectionFragment"
+        android:name="il.kod.movingaverageapplication1.ui.StocksSelectionFragment"
         android:label="StockSelection" >
         <action
             android:id="@+id/action_stockSelection3_to_selectedStocks"

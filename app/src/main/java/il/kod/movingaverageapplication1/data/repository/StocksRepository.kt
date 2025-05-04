@@ -11,10 +11,6 @@ class StocksRepository(application: Application)
 {
     //TODO(FETCH DATA FROM API instead OF HARDCODED)
 
-    //val stockList: MutableLiveData<MutableList<Stock>> = MutableLiveData()
-    val _selectedStList = MutableLiveData<MutableList<Stock>>(mutableListOf())
-
-
     private var stockDao : StockDao
 
 
@@ -23,24 +19,19 @@ class StocksRepository(application: Application)
         val db = StocksDatabase.getDatabase(application.applicationContext)
         stockDao = db.stocksDao()
 
-
-        //stockList.value=mutableListOf(
-
-
-
     }
 
 
     fun getAllStocks(): LiveData<List<Stock>> {
-        return stockDao.getAllStocks() ?: MutableLiveData(emptyList())
+        return stockDao.getAllStocks()
     }
 
     fun getSelectedStocks(): LiveData<List<Stock>> {
-        return stockDao.getSelectedStocks() ?: MutableLiveData(emptyList())
+        return stockDao.getSelectedStocks()
     }
 
     fun getUnselectedStocks(): LiveData<List<Stock>> {
-        return stockDao.getUnselectedStocks() ?: MutableLiveData(emptyList())
+        return stockDao.getUnselectedStocks()
     }
 
     fun addStock(stock: Stock)=stockDao.addStock(stock)

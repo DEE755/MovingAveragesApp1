@@ -13,37 +13,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.SelectedStocksViewModel
-import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import showConfirmationDialog
 
 
-class SelectedStocksFragment : Fragment() {
+class FollowedStocksFragment : Fragment() {
 
     private var _binding: FragmentSelectedStocksBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
-
-    private val viewModelSelectedStock: SelectedStocksViewModel by activityViewModels()
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
 
 
 
-
-    companion object {
-        val selectedStList: MutableList<Stock> = mutableListOf()
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-        //viewModel = ViewModelProvider(this)[SelectedStocksViewModel::class.java]
-
 
     }
 
@@ -63,7 +49,7 @@ class SelectedStocksFragment : Fragment() {
                 override fun onItemClicked(index: Int) {
 
                     val clickedStock =
-                        viewModelSelectedStock.onItemClicked(index)//returns the object clicked
+                        viewModelAllStocks.onItemClicked(index)//returns the object clicked
                     Log.d("SelectedStocksFragment", "onItemClicked: ${clickedStock}")
                     clickedStock?.let {
                         findNavController().navigate(
@@ -75,7 +61,7 @@ class SelectedStocksFragment : Fragment() {
 
                 override fun onItemLongClicked(index: Int) {
 
-                    val clickedStock = viewModelSelectedStock.selectedStList.value?.get(index)
+                    val clickedStock = viewModelAllStocks.selectedStList.value?.get(index)
 
                     showConfirmationDialog(
                         context = requireContext(),
@@ -83,7 +69,7 @@ class SelectedStocksFragment : Fragment() {
                         message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
                         onYes = {
 
-                            viewModelSelectedStock.unfollowStock(clickedStock!!)
+                            viewModelAllStocks.unfollowStock(clickedStock!!)
                             (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
                                 index
                             )
@@ -103,13 +89,13 @@ class SelectedStocksFragment : Fragment() {
             }
         )
 
-        viewModelSelectedStock.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
             (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
         }
 
 
-        viewModelSelectedStock.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            if (viewModelSelectedStock.selectedStList.value?.isEmpty() == false) {
+        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+            if (viewModelAllStocks.selectedStList.value?.isEmpty() == false) {
                 binding.addStockButtonBig.visibility = View.GONE
                 binding.isEmptytextView.visibility = View.GONE
                 binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -119,8 +105,6 @@ class SelectedStocksFragment : Fragment() {
                 binding.addStockButtonSmall.visibility = View.GONE
             }
         }
-
-
 
 
 
@@ -147,36 +131,7 @@ class SelectedStocksFragment : Fragment() {
 }
 
 
-        /*ItemTouchHelper(object: ItemTouchHelper.Callback() {
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            )=makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
 
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun onSwiped(
-                viewHolder: RecyclerView.ViewHolder,
-                direction: Int
-            ) {
-                *//*val to_remove = viewModel.selectedStList.value?.get(viewHolder.adapterPosition)
-                viewModel.removeStock(to_remove)
-                binding.recyclerView.adapter!!.notifyItemRemoved(viewHolder.adapterPosition)
-                Toast.makeText(requireContext(), "Item deleted: ${to_remove?.name}", Toast.LENGTH_SHORT).show()*//*
-            }
-        }).attachToRecyclerView(binding.recyclerView)
-
-
-
-
-
-    }*/
 
 
 

@@ -50,9 +50,6 @@ class StockAdapterFragment(private var stocks: List<Stock>, private val callBack
                 .error(R.mipmap.ic_launcher)
                 .into(binding.itemImage)
         }
-
-
-
     }
 
 
@@ -82,19 +79,5 @@ class StockAdapterFragment(private var stocks: List<Stock>, private val callBack
         notifyDataSetChanged()
     }
 
-
-
-    fun getCount(): Int = stocks.size
-    //fun getStockAt(position: Int): Any = stocks[position]
-    override fun getItemId(position: Int): Long = position.toLong()
-
-    fun getStockAt(index: Int) : Stock?
-    {
-        return if (index >= 0 && index < stocks.size) {
-            stocks[index]
-        } else {
-            null
-        }
-    }
 
 }
