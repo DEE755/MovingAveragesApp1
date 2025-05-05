@@ -25,7 +25,7 @@ interface StockDao {
 
 
     @Query("SELECT * FROM stocks WHERE id LIKE :id")
-    fun getItem(id :Int) : Stock
+    fun getStock(id :Int) : Stock
 
     @Query("SELECT * FROM stocks WHERE isSelected = 1")
     fun getSelectedStocks(): LiveData<List<Stock>>

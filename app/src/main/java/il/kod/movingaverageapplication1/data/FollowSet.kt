@@ -17,16 +17,16 @@ import kotlinx.parcelize.Parcelize
         internal var imageUri: String? =null,
         @ColumnInfo(name="user_comments")
         val userComments: String="",
-        @ColumnInfo(name="set")
-        val set :List<Stock> =listOf() //not mutable for parcelization purposes)
+        @ColumnInfo(name="set_ids")
+        val set_ids : List<Int> //not mutable for parcelization purposes)
 
     ): Parcelable {
 
         @PrimaryKey(autoGenerate = true)
-
+        var id : Int =0
         // Update the list (not mutable for parcelization purposes)
-        fun updateSet(newSet: List<Stock>): FollowSet {
-            return this.copy(set = newSet)
+        fun updateSet(newSet: List<Int>): FollowSet {
+            return this.copy(set_ids = newSet)
 
 
         }

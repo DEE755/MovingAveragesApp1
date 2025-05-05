@@ -6,11 +6,11 @@ import il.kod.movingaverageapplication1.data.Stock
 
 class DetailStockViewModel : ViewModel() {
 
-    private val _chosenStock=MutableLiveData<Stock>()
-    val chosenStock get()=_chosenStock
+    private val _clickedStock=MutableLiveData<Stock>()
+    val clickedStock get()=_clickedStock
 
     fun setStock(stock: Stock){
-        _chosenStock.value=stock
+        _clickedStock.value=stock
     }
 
 

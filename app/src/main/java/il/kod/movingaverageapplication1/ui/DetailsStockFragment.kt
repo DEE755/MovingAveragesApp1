@@ -41,7 +41,7 @@ class DetailsStockFragment: Fragment() {
 
 
 
-            val clickedStock : MutableLiveData<Stock> = viewModelDetailStock.chosenStock
+            val clickedStock : MutableLiveData<Stock> = viewModelDetailStock.clickedStock
                 clickedStock.let {
             if (!clickedStock.value!!.isSelected){
                 binding.addButton.visibility = View.VISIBLE

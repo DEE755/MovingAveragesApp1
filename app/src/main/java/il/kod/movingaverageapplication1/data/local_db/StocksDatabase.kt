@@ -1,17 +1,25 @@
 package il.kod.movingaverageapplication1.data.local_db
 
+
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import il.kod.movingaverageapplication1.IntListConverter
+import il.kod.movingaverageapplication1.data.FollowSet
 import il.kod.movingaverageapplication1.data.Stock
 import java.util.concurrent.Executors
 
-@Database(entities = [Stock::class], version = 1, exportSchema = false)
+
+@Database(entities = [Stock::class, FollowSet::class], version = 1, exportSchema = false)
+@TypeConverters(IntListConverter::class)
 abstract class StocksDatabase : RoomDatabase() {
 
     abstract fun stocksDao(): StockDao
+
+    abstract fun followSetDao(): FollowSetDao
 
     companion object {
         @Volatile

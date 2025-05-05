@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_selectedStocks_to_detailsItemFragment2"
             app:destination="@id/detailsItemFragment" />
+        <action
+            android:id="@+id/action_selectedStocks_to_followSetFragment"
+            app:destination="@id/followSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/stockSelection3"
@@ -68,4 +71,20 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
     </fragment>
+    <fragment
+        android:id="@+id/followSetFragment"
+        android:name="il.kod.movingaverageapplication1.ui.FollowSetFragment"
+        android:label="fragment_follow_set"
+        tools:layout="@layout/fragment_follow_set" >
+        <action
+            android:id="@+id/action_followSetFragment_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
+        <action
+            android:id="@+id/action_followSetFragment_to_followSetCreationFragment"
+            app:destination="@id/followSetCreationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/followSetCreationFragment"
+        android:name="il.kod.movingaverageapplication1.ui.FollowSetCreationFragment"
+        android:label="FollowSetCreationFragment" />
 </navigation>

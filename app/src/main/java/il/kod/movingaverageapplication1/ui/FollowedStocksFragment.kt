@@ -2,13 +2,11 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +50,7 @@ class FollowedStocksFragment : Fragment() {
                 override fun onItemClicked(index: Int) {
 
                     viewModelAllStocks.selectedStList.value?.get(index)?.let { selectedStock ->
-                        viewModelDetailStock.chosenStock.value = selectedStock
+                        viewModelDetailStock.clickedStock.value = selectedStock
                         findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
                     }
                 }

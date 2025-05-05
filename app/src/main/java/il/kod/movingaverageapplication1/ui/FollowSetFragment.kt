@@ -10,9 +10,12 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import showConfirmationDialog
@@ -25,6 +28,9 @@ class FollowSetFragment : Fragment() {
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
+    private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
+
+    private val viewModelFollowSet: FollowSetViewModel by viewModels()
 
 
 
@@ -48,16 +54,14 @@ class FollowSetFragment : Fragment() {
             callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
 
-                    val clickedStock =
-                        viewModelAllStocks.onItemClicked(index)//returns the object clicked
-                    Log.d("SelectedStocksFragment", "onItemClicked: ${clickedStock}")
-                    clickedStock?.let {
-                        findNavController().navigate(
-                            R.id.action_selectedStocks_to_detailsItemFragment,
-                            bundleOf(
-                                "stock" to clickedStock))
+
+                        viewModelFollowSet.onItemClicked(index)?.let { followSet ->
+                            viewModelFollowSet.clickedFollowSet = followSet
+                        }
+
+                        findNavController().navigate(R.id.action_followSetFragment_to_followSetCreationFragment)
                     }
-                }
+
 
                 override fun onItemLongClicked(index: Int) {
 
@@ -118,9 +122,7 @@ class FollowSetFragment : Fragment() {
             findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
         }
 
-        arguments?.getString("position")?.let {
-            Toast.makeText(requireActivity(), "Added: $it ", Toast.LENGTH_LONG).show()
-        }
+
         return binding.root
     }
 

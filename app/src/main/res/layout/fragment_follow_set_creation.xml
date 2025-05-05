@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
-        android:text="Select a stock you want to follow"
+        android:text="Select some stocks you want to follow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -32,15 +32,15 @@
 
 
 
-   <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/button_add_foreground"
-    android:layout_marginEnd="30dp"
-    android:layout_marginBottom="100dp"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/button_add_foreground"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="100dp"
 
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:id="@+id/returntoselected" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/returntoselected" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

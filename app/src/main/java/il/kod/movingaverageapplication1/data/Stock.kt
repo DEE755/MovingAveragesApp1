@@ -34,8 +34,8 @@ data class Stock(
 ): Parcelable {
 
     @PrimaryKey(autoGenerate = true)
-
     var id : Int =0
+
     companion object {
         val stockList: MutableList<Stock> = mutableListOf()
     }
