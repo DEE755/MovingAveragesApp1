@@ -8,4 +8,5 @@
     <string name="please_login_to_continue">Please login to continue</string>
     <string name="start_adding_stocks">Start Adding Stocks</string>
     <string name="you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks">You don\'t follow any stocks yet\n Click the button below to add stocks</string>
+    <string name="you_don_t_have_following_stock_yet_n_click_the_button_below_to_add_following_sets">You don\'t have any following set yet\n Click the button below to add stocks to following sets</string>
 </resources>
