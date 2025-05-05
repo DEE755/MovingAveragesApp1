@@ -13,14 +13,15 @@ import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
+import androidx.lifecycle.MutableLiveData
+import il.kod.movingaverageapplication1.DetailStockViewModel
 
-class DetailsItemFragment: Fragment() {
+class DetailsStockFragment: Fragment() {
     var _binding : DetailsStockLayoutBinding?= null
     val binding get()=_binding!!
 
-    //private val viewModel: SelectedStocksViewModel by activityViewModels()
-
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+    private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
 
 
@@ -38,30 +39,30 @@ class DetailsItemFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        arguments?. getParcelable<Stock>("stock")?.let {
 
-            val clickedStock = it
-            if (!clickedStock.isSelected){
+
+            val clickedStock : MutableLiveData<Stock> = viewModelDetailStock.chosenStock
+                clickedStock.let {
+            if (!clickedStock.value!!.isSelected){
                 binding.addButton.visibility = View.VISIBLE
             } else {
                 binding.addButton.visibility = View.GONE
             }
-            binding.stockSymbol.text =clickedStock.symbol
+            binding.stockSymbol.text =clickedStock.value?.symbol
 
-            //Log.d("DetailsItemFragment", "Stock symbol: ${reference_list.getOrNull(it)}")
-            binding.stockCompany.text =clickedStock.name?:"N/A"
-            binding.stockPrice.text = clickedStock.price.toString()
-            binding.numberOfShares.text = clickedStock.movingAverage.toString()
-            Glide.with(requireContext()).load(clickedStock.imageUri?.toUri()).into(binding.itemImage)
+
+            binding.stockCompany.text =clickedStock.value?.name?:"N/A"
+            binding.stockPrice.text = clickedStock.value?.price.toString()
+            binding.numberOfShares.text = clickedStock.value?.movingAverage.toString()
+            Glide.with(requireContext()).load(clickedStock.value?.imageUri?.toUri()).into(binding.itemImage)
 
 
             binding.addButton.setOnClickListener {
 
-                        viewModelAllStocks.followStock(clickedStock)
-
+                        viewModelAllStocks.followStock(clickedStock.value!!)
 
                         findNavController().popBackStack()
-                        Toast.makeText(requireContext(), "${clickedStock.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${clickedStock.value?.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()
 
                 }
 

@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsItemFragment"
-        android:name="il.kod.movingaverageapplication1.ui.DetailsItemFragment"
+        android:name="il.kod.movingaverageapplication1.ui.DetailsStockFragment"
         android:label="details_stock_layout"
         tools:layout="@layout/details_stock_layout" >
         <action

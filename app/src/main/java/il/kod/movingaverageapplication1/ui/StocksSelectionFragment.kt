@@ -10,7 +10,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 
@@ -21,8 +23,9 @@ class StocksSelectionFragment : Fragment() {
 
 
 
-        //shared viewmodel
+        //shared viewmodels
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+    private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
 
 
@@ -41,6 +44,7 @@ class StocksSelectionFragment : Fragment() {
 
 
 
+
         _binding = FragmentAllStockSelectionBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -49,7 +53,7 @@ class StocksSelectionFragment : Fragment() {
 
 //if a new stock is added to the allstocklist, it will be added to the recycler view
 
-        viewModelAllStocks.unselectedStockList?.observe(viewLifecycleOwner)
+        viewModelAllStocks.unselectedStockList.observe(viewLifecycleOwner)
         {
 
             binding.recyclerView.adapter = StockAdapterFragment(
@@ -58,27 +62,16 @@ class StocksSelectionFragment : Fragment() {
 
                     override fun onItemClicked(index: Int) {
                         val clickedStock = viewModelAllStocks.unselectedStockList?.value?.get(index)
-                        Log.d("Cliked", "clicked:$clickedStock, index: $index")
                         clickedStock?.let {
+                            viewModelDetailStock.setStock(clickedStock)
                             findNavController().navigate(
-                                R.id.action_stockSelection3_to_detailsItemFragment,
-                                bundleOf(
-                                    "stock" to clickedStock))
+                                R.id.action_stockSelection3_to_detailsItemFragment)
+
                         }
                     }
 
                     override fun onItemLongClicked(index: Int) {
-                            return
-                        //val clickedStock = viewModelAllStocks.onItemClicked(index)
 
-                        //Toast.makeText(
-                            //requireContext(),
-                            //"Successfully added: ${clickedStock?.name}",
-                           // Toast.LENGTH_SHORT
-                        //).show()
-                        //viewModelSelectedStock.addStock(clickedStock)
-                        //viewModelAllStocks.removeStock(clickedStock)
-                        //bundle.putParcelable("stock", clickedStock)
                     }
 
 

@@ -1,9 +1,9 @@
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.repository.StocksRepository
-import kotlin.collections.get
 
 class AllStocksViewModel(application: Application) : AndroidViewModel(application) {
 

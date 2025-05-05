@@ -12,6 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import showConfirmationDialog
@@ -24,6 +25,8 @@ class FollowedStocksFragment : Fragment() {
     private val binding get() = _binding!! //to avoid writing ? after every _binding
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
+
+    private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
 
 
@@ -48,14 +51,9 @@ class FollowedStocksFragment : Fragment() {
             callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
 
-                    val clickedStock =
-                        viewModelAllStocks.onItemClicked(index)//returns the object clicked
-                    Log.d("SelectedStocksFragment", "onItemClicked: ${clickedStock}")
-                    clickedStock?.let {
-                        findNavController().navigate(
-                            R.id.action_selectedStocks_to_detailsItemFragment,
-                            bundleOf(
-                                "stock" to clickedStock))
+                    viewModelAllStocks.selectedStList.value?.get(index)?.let { selectedStock ->
+                        viewModelDetailStock.chosenStock.value = selectedStock
+                        findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
                     }
                 }
 
@@ -118,9 +116,7 @@ class FollowedStocksFragment : Fragment() {
             findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
         }
 
-        arguments?.getString("position")?.let {
-            Toast.makeText(requireActivity(), "Added: $it ", Toast.LENGTH_LONG).show()
-        }
+
         return binding.root
     }
 
