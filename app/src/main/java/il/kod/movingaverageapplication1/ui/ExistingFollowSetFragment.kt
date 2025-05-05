@@ -2,12 +2,11 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.core.view.MenuHost
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -17,11 +16,11 @@ import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
-import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import showConfirmationDialog
+import il.kod.movingaverageapplication1.sharedMenuProvider
+import il.kod.movingaverageapplication1.showConfirmationDialog
 import kotlin.getValue
 
-class FollowSetFragment : Fragment() {
+class ExistingFollowSetFragment : Fragment() {
     private var _binding: FragmentFollowSetBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
@@ -45,6 +44,15 @@ class FollowSetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(
+            (sharedMenuProvider(
+                context = requireContext(),
+                isListEmpty = false,
+                navController = findNavController())
+                    ),
+            viewLifecycleOwner
+        )
         _binding = FragmentFollowSetBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -54,18 +62,16 @@ class FollowSetFragment : Fragment() {
             callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
 
-
                         viewModelFollowSet.onItemClicked(index)?.let { followSet ->
                             viewModelFollowSet.clickedFollowSet = followSet
                         }
 
-                        findNavController().navigate(R.id.action_followSetFragment_to_followSetCreationFragment)
                     }
 
 
                 override fun onItemLongClicked(index: Int) {
 
-                    val clickedStock = viewModelAllStocks.selectedStList.value?.get(index)
+                    val clickedStock = viewModelAllStocks.selectedStockList.value?.get(index)
 
                     showConfirmationDialog(
                         context = requireContext(),
@@ -93,13 +99,13 @@ class FollowSetFragment : Fragment() {
             }
         )
 
-        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
+        viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) { allFollowSets ->
+            (binding.recyclerView.adapter as? FollowSetAdapterFragment)?.updateData(allFollowSets)
         }
 
 
-        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            if (viewModelAllStocks.selectedStList.value?.isEmpty() == false) {
+        viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) { selectedStocks ->
+            if (viewModelFollowSet.getAllFollowSet().value?.size == 0) {
                 binding.addStockButtonBig.visibility = View.GONE
                 binding.isEmptytextView.visibility = View.GONE
                 binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -114,13 +120,14 @@ class FollowSetFragment : Fragment() {
 
         binding.addStockButtonBig.setOnClickListener {
 
-            findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
+            findNavController().navigate(R.id.action_followSetFragment_to_followSetCreationFragment)
         }
 
         binding.addStockButtonSmall.setOnClickListener {
 
-            findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
+            binding.addStockButtonBig.callOnClick()
         }
+
 
 
         return binding.root

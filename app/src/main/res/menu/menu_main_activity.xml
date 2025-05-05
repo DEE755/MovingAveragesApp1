@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_stocks_list"
+        android:title="Stocks List"
+        android:icon="@drawable/baseline_airline_stops_24"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_follow_list"
+        android:title="Follow List"
+        android:icon="@drawable/baseline_attach_money_24"
+
+        app:showAsAction="always" />
+</menu>

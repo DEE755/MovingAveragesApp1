@@ -25,7 +25,7 @@ class FollowSetRepository(application: Application) {
         return followSetDao.getAllFollowSet()
     }
 
-    fun addStock(followSet: FollowSet) {
+    fun addFollowSet(followSet: FollowSet) {
         followSetDao.addFollowSet(followSet)
     }
 

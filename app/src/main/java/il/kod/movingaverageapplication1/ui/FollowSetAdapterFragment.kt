@@ -3,85 +3,74 @@ package il.kod.movingaverageapplication1.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSet
 import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.ui.StockAdapterFragment.ItemViewHolder
+import il.kod.movingaverageapplication1.databinding.ItemCheckLayoutBinding
+import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 
+class FollowSetAdapterFragment(
+    private var followSets: List<FollowSet>,
+    private val callBack: ItemListener
+) : RecyclerView.Adapter<FollowSetAdapterFragment.FollowSetViewHolder>() {
 
-
-class StockAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener) : RecyclerView.Adapter<ItemViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowSetViewHolder {
+        val binding = ItemLayoutBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return FollowSetViewHolder(binding)
+    }
 
     interface ItemListener {
         fun onItemClicked(index: Int)
         fun onItemLongClicked(index: Int)
     }
 
-    inner class ItemViewHolder(private val binding: ItemLayoutBinding) :
+    inner class FollowSetViewHolder(private val binding: ItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
-        init {
 
+        init {
             binding.root.setOnClickListener(this)
             binding.root.setOnLongClickListener(this)
-
         }
 
         override fun onClick(p0: View?) {
             callBack.onItemClicked(adapterPosition)
-
-
         }
 
         override fun onLongClick(p0: View?): Boolean {
             callBack.onItemLongClicked(adapterPosition)
-            return false
+            return true
         }
 
-
-        fun bind(stock: Stock) {
-
-            binding.itemTitle.text = stock.name
-            binding.itemDescription.text =
-                "Marketcap: ${stock.symbol} - Price: ${stock.price} -${stock.peRatio}"
+        fun bind(followSet: FollowSet) {
+            binding.itemTitle.text = followSet.name
             Glide.with(binding.root)
-                .load(stock.imageUri)
+                .load(followSet.imageUri)
                 .error(R.mipmap.ic_launcher)
                 .into(binding.itemImage)
         }
     }
 
 
-    override fun onCreateViewHolder(
-
-        parent: ViewGroup,
-        viewType: Int
-    ) = ItemViewHolder(
-        ItemLayoutBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-    )
-
 
     override fun onBindViewHolder(
-        holder: ItemViewHolder,
+        holder: FollowSetAdapterFragment.FollowSetViewHolder,
         position: Int
     ) {
-        holder.bind(stocks[position])
-
+        holder.bind(followSets[position])
     }
 
 
-    override fun getItemCount() = stocks.size
 
+    override fun getItemCount(): Int = followSets.size
 
-    fun updateData(newStocks: List<Stock>) {
-        stocks = newStocks
+    fun updateData(newFollowSets: List<FollowSet>) {
+        followSets = newFollowSets
         notifyDataSetChanged()
     }
-    
 }

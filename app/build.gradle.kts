@@ -65,6 +65,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+    implementation(libs.appcompat)
 
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")

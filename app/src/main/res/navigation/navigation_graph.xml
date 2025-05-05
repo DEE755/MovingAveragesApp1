@@ -6,7 +6,7 @@
     app:startDestination="@id/loginFragment">
 
     <fragment
-        android:id="@+id/selectedStocks"
+        android:id="@+id/followedStocks"
         android:name="il.kod.movingaverageapplication1.ui.FollowedStocksFragment"
         android:label="fragment_selected_stocks"
         tools:layout="@layout/fragment_selected_stocks" >
@@ -33,7 +33,7 @@
         android:label="StockSelection" >
         <action
             android:id="@+id/action_stockSelection3_to_selectedStocks"
-            app:destination="@id/selectedStocks"
+            app:destination="@id/followedStocks"
             app:enterAnim="@anim/from_left"
             app:exitAnim="@anim/from_right"
             app:popEnterAnim="@anim/to_left"
@@ -51,10 +51,13 @@
         tools:layout="@layout/details_stock_layout" >
         <action
             android:id="@+id/action_detailsItemFragment_to_selectedStocks"
-            app:destination="@id/selectedStocks" />
+            app:destination="@id/followedStocks" />
         <action
             android:id="@+id/action_detailsItemFragment_self"
             app:destination="@id/detailsItemFragment" />
+        <action
+            android:id="@+id/action_detailsItemFragment_to_followSetCreationFragment"
+            app:destination="@id/followSetCreationFragment" />
     </fragment>
 
     <fragment
@@ -64,21 +67,21 @@
         tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_navigation_graph_to_selectedStocks"
-            app:destination="@id/selectedStocks" />
+            app:destination="@id/followedStocks" />
         <action
             android:id="@+id/action_navigation_graph_to_selectedStocks2"
-            app:destination="@id/selectedStocks"
+            app:destination="@id/followedStocks"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/followSetFragment"
-        android:name="il.kod.movingaverageapplication1.ui.FollowSetFragment"
+        android:name="il.kod.movingaverageapplication1.ui.ExistingFollowSetFragment"
         android:label="fragment_follow_set"
         tools:layout="@layout/fragment_follow_set" >
         <action
             android:id="@+id/action_followSetFragment_to_selectedStocks"
-            app:destination="@id/selectedStocks" />
+            app:destination="@id/followedStocks" />
         <action
             android:id="@+id/action_followSetFragment_to_followSetCreationFragment"
             app:destination="@id/followSetCreationFragment" />
@@ -86,5 +89,9 @@
     <fragment
         android:id="@+id/followSetCreationFragment"
         android:name="il.kod.movingaverageapplication1.ui.FollowSetCreationFragment"
-        android:label="FollowSetCreationFragment" />
+        android:label="FollowSetCreationFragment" >
+        <action
+            android:id="@+id/action_followSetCreationFragment_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment" />
+    </fragment>
 </navigation>

@@ -17,4 +17,14 @@ class FollowSetViewModel(application: Application) : AndroidViewModel(applicatio
     fun onItemClicked(index: Int): FollowSet? {
         return getAllFollowSet().value?.get(index)
     }
+
+    fun addFollowSet(followSet: FollowSet) {
+        repository.addFollowSet(followSet)
+    }
+
+    fun removeFollowSet(followSet: FollowSet) {
+        repository.removeStock(followSet)
+    }
+
+
 }

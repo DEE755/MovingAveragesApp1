@@ -1,19 +1,25 @@
 package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import showConfirmationDialog
+import il.kod.movingaverageapplication1.sharedMenuProvider
+
+import il.kod.movingaverageapplication1.showConfirmationDialog
+
 
 
 class FollowedStocksFragment : Fragment() {
@@ -35,21 +41,24 @@ class FollowedStocksFragment : Fragment() {
     }
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         _binding = FragmentSelectedStocksBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
 
         binding.recyclerView.adapter = StockAdapterFragment(
             emptyList(),
             callBack = object : StockAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
 
-                    viewModelAllStocks.selectedStList.value?.get(index)?.let { selectedStock ->
+                    viewModelAllStocks.selectedStockList.value?.get(index)?.let { selectedStock ->
                         viewModelDetailStock.clickedStock.value = selectedStock
                         findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
                     }
@@ -57,7 +66,7 @@ class FollowedStocksFragment : Fragment() {
 
                 override fun onItemLongClicked(index: Int) {
 
-                    val clickedStock = viewModelAllStocks.selectedStList.value?.get(index)
+                    val clickedStock = viewModelAllStocks.selectedStockList.value?.get(index)
 
                     showConfirmationDialog(
                         context = requireContext(),
@@ -85,13 +94,13 @@ class FollowedStocksFragment : Fragment() {
             }
         )
 
-        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
+        viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) { selectedStocks ->
             (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
         }
 
 
-        viewModelAllStocks.selectedStList.observe(viewLifecycleOwner) { selectedStocks ->
-            if (viewModelAllStocks.selectedStList.value?.isEmpty() == false) {
+        viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) { selectedStocks ->
+            if (viewModelAllStocks.selectedStockList.value?.isEmpty() == false) {
                 binding.addStockButtonBig.visibility = View.GONE
                 binding.isEmptytextView.visibility = View.GONE
                 binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -116,6 +125,24 @@ class FollowedStocksFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) { selectedStocks ->
+            val is_empty = selectedStocks.isEmpty()
+
+            val menuHost = requireActivity() as MenuHost
+            menuHost.addMenuProvider(
+                sharedMenuProvider(
+                    context = requireContext(),
+                    isListEmpty = is_empty,
+                    navController = findNavController()
+                ),
+                viewLifecycleOwner
+            )
+        }
     }
 
     override fun onDestroyView() {

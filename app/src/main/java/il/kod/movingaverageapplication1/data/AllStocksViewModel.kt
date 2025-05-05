@@ -1,7 +1,6 @@
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.repository.StocksRepository
 
@@ -12,7 +11,7 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository = StocksRepository(application)
 
     val unselectedStockList : LiveData<List<Stock>> = repository.getUnselectedStocks()
-    val selectedStList : LiveData<List<Stock>> = repository.getSelectedStocks()
+    val selectedStockList : LiveData<List<Stock>> = repository.getSelectedStocks()
 
 
     fun addStock(stock: Stock)=repository.addStock(stock)
@@ -30,7 +29,7 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun onItemClicked(index: Int): Stock? {
-        return selectedStList.value?.get(index)
+        return selectedStockList.value?.get(index)
     }
 
 
