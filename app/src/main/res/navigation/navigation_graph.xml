@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/selectedStocks"
+        android:name="il.kod.movingaverageapplication1.ui.FollowedStocksFragment"
+        android:label="fragment_selected_stocks"
+        tools:layout="@layout/fragment_selected_stocks" >
+        <action
+            android:id="@+id/action_selectedStocks_to_stockSelection3"
+            app:destination="@id/stockSelection3"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/to_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_selectedStocks_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment" />
+        <action
+            android:id="@+id/action_selectedStocks_to_detailsItemFragment2"
+            app:destination="@id/detailsItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stockSelection3"
+        android:name="il.kod.movingaverageapplication1.ui.StocksSelectionFragment"
+        android:label="StockSelection" >
+        <action
+            android:id="@+id/action_stockSelection3_to_selectedStocks"
+            app:destination="@id/selectedStocks"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/from_right"
+            app:popEnterAnim="@anim/to_left"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_stockSelection3_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsItemFragment"
+        android:name="il.kod.movingaverageapplication1.ui.DetailsItemFragment"
+        android:label="details_stock_layout"
+        tools:layout="@layout/details_stock_layout" >
+        <action
+            android:id="@+id/action_detailsItemFragment_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
+        <action
+            android:id="@+id/action_detailsItemFragment_self"
+            app:destination="@id/detailsItemFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="il.kod.movingaverageapplication1.ui.LoginFragment"
+        android:label="login_fragment"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_navigation_graph_to_selectedStocks"
+            app:destination="@id/selectedStocks" />
+        <action
+            android:id="@+id/action_navigation_graph_to_selectedStocks2"
+            app:destination="@id/selectedStocks"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+</navigation>
