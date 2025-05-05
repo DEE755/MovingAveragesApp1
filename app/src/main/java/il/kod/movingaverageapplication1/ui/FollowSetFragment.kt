@@ -1,4 +1,5 @@
 package il.kod.movingaverageapplication1.ui
+
 import AllStocksViewModel
 import android.os.Bundle
 import android.util.Log
@@ -12,14 +13,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import showConfirmationDialog
 import kotlin.getValue
 
-
-class FollowedStocksFragment : Fragment() {
-
-    private var _binding: FragmentSelectedStocksBinding? = null
+class FollowSetFragment : Fragment() {
+    private var _binding: FragmentFollowSetBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
 
@@ -39,7 +39,7 @@ class FollowedStocksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSelectedStocksBinding.inflate(inflater, container, false)
+        _binding = FragmentFollowSetBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
