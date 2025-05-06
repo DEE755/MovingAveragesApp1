@@ -1,7 +1,6 @@
 package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,7 +19,7 @@ import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBindin
 import il.kod.movingaverageapplication1.sharedMenuProvider
 
 import il.kod.movingaverageapplication1.showConfirmationDialog
-
+import kotlin.collections.get
 
 
 class FollowedStocksFragment : Fragment() {
@@ -51,7 +50,7 @@ class FollowedStocksFragment : Fragment() {
 
         val menuHost: MenuHost = requireActivity()
         var currentMenuProvider: MenuProvider? = null
-        viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) {
+        viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) {
 
             val isEmpty = it.isEmpty()
 
@@ -62,7 +61,7 @@ class FollowedStocksFragment : Fragment() {
                 isListEmpty = isEmpty,
                 navController = findNavController()
             )
-            menuHost.addMenuProvider(currentMenuProvider!!, viewLifecycleOwner)
+            menuHost.addMenuProvider(currentMenuProvider, viewLifecycleOwner)
         }
 
             _binding = FragmentSelectedStocksBinding.inflate(inflater, container, false)
@@ -75,7 +74,7 @@ class FollowedStocksFragment : Fragment() {
                 callBack = object : StockAdapterFragment.ItemListener {
                     override fun onItemClicked(index: Int) {
 
-                        viewModelAllStocks.selectedStockList.value?.get(index)
+                        viewModelAllStocks.followedStocks.value?.get(index)
                             ?.let { selectedStock ->
                                 viewModelDetailStock.clickedStock.value = selectedStock
                                 findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
@@ -83,42 +82,33 @@ class FollowedStocksFragment : Fragment() {
                     }
 
                     override fun onItemLongClicked(index: Int) {
-
-                        val clickedStock = viewModelAllStocks.selectedStockList.value?.get(index)
+                        val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
 
                         showConfirmationDialog(
                             context = requireContext(),
-                            title = "Deletion of Stock",
-                            message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
+                            title = getString(R.string.deletion_stock_title),
+                            message = getString(R.string.delete_stock_message, clickedStock?.name),
                             onYes = {
-
                                 viewModelAllStocks.unfollowStock(clickedStock!!)
-                                (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
-                                    index
-                                )
+                                (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(index)
 
                                 Toast.makeText(
                                     requireContext(),
-                                    "Successfully removed: ${clickedStock.name}",
+                                    getString(R.string.successfully_removed, clickedStock.name),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             },
                             onNo = {}
-
                         )
-
-
                     }
                 }
             )
 
-            viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) { selectedStocks ->
+
+
+            viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) { selectedStocks ->
                 (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
-            }
-
-
-            viewModelAllStocks.selectedStockList.observe(viewLifecycleOwner) { selectedStocks ->
-                if (viewModelAllStocks.selectedStockList.value?.isEmpty() == false) {
+                if (viewModelAllStocks.followedStocks.value?.isEmpty() == false) {
                     binding.addStockButtonBig.visibility = View.GONE
                     binding.isEmptytextView.visibility = View.GONE
                     binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -149,8 +139,7 @@ class FollowedStocksFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Followed Stocks"
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.followed_stocks_title)
     }
 
 

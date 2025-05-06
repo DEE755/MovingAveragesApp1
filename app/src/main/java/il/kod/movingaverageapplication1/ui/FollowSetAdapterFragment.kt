@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSet
-import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.databinding.ItemCheckLayoutBinding
 import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 
 class FollowSetAdapterFragment(
@@ -49,13 +47,13 @@ class FollowSetAdapterFragment(
 
         fun bind(followSet: FollowSet) {
             binding.itemTitle.text = followSet.name
+            binding.itemDescription.text = binding.root.context.getString(R.string.follow_set_description, followSet.size())
             Glide.with(binding.root)
                 .load(followSet.imageUri)
-                .error(R.mipmap.ic_launcher)
+                .error(R.mipmap.button_follow_set)
                 .into(binding.itemImage)
         }
     }
-
 
 
     override fun onBindViewHolder(
@@ -64,7 +62,6 @@ class FollowSetAdapterFragment(
     ) {
         holder.bind(followSets[position])
     }
-
 
 
     override fun getItemCount(): Int = followSets.size

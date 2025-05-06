@@ -44,8 +44,7 @@ class StockAdapterFragment(private var stocks: List<Stock>, private val callBack
         fun bind(stock: Stock) {
 
             binding.itemTitle.text = stock.name
-            binding.itemDescription.text =
-                "Marketcap: ${stock.symbol} - Price: ${stock.price} -${stock.peRatio}"
+            binding.itemDescription.text = binding.root.context.getString(R.string.stock_details, stock.symbol, stock.price, stock.peRatio)
             Glide.with(binding.root)
                 .load(stock.imageUri)
                 .error(R.mipmap.ic_launcher)

@@ -43,6 +43,8 @@ class StocksRepository(application: Application)
         stockDao.updateStock(stock)
     }
 
-
+    fun getStocksByIds(vararg ids: Int): List<Stock> {
+        return stockDao.getStocksByIds(ids.toList())
+    }
 
 }

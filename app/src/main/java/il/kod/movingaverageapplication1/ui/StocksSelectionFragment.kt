@@ -2,15 +2,13 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
@@ -27,12 +25,6 @@ class StocksSelectionFragment : Fragment() {
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
-
-
-
-    var bundle :Bundle = Bundle()
-
-
     override fun onCreateView(
 
         inflater: LayoutInflater,
@@ -46,17 +38,17 @@ class StocksSelectionFragment : Fragment() {
 
 
 
-//if a new stock is added to the allstocklist, it will be added to the recycler view
+//if a new stock is added to the unselectedlist, it will be added to the recycler view
 
-        viewModelAllStocks.unselectedStockList.observe(viewLifecycleOwner)
+        viewModelAllStocks.unselectedStock.observe(viewLifecycleOwner)
         {
 
             binding.recyclerView.adapter = StockAdapterFragment(
-                viewModelAllStocks.unselectedStockList?.value ?: emptyList(),
+                viewModelAllStocks.unselectedStock?.value ?: emptyList(),
                 callBack = object : StockAdapterFragment.ItemListener {
 
                     override fun onItemClicked(index: Int) {
-                        val clickedStock = viewModelAllStocks.unselectedStockList?.value?.get(index)
+                        val clickedStock = viewModelAllStocks.unselectedStock?.value?.get(index)
                         clickedStock?.let {
                             viewModelDetailStock.setStock(clickedStock)
                             findNavController().navigate(
@@ -70,8 +62,6 @@ class StocksSelectionFragment : Fragment() {
                     }
 
 
-
-
                 })
 
         }
@@ -79,41 +69,19 @@ class StocksSelectionFragment : Fragment() {
 
 
 
-        /*ItemTouchHelper(object: ItemTouchHelper.Callback() {
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            )=makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun onSwiped(
-                viewHolder: RecyclerView.ViewHolder,
-                direction: Int
-            ) {
-                Toast.makeText(requireContext(), "You cannot remove an object from that list", Toast.LENGTH_SHORT).show()
-            }
-        }).attachToRecyclerView(binding.recyclerView)*/
-
-
-
 
 binding.returntoselected.setOnClickListener {
-    //val bundle = bundleOf("element1" to binding.listView.tag.toString(), "description" to binding.textView.toString()) //pass another data to the next fragment (here for exemple position in the list
-    findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks, bundle)
+    findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
 
 
 }
         return binding.root
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.available_stocks)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

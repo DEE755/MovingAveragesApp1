@@ -10,10 +10,11 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val repository = StocksRepository(application)
 
-    val unselectedStockList : LiveData<List<Stock>> = repository.getUnselectedStocks()
-    val selectedStockList : LiveData<List<Stock>> = repository.getSelectedStocks()
+    val unselectedStock : LiveData<List<Stock>> = repository.getUnselectedStocks()
+    val followedStocks : LiveData<List<Stock>> = repository.getSelectedStocks()
 
 
+        //for the future API, for now the initial stock data is hardcoded into the database
     fun addStock(stock: Stock)=repository.addStock(stock)
     fun removeStock(stock: Stock) =repository.removeStock(stock)
 
@@ -29,26 +30,22 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun onItemClicked(index: Int): Stock? {
-        return selectedStockList.value?.get(index)
+        return followedStocks.value?.get(index)
+    }
+
+    fun getStocksAt(vararg index: Int): List<Stock> {
+        val stocks = mutableListOf<Stock>()
+        index.forEach{
+            followedStocks.value?.get(it)?.let {
+                stocks.add(it)
+            }
+        }
+        return stocks
+    }
+
+    fun getStocksByIds(vararg ids: Int): List<Stock> {
+        return repository.getStocksByIds(*ids)
     }
 
 
-
-    /*
-        fun addStock(stock: Stock?) {
-            stock?.let {
-                stock.isSelected=false
-                stockList.value?.add(it)
-                stockList.value = stockList.value // Trigger LiveData update
-            }
-        }
-
-        fun removeStock(stock: Stock?) {
-            stock?.let {
-                stockList.value?.remove(it)
-                stockList.value =stockList.value // Trigger LiveData update
-            }
-        }
-
-                }*/
 }

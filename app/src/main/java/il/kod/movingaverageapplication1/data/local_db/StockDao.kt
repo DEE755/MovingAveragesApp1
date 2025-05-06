@@ -34,6 +34,8 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE isSelected = 0")
     fun getUnselectedStocks(): LiveData<List<Stock>>
 
+    @Query("SELECT * FROM stocks WHERE id IN (:ids)")
+    fun getStocksByIds(ids: List<Int>): List<Stock>
 
 }
 

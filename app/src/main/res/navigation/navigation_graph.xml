@@ -35,9 +35,10 @@
             android:id="@+id/action_stockSelection3_to_selectedStocks"
             app:destination="@id/followedStocks"
             app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/from_right"
-            app:popEnterAnim="@anim/to_left"
-            app:popExitAnim="@anim/to_right" />
+            app:exitAnim="@anim/from_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/from_left"
+            app:popUpTo="@id/followedStocks" />
         <action
             android:id="@+id/action_stockSelection3_to_detailsItemFragment"
             app:destination="@id/detailsItemFragment"
@@ -85,6 +86,9 @@
         <action
             android:id="@+id/action_followSetFragment_to_followSetCreationFragment"
             app:destination="@id/followSetCreationFragment" />
+        <action
+            android:id="@+id/action_followSetFragment_to_insideFollowSetFragment"
+            app:destination="@id/insideFollowSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/followSetCreationFragment"
@@ -94,4 +98,17 @@
             android:id="@+id/action_followSetCreationFragment_to_detailsItemFragment"
             app:destination="@id/detailsItemFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/insideFollowSetFragment"
+        android:name="il.kod.movingaverageapplication1.ui.InsideFollowSetFragment"
+        android:label="InsideFollowSetFragment" >
+        <action
+            android:id="@+id/action_insideFollowSetFragment_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment" />
+        <action
+            android:id="@+id/action_insideFollowSetFragment_to_followSetFragment"
+            app:destination="@id/followSetFragment" />
+    </fragment>
+
 </navigation>

@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
     @Entity(tableName = "follow_set")
     data class FollowSet(
         @ColumnInfo(name="name")
-        val name: String,
+        var name: String,
         @ColumnInfo(name="imageUri")
         internal var imageUri: String? =null,
         @ColumnInfo(name="user_comments")
@@ -28,8 +28,10 @@ import kotlinx.parcelize.Parcelize
         fun updateSet(newSet: List<Int>): FollowSet {
             return this.copy(set_ids = newSet)
 
-
         }
+
+        fun extractStocksToIntArray(): IntArray =this.set_ids.toIntArray()
+        fun size(): Int = this.set_ids.size
     }
 
 

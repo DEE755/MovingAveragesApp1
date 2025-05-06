@@ -8,7 +8,7 @@
 
       <androidx.appcompat.widget.Toolbar
           android:id="@+id/toolbar"
-          android:title="Follow Set"
+          android:title="@string/follow_set"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintRight_toRightOf="parent"

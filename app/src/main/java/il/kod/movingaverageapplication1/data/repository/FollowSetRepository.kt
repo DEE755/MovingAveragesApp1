@@ -3,9 +3,7 @@ package il.kod.movingaverageapplication1.data.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import il.kod.movingaverageapplication1.data.FollowSet
-import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.local_db.FollowSetDao
-import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 
 class FollowSetRepository(application: Application) {

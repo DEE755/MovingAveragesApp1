@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">MovingAverageApplication1</string>
+    <string name="username">שם משתמש</string>
+    <string name="password">סיסמה</string>
+    <string name="login">התחבר</string>
+    <string name="please_login_to_continue">אנא התחבר כדי להמשיך</string>
+    <string name="start_adding_stocks">התחל להוסיף מניות</string>
+    <string name="you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks">אתה עדיין לא עוקב אחרי מניות\n לחץ על הכפתור למטה כדי להוסיף מניות</string>
+    <string name="you_don_t_have_following_stock_yet_n_click_the_button_below_to_add_following_sets">אין לך עדיין קבוצות מעקב\n לחץ על הכפתור למטה כדי להוסיף מניות לקבוצות מעקב</string>
+    <string name="success_remove">הוסר בהצלחה: %1$s</string>
+    <string name="select_a_stock_you_want_to_follow">בחר מניה שברצונך לעקוב אחריה</string>
+    <string name="okay">אישור</string>
+    <string name="follow_this_stock">עקוב אחרי מניה זו</string>
+    <string name="follow_set">קבוצת מעקב</string>
+    <string name="deletion_follow_set_title">מחיקת קבוצת מעקב</string>
+    <string name="delete_follow_set_message">האם אתה בטוח שברצונך למחוק את קבוצת המעקב: %1$s?</string>
+    <string name="follow_set_description">%1$d מניות - ללא התראה</string>
+    <string name="following_set_title">קבוצת מעקב: %1$s</string>
+    <string name="set_threshold_alert">הגדר סף התראה לקבוצת המעקב %1$s</string>
+    <string name="alert_threshold_message">אני רוצה לקבל התראה כאשר מחיר המניה מגיע לערך זה</string>
+    <string name="alert_threshold_reached">תקבל התראה כאשר הסף יגיע ל-%1$s</string>
+    <string name="alert_set_at">התראה הוגדרה ב-%1$s</string>
+    <string name="welcome_message">ברוך הבא: %1$s !</string>
+    <string name="stock_details">שווי שוק: %1$s - מחיר: %2$s - %3$s</string>
+    <string name="available_stocks">מניות זמינות</string>
+    <string name="menu_title">תפריט</string>
+    <string name="select_stocks_first">אנא בחר מניות תחילה לפני הוספת קבוצות מעקב והתראות</string>
+    <string name="add_following_sets">כאן תוכל לראות ולהוסיף קבוצות מעקב מהמניות שאתה עוקב אחריהן</string>
+    <string name="view_followed_stocks">כאן תוכל לראות את המניות שאתה עוקב אחריהן</string>
+    <string name="followed_stocks_title">מניות במעקב</string>
+    <string name="deletion_stock_title">מחיקת מניה</string>
+    <string name="delete_stock_message">האם אתה בטוח שברצונך למחוק את המניה: %1$s?</string>
+    <string name="successfully_removed">הוסר בהצלחה: %1$s</string>
+    <string name="follow_set_name">שם קבוצת מעקב</string>
+    <string name="enter_follow_set_name">אנא הזן שם לקבוצת המעקב החדשה שלך</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="ok">אישור</string>
+    <string name="cancel">ביטול</string>
+    <string name="valid_name_prompt">אנא הזן שם תקף</string>
+    <string name="valid_number_prompt">אנא הזן מספר תקף</string>
+
+</resources>

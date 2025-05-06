@@ -2,11 +2,13 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -58,13 +60,17 @@ class ExistingFollowSetFragment : Fragment() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.recyclerView.adapter = StockAdapterFragment(
+        binding.recyclerView.adapter = FollowSetAdapterFragment(
             emptyList(),
-            callBack = object : StockAdapterFragment.ItemListener {
+            callBack = object : FollowSetAdapterFragment.ItemListener {
                 override fun onItemClicked(index: Int) {
 
                         viewModelFollowSet.onItemClicked(index)?.let { followSet ->
-                            viewModelFollowSet.clickedFollowSet = followSet
+                            viewModelFollowSet.clickedFollowSet.value = followSet
+
+                            findNavController().navigate(R.id.action_followSetFragment_to_insideFollowSetFragment,
+                                bundleOf("clickedFollowSet" to followSet, "position" to index)
+                            )
                         }
 
                     }
@@ -72,22 +78,22 @@ class ExistingFollowSetFragment : Fragment() {
 
                 override fun onItemLongClicked(index: Int) {
 
-                    val clickedStock = viewModelAllStocks.selectedStockList.value?.get(index)
+                  val clickedFollowSet = viewModelFollowSet.getFollowSetAt(index)
 
                     showConfirmationDialog(
                         context = requireContext(),
-                        title = "Deletion of Stock",
-                        message = "Are you sure you want to delete this stock : ${clickedStock?.name} ?",
+                        title = getString(R.string.deletion_follow_set_title),
+                        message = getString(R.string.delete_follow_set_message, clickedFollowSet?.name),
                         onYes = {
 
-                            viewModelAllStocks.unfollowStock(clickedStock!!)
-                            (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
+                            viewModelFollowSet.removeFollowSet(clickedFollowSet!!)
+                            (binding.recyclerView.adapter as? FollowSetAdapterFragment)?.notifyItemRemoved(
                                 index
                             )
 
                             Toast.makeText(
                                 requireContext(),
-                                "Successfully removed: ${clickedStock.name}",
+                                getString(R.string.success_remove,clickedFollowSet.name),
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
@@ -100,13 +106,10 @@ class ExistingFollowSetFragment : Fragment() {
             }
         )
 
-        viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) { allFollowSets ->
-            (binding.recyclerView.adapter as? FollowSetAdapterFragment)?.updateData(allFollowSets)
-        }
+        viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) {
+            (binding.recyclerView.adapter as? FollowSetAdapterFragment)?.updateData(it)
 
-
-        viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) { selectedStocks ->
-            if (viewModelFollowSet.getAllFollowSet().value?.size == 0) {
+            if (!it.isEmpty()) {
                 binding.addStockButtonBig.visibility = View.GONE
                 binding.isEmptytextView.visibility = View.GONE
                 binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -128,8 +131,6 @@ class ExistingFollowSetFragment : Fragment() {
 
             binding.addStockButtonBig.callOnClick()
         }
-
-
 
         return binding.root
     }

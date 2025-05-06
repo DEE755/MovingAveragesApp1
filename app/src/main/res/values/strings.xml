@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">MovingAverageApplication1</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -9,4 +7,37 @@
     <string name="start_adding_stocks">Start Adding Stocks</string>
     <string name="you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks">You don\'t follow any stocks yet\n Click the button below to add stocks</string>
     <string name="you_don_t_have_following_stock_yet_n_click_the_button_below_to_add_following_sets">You don\'t have any following set yet\n Click the button below to add stocks to following sets</string>
+    <string name="success_remove">Successfully removed: %1$s</string>
+    <string name="select_a_stock_you_want_to_follow">Select a stock you want to follow</string>
+    <string name="okay">Okay</string>
+    <string name="follow_this_stock">Follow this stock</string>
+    <string name="follow_set">Follow Set</string>
+    <string name="deletion_follow_set_title">Deletion of FollowSet</string>
+    <string name="delete_follow_set_message">Are you sure you want to delete this followSet: %1$s?</string>
+    <string name="follow_set_description">%1$d stocks - no alert</string>
+    <string name="following_set_title">Following Set: %1$s</string>
+    <string name="set_threshold_alert">Set a threshold for the followSet alert %1$s</string>
+    <string name="alert_threshold_message">I want to be alerted when the stock price reaches this value</string>
+    <string name="alert_threshold_reached">You will be alerted when threshold reaches %1$s</string>
+    <string name="alert_set_at">Alert set at %1$s</string>
+    <string name="welcome_message">Welcome: %1$s !</string>
+    <string name="stock_details">Marketcap: %1$s - Price: %2$s - %3$s</string>
+    <string name="available_stocks">Available Stocks</string>
+    <string name="menu_title">Menu</string>
+    <string name="select_stocks_first">Please select stocks first before adding follow sets and alerts</string>
+    <string name="add_following_sets">Here you can see and add following sets from stocks you are following</string>
+    <string name="view_followed_stocks">Here you can see the stocks you are following</string>
+    <string name="followed_stocks_title">Followed Stocks</string>
+    <string name="deletion_stock_title">Deletion of Stock</string>
+    <string name="delete_stock_message">Are you sure you want to delete this stock: %1$s?</string>
+    <string name="successfully_removed">Successfully removed: %1$s</string>
+    <string name="follow_set_name">Follow Set Name</string>
+    <string name="enter_follow_set_name">Please enter a name for your new Follow Set</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="valid_name_prompt">Please enter a valid name</string>
+    <string name="valid_number_prompt">Please enter a valid number</string>
+
 </resources>

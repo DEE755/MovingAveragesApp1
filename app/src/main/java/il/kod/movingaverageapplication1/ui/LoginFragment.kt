@@ -37,8 +37,7 @@ class LoginFragment : Fragment() {
             val username=binding.nameInput.text.toString()
             val password=binding.passwordInput.text.toString()
 
-            Toast.makeText(requireContext(), "Welcome: $username !", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(requireContext(), getString(R.string.welcome_message, username), Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
         }
     }

@@ -68,7 +68,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:background="@mipmap/button_add"
-                android:text="Follow this stock" />
+                android:text="@string/follow_this_stock" />
 
             <Button
                 android:id="@+id/okay_button"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
-                android:text="Okay"
+                android:text="@string/okay"
                 android:backgroundTint="#F810AEC3"/>
 
 
