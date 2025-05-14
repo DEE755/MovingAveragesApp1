@@ -15,13 +15,13 @@ import il.kod.movingaverageapplication1.data.FollowSet
 @Dao
 interface FollowSetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addFollowSet(followSet: FollowSet)
+    suspend fun addFollowSet(followSet: FollowSet)
 
     @Delete
-    fun deleteFollowSet(vararg followSet: FollowSet)
+    suspend fun deleteFollowSet(vararg followSet: FollowSet)
 
     @Update
-    fun updateFollowSet(followSet: FollowSet)
+    suspend fun updateFollowSet(followSet: FollowSet)
 
     @Query("SELECT * FROM follow_set ORDER BY name ASC")
     fun getAllFollowSet() : LiveData<List<FollowSet>>

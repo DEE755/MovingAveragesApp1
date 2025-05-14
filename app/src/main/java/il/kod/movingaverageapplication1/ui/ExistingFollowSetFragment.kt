@@ -78,9 +78,9 @@ class ExistingFollowSetFragment : Fragment() {
 
                 override fun onItemLongClicked(index: Int) {
 
-                  val clickedFollowSet = viewModelFollowSet.getFollowSetAt(index)
+                    val clickedFollowSet = viewModelFollowSet.getFollowSetAt(index)
 
-                    showConfirmationDialog(
+                        showConfirmationDialog(
                         context = requireContext(),
                         title = getString(R.string.deletion_follow_set_title),
                         message = getString(R.string.delete_follow_set_message, clickedFollowSet?.name),

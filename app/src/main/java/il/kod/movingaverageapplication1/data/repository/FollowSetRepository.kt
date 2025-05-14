@@ -6,7 +6,9 @@ import il.kod.movingaverageapplication1.data.FollowSet
 import il.kod.movingaverageapplication1.data.local_db.FollowSetDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 
-class FollowSetRepository(application: Application) {
+
+class FollowSetRepository(application: Application)
+{
 
     private var followSetDao : FollowSetDao
 
@@ -19,19 +21,19 @@ class FollowSetRepository(application: Application) {
     }
 
 
-   fun getAllFollowSet(): LiveData<List<FollowSet>> {
+    fun getAllFollowSet(): LiveData<List<FollowSet>> {
         return followSetDao.getAllFollowSet()
     }
 
-    fun addFollowSet(followSet: FollowSet) {
-        followSetDao.addFollowSet(followSet)
+    suspend fun addFollowSet(followSet: FollowSet) {
+       followSetDao.addFollowSet(followSet)
     }
 
-    fun removeStock(followSet: FollowSet) {
+    suspend fun deleteFollowSet(followSet: FollowSet) {
         followSetDao.deleteFollowSet(followSet)
     }
 
-    fun updateStock(followSet: FollowSet) {
+    suspend fun updateStock(followSet: FollowSet) {
         followSetDao.updateFollowSet(followSet)
     }
 

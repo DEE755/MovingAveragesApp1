@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import il.kod.movingaverageapplication1.data.repository.FollowSetRepository
+import kotlinx.coroutines.launch
 
 class FollowSetViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,12 +24,16 @@ class FollowSetViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun addFollowSet(followSet: FollowSet) {
-        repository.addFollowSet(followSet)
+        viewModelScope.launch {
+            repository.addFollowSet(followSet)
+        }
 
     }
 
     fun removeFollowSet(followSet: FollowSet) {
-        repository.removeStock(followSet)
+        viewModelScope.launch {
+            repository.deleteFollowSet(followSet)
+        }
     }
 
     fun getFollowSetAt(index: Int): FollowSet? {

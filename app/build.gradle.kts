@@ -7,6 +7,10 @@ plugins {
 
     id("kotlin-kapt")
 
+    //firebase
+
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -83,12 +87,32 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
 
 
-    val room_version = "2.6.1"
+    val room_version = "2.7.1"
 
+    //ROOM
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    //ROOM suspend functions
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
 
+    //lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
+
+    //livedata lifecycle
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.0")
+
+    //viewmodel lifecycle
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
 }
 

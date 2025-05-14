@@ -1,8 +1,10 @@
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.repository.StocksRepository
+import kotlinx.coroutines.launch
 
 class AllStocksViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -15,18 +17,19 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
 
 
         //for the future API, for now the initial stock data is hardcoded into the database
-    fun addStock(stock: Stock)=repository.addStock(stock)
-    fun removeStock(stock: Stock) =repository.removeStock(stock)
+    fun addStock(stock: Stock){viewModelScope.launch {  repository.addStock(stock)}}
+    fun removeStock(stock: Stock) {viewModelScope.launch{repository.removeStock(stock)}}
 
 
     fun followStock(stock: Stock) {
-        stock.let{stock.isSelected=true
-            repository.updateStock(stock)}
+        viewModelScope.launch{stock.let{stock.isSelected=true
+            repository.updateStock(stock)}}
     }
 
     fun unfollowStock(stock: Stock) {
+        viewModelScope.launch{
         stock.let{stock.isSelected=false
-            repository.updateStock(stock)}
+            repository.updateStock(stock)}}
     }
 
     fun onItemClicked(index: Int): Stock? {
@@ -43,9 +46,14 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
         return stocks
     }
 
-    fun getStocksByIds(vararg ids: Int): List<Stock> {
-        return repository.getStocksByIds(*ids)
+    fun getStocksByIds(vararg ids: Int): List<Stock>{
+    var stocks= emptyList<Stock>()
+    viewModelScope.launch {
+         stocks=repository.getStocksByIds(*ids)
     }
+        return stocks
+    }
+
 
 
 }
