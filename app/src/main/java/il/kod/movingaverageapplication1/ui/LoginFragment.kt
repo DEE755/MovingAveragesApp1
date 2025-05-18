@@ -48,6 +48,12 @@ class LoginFragment : Fragment() {
             val username = binding.nameInput.text.toString()
             val password = binding.passwordInput.text.toString()
             Log.d("LoginFragment", "Username_entered: $username, Password_entered: $password")
+            binding.loginButton.setOnClickListener {
+
+            Log.d("LoginFragment", "Login button clicked")
+            val username = binding.nameInput.text.toString()
+            val password = binding.passwordInput.text.toString()
+            Log.d("LoginFragment", "Username_entered: $username, Password_entered: $password")
 
             if (username.isBlank() || password.isBlank()) {
                 Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_SHORT).show()
@@ -82,6 +88,11 @@ class LoginFragment : Fragment() {
                 //val response: Response<UserProfileTransitFromGson> =
 
                     //TODO()
+
+        binding.signUpText.setOnClickListener {
+
+            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+        }
 
             }
 

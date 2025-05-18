@@ -39,5 +39,6 @@
     <string name="cancel">ביטול</string>
     <string name="valid_name_prompt">אנא הזן שם תקף</string>
     <string name="valid_number_prompt">אנא הזן מספר תקף</string>
+    <string name="don_t_have_an_account_yet">Don\'t have an account yet ?</string>
 
 </resources>

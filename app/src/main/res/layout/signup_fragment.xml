@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/please_login_to_continue"
+        android:text="Please Sign Up to Continue"
         android:textSize="30sp"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
@@ -38,34 +38,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:hint="@string/password"
             android:id="@+id/passwordInput"
+            android:layout_marginTop="20dp"
             android:textSize="18sp"/>
-    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="@string/enter_password_again"
+        android:id="@+id/passwordConfirmationInput"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"/>
+
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="#F810AEC3"
-        android:text="@string/login"
+        android:text="@string/sign_up"
         android:textColor="#F8074750"
         android:textSize="16sp"
+
         />
 
     <ProgressBar
         android:layout_width="300dp"
         android:layout_gravity="center"
         android:layout_height="150dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/progressBar"
         android:visibility="gone"
-       />
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,7 +92,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:text="@string/don_t_have_an_account_yet"
+        android:text="@string/already_have_an_account"
         android:layout_gravity="center"
         android:textSize="20sp"
         android:textColor="@color/white"
@@ -88,6 +100,5 @@
         android:layout_marginTop="30dp"
         android:clickable="true"
         android:focusable="true"/>
-
 
 </LinearLayout>
