@@ -2,6 +2,7 @@ package il.kod.movingaverageapplication1.data.repository
 
 import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
+import kod.il.movingaverageapplication1.utils.performPostingToServer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,6 +20,12 @@ class CustomServerDatabaseRepository @Inject constructor(
         password: String
     ) = performFetchingFromServer {
         remoteDataSource.login(username, password) }
+
+    fun signUp(
+        username: String,
+        password: String
+    ) = performPostingToServer {
+        remoteDataSource.signUp(username, password) }
 }
 
 

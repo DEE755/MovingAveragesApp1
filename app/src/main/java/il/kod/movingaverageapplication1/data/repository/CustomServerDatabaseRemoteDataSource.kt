@@ -2,6 +2,10 @@ package il.kod.movingaverageapplication1.data.repository
 
 import android.util.Log
 import il.kod.movingaverageapplication1.data.BaseDataSource
+import il.kod.movingaverageapplication1.data.models.UserProfileTransitFromGson
+import il.kod.movingaverageapplication1.utils.Resource
+import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -15,7 +19,9 @@ class CustomServerDatabaseRemoteDataSource @Inject constructor(
         getResult { Log.d("CustomServerDatabaseRemoteDataSource", "login called with username: $username and password: $password")
             customCloudDatabaseService.login(username, password) }
 
-    suspend fun signUp(username: String, password: String) =
+
+
+    suspend fun signUp(username: String, password: String) : Resource<String> =
         getResult { customCloudDatabaseService.sign_up(username, password) }
 
 }

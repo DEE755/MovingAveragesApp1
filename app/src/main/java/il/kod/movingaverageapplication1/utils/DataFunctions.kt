@@ -46,3 +46,20 @@ fun <T> performFetchingFromServer(remoteDbFetch: suspend () ->Resource<T>) : Liv
             emit(Resource.success(fetchResource.status.data!!))
         }
     }
+
+
+fun <T> performPostingToServer(remoteDbPost: suspend () ->Resource<T>) : LiveData<Resource<T>> =
+
+    liveData(Dispatchers.IO) {
+
+        emit(Resource.loading())//tell the lave data observer that we are loading
+
+        val receivedResource = remoteDbPost()
+
+        if (receivedResource.status is Error) {
+            emit(Resource.error(receivedResource.status.message))
+        } else {
+            emit(Resource.success(receivedResource.status.data!!))
+        }
+    }
+

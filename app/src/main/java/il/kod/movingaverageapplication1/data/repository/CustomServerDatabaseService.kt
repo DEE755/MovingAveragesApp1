@@ -24,6 +24,6 @@ interface CustomServerDatabaseService {
     suspend fun sign_up(
         @Field("username") username: String,
         @Field("password") password: String
-    ): Response<Void>
+    ): Response<String>
 
 }

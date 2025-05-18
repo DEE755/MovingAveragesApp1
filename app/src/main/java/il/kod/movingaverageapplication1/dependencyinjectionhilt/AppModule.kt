@@ -23,7 +23,6 @@ class AppModule {
 
     @Provides
     @Singleton
-
     fun provideRetrofit(gson: Gson): Retrofit {
     Log.d("AppModule", "provideRetrofit called")
         val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
@@ -45,7 +44,11 @@ class AppModule {
 
 
     @Provides
-    fun provideGson(): Gson =  GsonBuilder().create()
+    fun provideGson(): Gson {
+        Log.d("AppModule", "provideGson called")
+        return GsonBuilder().create()
+    }
+
 
     @Provides
     fun provideCustomServerDataBaseService(retrofit: Retrofit) : CustomServerDatabaseService =

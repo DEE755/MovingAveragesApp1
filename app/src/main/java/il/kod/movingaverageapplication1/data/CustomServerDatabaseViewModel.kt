@@ -21,12 +21,21 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
     lateinit var credentials : LiveData<Resource<List<UserProfileTransitFromGson>>>
 
-    fun updateCredentials(username: String, password: String) {
+    lateinit var http_response : LiveData<Resource<String>>
+
+    lateinit var loggedUser : UserProfileTransitFromGson
+
+    fun updateCredentialsfromServer(username: String, password: String) {
         client_username = username
         client_password = password
         credentials = customServerDatabaseRepository.login( client_username, client_password)
+
     }
 
-
+    fun signUpNewUserToServer(username: String, password: String) {
+        client_username = username
+        client_password = password
+        http_response = customServerDatabaseRepository.signUp(username, client_password)
+    }
 
 }
