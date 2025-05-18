@@ -2,11 +2,9 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -14,13 +12,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSet
-import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentInsideFollowSetBinding
-import il.kod.movingaverageapplication1.showThresholdInputDialog
+import il.kod.movingaverageapplication1.utils.showThresholdInputDialog
 import kotlin.getValue
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputEditText
 
 class InsideFollowSetFragment: Fragment()
 {

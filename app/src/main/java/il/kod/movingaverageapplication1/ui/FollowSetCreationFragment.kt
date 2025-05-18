@@ -2,7 +2,6 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,7 @@ import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSet
 import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetCreationBinding
-import il.kod.movingaverageapplication1.databinding.ItemCheckLayoutBinding
-import il.kod.movingaverageapplication1.showNameInputDialog
+import il.kod.movingaverageapplication1.utils.showNameInputDialog
 import kotlin.getValue
 
 class FollowSetCreationFragment : Fragment()
@@ -61,7 +59,7 @@ class FollowSetCreationFragment : Fragment()
                             val clickedStock =
                                 it[index]
                             clickedStock.let {
-                                checkBox?.isChecked = checkBox.isChecked
+                                checkBox?.isChecked = checkBox!!.isChecked
 
                             }
                         }

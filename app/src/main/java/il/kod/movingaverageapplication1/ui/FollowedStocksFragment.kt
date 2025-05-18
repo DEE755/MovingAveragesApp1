@@ -16,10 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import il.kod.movingaverageapplication1.sharedMenuProvider
+import il.kod.movingaverageapplication1.utils.sharedMenuProvider
 
-import il.kod.movingaverageapplication1.showConfirmationDialog
-import kotlin.collections.get
+import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 
 
 class FollowedStocksFragment : Fragment() {
@@ -49,19 +48,24 @@ class FollowedStocksFragment : Fragment() {
     ): View? {
 
         val menuHost: MenuHost = requireActivity()
-        var currentMenuProvider: MenuProvider? = null
-        viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) {
+        var currentMenu: MenuProvider? = null
 
+        viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) {
             val isEmpty = it.isEmpty()
 
-            currentMenuProvider?.let { menuHost.removeMenuProvider(it) }
+            val oldMenu = currentMenu
+            if (oldMenu != null) {
+                menuHost.removeMenuProvider(oldMenu)
+            }
 
-            currentMenuProvider = sharedMenuProvider(
+            val newMenu = sharedMenuProvider(
                 context = requireContext(),
                 isListEmpty = isEmpty,
                 navController = findNavController()
             )
-            menuHost.addMenuProvider(currentMenuProvider, viewLifecycleOwner)
+            currentMenu = newMenu
+            menuHost.addMenuProvider(newMenu, viewLifecycleOwner)
+
         }
 
             _binding = FragmentSelectedStocksBinding.inflate(inflater, container, false)

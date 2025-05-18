@@ -2,7 +2,6 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,8 @@ import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
-import il.kod.movingaverageapplication1.sharedMenuProvider
-import il.kod.movingaverageapplication1.showConfirmationDialog
+import il.kod.movingaverageapplication1.utils.sharedMenuProvider
+import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 import kotlin.getValue
 
 class ExistingFollowSetFragment : Fragment() {

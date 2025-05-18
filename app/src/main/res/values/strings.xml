@@ -39,5 +39,6 @@
     <string name="cancel">Cancel</string>
     <string name="valid_name_prompt">Please enter a valid name</string>
     <string name="valid_number_prompt">Please enter a valid number</string>
+    <string name="loading">Please wait..</string>
 
 </resources>

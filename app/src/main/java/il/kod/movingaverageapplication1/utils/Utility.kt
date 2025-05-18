@@ -1,12 +1,16 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.utils
 
 import android.content.Context
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.MenuProvider
-import kotlin.toString
+import androidx.navigation.NavController
+import il.kod.movingaverageapplication1.R
 
 
 fun showConfirmationDialog(
@@ -87,15 +91,15 @@ fun showThresholdInputDialog(
 
 
 
-    fun sharedMenuProvider( isListEmpty: Boolean=false, navController: androidx.navigation.NavController,
+    fun sharedMenuProvider( isListEmpty: Boolean=false, navController: NavController,
         context: Context,
     ): MenuProvider {
         return object : MenuProvider {
-            override fun onCreateMenu(menu: android.view.Menu, menuInflater: android.view.MenuInflater) {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_main_activity, menu)
             }
 
-            override fun onMenuItemSelected(menuItem: android.view.MenuItem): Boolean {
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
 
                 return when (menuItem.itemId) {
                    R.id.action_follow_list -> {

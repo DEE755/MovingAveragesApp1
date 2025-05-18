@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "MovingAverageApplication1"
 include(":app")
- 

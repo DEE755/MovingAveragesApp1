@@ -2,20 +2,13 @@ package il.kod.movingaverageapplication1.data.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-class StocksRepository(application: Application)
+class LocalStocksRepository(application: Application)
 {
 
-
-    //TODO(FETCH DATA FROM SERVER THAT IS CONNECTED TO API instead OF HARDCODED)
 
     private var stockDao : StockDao
 

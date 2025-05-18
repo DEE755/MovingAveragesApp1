@@ -1,21 +1,31 @@
 package il.kod.movingaverageapplication1.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.LoginFragmentBinding
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
 
-
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     var _binding : LoginFragmentBinding?= null
     val binding get()=_binding!!
+
+    private val CSDviewModel: CustomServerDatabaseViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -34,11 +44,46 @@ class LoginFragment : Fragment() {
 
         binding.loginButton.setOnClickListener {
 
-            val username=binding.nameInput.text.toString()
-            val password=binding.passwordInput.text.toString()
+            Log.d("LoginFragment", "Login button clicked")
+            val username = binding.nameInput.text.toString()
+            val password = binding.passwordInput.text.toString()
+            Log.d("LoginFragment", "Username_entered: $username, Password_entered: $password")
 
-            Toast.makeText(requireContext(), getString(R.string.welcome_message, username), Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
+            if (username.isBlank() || password.isBlank()) {
+                Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_SHORT).show()
+                Log.d("LoginFragment", "Username and password cannot be empty")
+            } else {
+                CSDviewModel.updateCredentials(username, password)
+                //Log.d("LoginFragment", "values: ${CSDviewModel.client_username} ${CSDviewModel.client_password}")
+            }
+
+
+
+
+                CSDviewModel.credentials.observe(viewLifecycleOwner) {
+                    Log.d("LoginFragment", "observe called")
+                    when(it.status){
+                        is Loading->{binding.progressBar.isVisible=true
+                            binding.loadingText.isVisible=true
+                            Log.d("LoginFragment", "Loading state")}
+
+                        is Success->{Toast.makeText(requireContext(), getString(R.string.welcome_message, it.status.data), Toast.LENGTH_LONG).show()
+                                findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
+                            Log.d("LoginFragment", "Success state")}
+
+                        is Error -> {Toast.makeText(requireContext(), "ERROR, TRY AGAIN", Toast.LENGTH_SHORT).show()
+                                    binding.progressBar.isVisible=false
+                                    binding.loadingText.isVisible=false
+                        Log.d("LoginFragment", "Error state")}}
+                    }
+                    }
+
+
+                //val response: Response<UserProfileTransitFromGson> =
+
+                    //TODO()
+
+            }
+
+
         }
-    }
-}

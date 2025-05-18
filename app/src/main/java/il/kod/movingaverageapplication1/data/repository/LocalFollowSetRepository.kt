@@ -7,7 +7,7 @@ import il.kod.movingaverageapplication1.data.local_db.FollowSetDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 
 
-class FollowSetRepository(application: Application)
+class LocalFollowSetRepository(application: Application)
 {
 
     private var followSetDao : FollowSetDao

@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import il.kod.movingaverageapplication1.data.repository.FollowSetRepository
+import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import kotlinx.coroutines.launch
 
 class FollowSetViewModel(application: Application) : AndroidViewModel(application) {
@@ -13,7 +13,7 @@ class FollowSetViewModel(application: Application) : AndroidViewModel(applicatio
     private val _clickedFollowSet: MutableLiveData<FollowSet> = MutableLiveData()
     val clickedFollowSet get()=_clickedFollowSet
 
-    var repository = FollowSetRepository(application)
+    var repository = LocalFollowSetRepository(application)
 
     var existingFollowSet: LiveData<List<FollowSet>> = repository.getAllFollowSet()
 

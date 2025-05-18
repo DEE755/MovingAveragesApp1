@@ -3,14 +3,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.data.repository.StocksRepository
+import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
 import kotlinx.coroutines.launch
 
 class AllStocksViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-    private val repository = StocksRepository(application)
+    private val repository = LocalStocksRepository(application)
 
     val unselectedStock : LiveData<List<Stock>> = repository.getUnselectedStocks()
     val followedStocks : LiveData<List<Stock>> = repository.getSelectedStocks()

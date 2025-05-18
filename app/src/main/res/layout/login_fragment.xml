@@ -58,4 +58,24 @@
         android:textSize="16sp"
         />
 
+    <ProgressBar
+        android:layout_width="300dp"
+        android:layout_gravity="center"
+        android:layout_height="150dp"
+        android:layout_marginTop="100dp"
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+       />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loading"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:textColor="#F8074750"
+        android:id="@+id/loadingText"
+        android:visibility="gone"/>
+
+
 </LinearLayout>
