@@ -96,7 +96,7 @@ class LoginFragment : Fragment() {
                         }
 
                         is Error -> {
-                            Toast.makeText(requireContext(), "ERROR, TRY AGAIN", Toast.LENGTH_SHORT)
+                            Toast.makeText(requireContext(), it.status.message, Toast.LENGTH_SHORT)
                                 .show()
                             binding.progressBar.isVisible = false
                             binding.loadingText.isVisible = false

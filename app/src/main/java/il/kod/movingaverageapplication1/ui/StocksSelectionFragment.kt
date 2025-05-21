@@ -2,19 +2,35 @@ package il.kod.movingaverageapplication1.ui
 
 import AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
+
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class StocksSelectionFragment : Fragment() {
+
+    @Inject
+    lateinit var glide: RequestManager
 
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
@@ -24,6 +40,9 @@ class StocksSelectionFragment : Fragment() {
         //shared viewmodels
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
+    private val  CSDViewModel : CustomServerDatabaseViewModel by activityViewModels()
+
+
 
     override fun onCreateView(
 
@@ -35,6 +54,33 @@ class StocksSelectionFragment : Fragment() {
         _binding = FragmentAllStockSelectionBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+
+
+
+        CSDViewModel.getAllStocks()
+        CSDViewModel.allStocks.observe(viewLifecycleOwner) {
+            Log.d("StockSelectionFragment", "observe called")
+            when(it.status){
+                is Loading->{binding.progressBar.isVisible=true
+                    binding.loadingText.isVisible=true
+                    Log.d("StockSelectionFragment", "Loading state")}
+
+                is Success->{Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
+
+                    Log.d("StockSelectionFragment", "Success state")
+
+                    binding.progressBar.isVisible=false
+                    binding.loadingText.isVisible=false
+                }
+
+
+                is Error -> {Toast.makeText(requireContext(), "ERROR, TRY AGAIN", Toast.LENGTH_SHORT).show()
+                    binding.progressBar.isVisible=false
+                    binding.loadingText.isVisible=false
+                    Log.d("StockSelectionFragment", "Error state")}}
+        }
+
 
 
 
@@ -52,7 +98,8 @@ class StocksSelectionFragment : Fragment() {
                         clickedStock?.let {
                             viewModelDetailStock.setStock(clickedStock)
                             findNavController().navigate(
-                                R.id.action_stockSelection3_to_detailsItemFragment)
+                                R.id.action_stockSelection3_to_detailsItemFragment
+                            )
 
                         }
                     }
@@ -62,7 +109,9 @@ class StocksSelectionFragment : Fragment() {
                     }
 
 
-                })
+                },
+                glide = glide
+            )
 
         }
 

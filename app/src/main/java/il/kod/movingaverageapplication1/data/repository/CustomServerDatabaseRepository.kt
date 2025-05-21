@@ -12,8 +12,8 @@ import javax.inject.Singleton
 
 @Singleton
 class CustomServerDatabaseRepository @Inject constructor(
-    private val remoteDataSource: CustomServerDatabaseRemoteDataSource
-    // ,private val localDataSource: CustomServerDatabaseLocalDataSource
+    private val remoteDataSource: CustomServerDatabaseRemoteDataSource,
+    private val localDataSource: LocalStocksRepository,
 ){
     fun login(
         username: String,
@@ -25,7 +25,15 @@ class CustomServerDatabaseRepository @Inject constructor(
         username: String,
         password: String
     ) = performPostingToServer {
-        remoteDataSource.signUp(username, password) }
+         remoteDataSource.signUp(username, password) }
+
+
+    fun getAllStocks() =
+        performFetchingAndSaving (
+            {localDataSource.getAllStocks()},
+            {remoteDataSource.getAllStocks()},
+            {localDataSource.saveAllStocks(it)}
+        )
 }
 
 

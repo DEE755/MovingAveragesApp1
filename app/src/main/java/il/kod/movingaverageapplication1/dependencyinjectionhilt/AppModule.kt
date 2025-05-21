@@ -16,6 +16,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import android.util.Log
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import il.kod.movingaverageapplication1.GlideApp
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -64,5 +67,15 @@ class AppModule {
     @Provides
     @Singleton
     fun provideStocksDao(database: StocksDatabase) = database.stocksDao()
+
+
+
+    @Provides
+    @Singleton
+    fun provideGlideInstance(@ApplicationContext context: Context): RequestManager {
+        Log.d("AppModule", "provideGlideInstance called")
+        return GlideApp.with(context)
+    }
+
 
 }

@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 
 class AllStocksViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -46,14 +49,13 @@ class AllStocksViewModel(application: Application) : AndroidViewModel(applicatio
         return stocks
     }
 
-    fun getStocksByIds(vararg ids: Int): List<Stock>{
-    var stocks= emptyList<Stock>()
-    viewModelScope.launch {
-         stocks=repository.getStocksByIds(*ids)
-    }
-        return stocks
+    suspend fun getStocksByIds(vararg ids: Int): List<Stock> {
+        return withContext(Dispatchers.IO) { repository.getStocksByIds(*ids) }
     }
 
 
+    fun getAllStocks(): LiveData<List<Stock>> {
+    return repository.getAllStocks()
+    }
 
 }

@@ -25,6 +25,10 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
     lateinit var loggedUser : UserProfileTransitFromGson
 
+    lateinit var allStocks : LiveData<Resource<List<Stock>>>
+
+
+
     fun updateCredentialsfromServer(username: String, password: String) {
         client_username = username
         client_password = password
@@ -35,7 +39,14 @@ class CustomServerDatabaseViewModel @Inject constructor(
     fun signUpNewUserToServer(username: String, password: String) {
         client_username = username
         client_password = password
-        http_response = customServerDatabaseRepository.signUp(username, client_password)
+        http_response = customServerDatabaseRepository.signUp(client_username, client_password)
+    }
+
+
+
+
+    fun getAllStocks() {
+        allStocks = customServerDatabaseRepository.getAllStocks()
     }
 
 }

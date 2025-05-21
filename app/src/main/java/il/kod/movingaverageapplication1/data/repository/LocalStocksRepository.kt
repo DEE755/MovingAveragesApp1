@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
+import javax.inject.Inject
 
-class LocalStocksRepository(application: Application)
+
+
+class LocalStocksRepository @Inject constructor(application: Application)
 {
 
 
@@ -44,6 +47,12 @@ class LocalStocksRepository(application: Application)
 
      fun getStocksByIds(vararg ids: Int): List<Stock> {
         return stockDao.getStocksByIds(ids.toList())
+    }
+
+    suspend fun saveAllStocks(allStocks: List<Stock>) {
+        for (stock in allStocks) {
+            stockDao.addStock(stock)
+        }
     }
 
 }

@@ -9,14 +9,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class DetailsStockFragment: Fragment() {
+    @Inject
+    lateinit var glide: RequestManager
+
     var _binding : DetailsStockLayoutBinding?= null
     val binding get()=_binding!!
 
@@ -52,10 +59,10 @@ class DetailsStockFragment: Fragment() {
 
 
             binding.stockCompany.text =clickedStock.value?.name?:"N/A"
-            binding.stockPrice.text = clickedStock.value?.price.toString()
-            binding.numberOfShares.text = clickedStock.value?.movingAverage.toString()
-            Glide.with(requireContext()).load(clickedStock.value?.imageUri?.toUri()).into(binding.itemImage)
-
+            binding.stockPrice.text = clickedStock.value?.current_price.toString()
+            //binding.numberOfShares.text = clickedStock.value?.movingAverage.toString()
+            //Glide.with(requireContext()).load(clickedStock.value?.imageUri?.toUri()).into(binding.itemImage)
+                    glide.load(clickedStock.value?.logo_url?.toUri()).into(binding.itemImage)
 
             binding.addButton.setOnClickListener {
 

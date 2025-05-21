@@ -13,15 +13,21 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.RequestManager
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.utils.sharedMenuProvider
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FollowedStocksFragment : Fragment() {
+@Inject
+    lateinit var glide: RequestManager
 
     private var _binding: FragmentSelectedStocksBinding? = null
 
@@ -30,7 +36,6 @@ class FollowedStocksFragment : Fragment() {
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
-
 
 
 
@@ -50,8 +55,13 @@ class FollowedStocksFragment : Fragment() {
         val menuHost: MenuHost = requireActivity()
         var currentMenu: MenuProvider? = null
 
+        //launch the stock fetching if needed:
+
+
+
         viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) {
             val isEmpty = it.isEmpty()
+
 
             val oldMenu = currentMenu
             if (oldMenu != null) {
@@ -67,6 +77,7 @@ class FollowedStocksFragment : Fragment() {
             menuHost.addMenuProvider(newMenu, viewLifecycleOwner)
 
         }
+
 
             _binding = FragmentSelectedStocksBinding.inflate(inflater, container, false)
 
@@ -94,7 +105,9 @@ class FollowedStocksFragment : Fragment() {
                             message = getString(R.string.delete_stock_message, clickedStock?.name),
                             onYes = {
                                 viewModelAllStocks.unfollowStock(clickedStock!!)
-                                (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(index)
+                                (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
+                                    index
+                                )
 
                                 Toast.makeText(
                                     requireContext(),
@@ -105,7 +118,8 @@ class FollowedStocksFragment : Fragment() {
                             onNo = {}
                         )
                     }
-                }
+                },
+                glide = glide
             )
 
 

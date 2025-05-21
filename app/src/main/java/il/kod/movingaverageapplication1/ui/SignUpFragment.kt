@@ -47,16 +47,18 @@ class SignUpFragment : Fragment()
                 val passwordConfirmation = binding.passwordConfirmationInput.text.toString()
 
                 if (username.isBlank() || password.isBlank()) {
-                    Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_SHORT).show()
-
+                    Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener //recursion to retry with correct values
                 }
                 else if (password != passwordConfirmation) {
-                    Toast.makeText(requireContext(), "Confirmation and password are not identical", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Confirmation and password are not identical", Toast.LENGTH_LONG).show()
+                    return@setOnClickListener //recursion to retry with correct values
                 }
-                else {
+
+                //input is valid, sign up
                     CSDviewModel.signUpNewUserToServer(username, password)
                     //Log.d("LoginFragment", "values: ${CSDviewModel.client_username} ${CSDviewModel.client_password}")
-                }
+
 
 
 
@@ -68,8 +70,8 @@ class SignUpFragment : Fragment()
                             binding.loadingText.isVisible=true
                             Log.d("LoginFragment", "Loading state")}
 
-                        is Success->{Toast.makeText(requireContext(),"The server response is: ${CSDviewModel.http_response}", Toast.LENGTH_LONG).show()
-                            findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
+                        is Success->{Toast.makeText(requireContext(),it.status.data, Toast.LENGTH_LONG).show()
+                            findNavController().navigate(R.id.action_signUpFragment_to_followedStocks)
                             Log.d("LoginFragment", "Success state")
                         //if 404 is in http_response, then show error message
                             //if (CSDviewModel.http_response.value?.data.toString().contains("404")) {

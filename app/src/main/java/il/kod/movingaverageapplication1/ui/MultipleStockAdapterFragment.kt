@@ -39,7 +39,7 @@ class MultipleStockAdapterFragment(
         fun bind(stock: Stock) {
             binding.itemTitle.text = stock.name
             Glide.with(binding.root)
-                .load(stock.imageUri)
+                .load(stock.logo_url)
                 .error(R.mipmap.ic_launcher)
                 .into(binding.itemImage)
         }
