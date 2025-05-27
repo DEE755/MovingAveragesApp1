@@ -1,6 +1,6 @@
 package il.kod.movingaverageapplication1.ui
 
-import AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -55,9 +55,9 @@ class InsideFollowSetFragment : Fragment() {
                     viewModelAllStocks.getStocksByIds(*extractedIds ?: intArrayOf())
                 }
 
-                binding.recyclerView.adapter = StockAdapterFragment(
+                binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                     extractedStocks,
-                    callBack = object : StockAdapterFragment.ItemListener {
+                    callBack = object : StockRecyclerAdapterFragment.ItemListener {
                         override fun onItemClicked(index: Int) {
                             val clickedStock = extractedStocks[index]
                             clickedStock.let {

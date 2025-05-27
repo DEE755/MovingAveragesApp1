@@ -1,6 +1,6 @@
 package il.kod.movingaverageapplication1.ui
 
-import AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View

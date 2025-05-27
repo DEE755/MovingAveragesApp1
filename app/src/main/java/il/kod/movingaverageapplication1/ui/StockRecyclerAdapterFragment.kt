@@ -1,18 +1,21 @@
 package il.kod.movingaverageapplication1.ui
 
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.ui.StockAdapterFragment.ItemViewHolder
+import il.kod.movingaverageapplication1.ui.StockRecyclerAdapterFragment.ItemViewHolder
+import kotlin.getValue
 
 
-class StockAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>() {
+class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>() {
 
 
     interface ItemListener {
@@ -44,12 +47,7 @@ class StockAdapterFragment(private var stocks: List<Stock>, private val callBack
         fun bind(stock: Stock) {
 
             binding.itemTitle.text = stock.name
-            binding.itemDescription.text = binding.root.context.getString(
-                R.string.stock_details,
-                stock.symbol,
-                stock.current_price.toString(),
-                stock.ma_150.toString()
-            )
+            binding.itemDescription.text = binding.root.context.getString(R.string.ticker, stock.symbol)
 
             Log.d("StockAdapterFragment", "name: ${stock.name},image: ${stock.logo_url}")
             glide.load(stock.logo_url).error(R.mipmap.ic_launcher).into(binding.itemImage)

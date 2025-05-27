@@ -6,12 +6,21 @@
     android:layout_height="match_parent"
     tools:context="il.kod.movingaverageapplication1.MainActivity">
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Search stocks"
+        app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
-        android:text="@string/select_a_stock_you_want_to_follow"
+        android:text="@string/find_stocks_you_want_to_follow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -20,8 +29,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="800dp"
-        android:layout_marginTop="100dp"
+        android:layout_height="700dp"
+        android:layout_marginTop="150dp"
         android:padding="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/textView"

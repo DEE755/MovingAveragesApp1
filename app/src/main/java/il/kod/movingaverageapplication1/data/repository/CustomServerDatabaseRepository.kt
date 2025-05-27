@@ -1,5 +1,9 @@
 package il.kod.movingaverageapplication1.data.repository
 
+import androidx.lifecycle.LiveData
+import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.models.AuthResponse
+import il.kod.movingaverageapplication1.utils.Resource
 import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
 import kod.il.movingaverageapplication1.utils.performPostingToServer
@@ -24,7 +28,7 @@ class CustomServerDatabaseRepository @Inject constructor(
     fun signUp(
         username: String,
         password: String
-    ) = performPostingToServer {
+    ): LiveData<Resource<AuthResponse>> = performPostingToServer {
          remoteDataSource.signUp(username, password) }
 
 
@@ -34,7 +38,18 @@ class CustomServerDatabaseRepository @Inject constructor(
             {remoteDataSource.getAllStocks()},
             {localDataSource.saveAllStocks(it)}
         )
+
+
+    fun setUserFollowsStock(stock: Stock, follow: Boolean) =
+        performPostingToServer { remoteDataSource.userFollowsStock(stock, follow) }
+
+
+    fun askAI(stock: Stock) = performPostingToServer { remoteDataSource.askAI(stock) }
+
+
+
 }
+
 
 
 

@@ -1,6 +1,6 @@
 package il.kod.movingaverageapplication1.ui
 
-import AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +17,6 @@ import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.utils.sharedMenuProvider
 
@@ -55,7 +54,6 @@ class FollowedStocksFragment : Fragment() {
         val menuHost: MenuHost = requireActivity()
         var currentMenu: MenuProvider? = null
 
-        //launch the stock fetching if needed:
 
 
 
@@ -84,9 +82,9 @@ class FollowedStocksFragment : Fragment() {
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-            binding.recyclerView.adapter = StockAdapterFragment(
+            binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                 emptyList(),
-                callBack = object : StockAdapterFragment.ItemListener {
+                callBack = object : StockRecyclerAdapterFragment.ItemListener {
                     override fun onItemClicked(index: Int) {
 
                         viewModelAllStocks.followedStocks.value?.get(index)
@@ -104,8 +102,8 @@ class FollowedStocksFragment : Fragment() {
                             title = getString(R.string.deletion_stock_title),
                             message = getString(R.string.delete_stock_message, clickedStock?.name),
                             onYes = {
-                                viewModelAllStocks.unfollowStock(clickedStock!!)
-                                (binding.recyclerView.adapter as? StockAdapterFragment)?.notifyItemRemoved(
+                                viewModelAllStocks.followStock(clickedStock!!, false)
+                                (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
                                     index
                                 )
 
@@ -125,7 +123,7 @@ class FollowedStocksFragment : Fragment() {
 
 
             viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) { selectedStocks ->
-                (binding.recyclerView.adapter as? StockAdapterFragment)?.updateData(selectedStocks)
+                (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.updateData(selectedStocks)
                 if (viewModelAllStocks.followedStocks.value?.isEmpty() == false) {
                     binding.addStockButtonBig.visibility = View.GONE
                     binding.isEmptytextView.visibility = View.GONE

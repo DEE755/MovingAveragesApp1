@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.SignupFragmentBinding
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
@@ -63,16 +63,26 @@ class SignUpFragment : Fragment()
 
 
 
-                CSDviewModel.http_response.observe(viewLifecycleOwner) {
+                CSDviewModel.signupResult.observe(viewLifecycleOwner) {
                     Log.d("LoginFragment", "observe called")
                     when(it.status){
                         is Loading->{binding.progressBar.isVisible=true
                             binding.loadingText.isVisible=true
                             Log.d("LoginFragment", "Loading state")}
 
-                        is Success->{Toast.makeText(requireContext(),it.status.data, Toast.LENGTH_LONG).show()
+                        is Success->{
+
+                            Toast.makeText(requireContext(),it.status.data?.username?:"unknown user", Toast.LENGTH_LONG).show()
                             findNavController().navigate(R.id.action_signUpFragment_to_followedStocks)
-                            Log.d("LoginFragment", "Success state")
+
+                            it.status.data?.let { data ->
+                                Log.d("SignupFragment", "Data received: $data")
+                                CSDviewModel.saveTokens(
+                                    data.accessToken ?: "",
+                                    data.refreshToken ?: ""
+                                )
+                            Log.d("SignupFragment", "Success state")
+                                }
                         //if 404 is in http_response, then show error message
                             //if (CSDviewModel.http_response.value?.data.toString().contains("404")) {
                                 //Toast.makeText(requireContext(), "Username already exists", Toast.LENGTH_SHORT).show()

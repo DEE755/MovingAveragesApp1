@@ -13,21 +13,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
-import il.kod.movingaverageapplication1.data.UserProfile
+import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.LoginFragmentBinding
+import il.kod.movingaverageapplication1.utils.AutoClearedValue
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
-import kotlin.collections.get
-
-import il.kod.movingaverageapplication1.data.models.UserProfileTransitFromGson
+import il.kod.movingaverageapplication1.utils.decodeJWT
+import java.time.Instant
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
-    var _binding: LoginFragmentBinding? = null
-    val binding get() = _binding!!
+    private var _binding: LoginFragmentBinding by AutoClearedValue<LoginFragmentBinding>(this)
+    val binding get() = _binding
 
     private val CSDviewModel: CustomServerDatabaseViewModel by activityViewModels()
 
@@ -44,6 +43,20 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+            val accessToken = CSDviewModel.getAccessTokenFromPreferences()
+        Log.d("LoginFragment", "Access token: $accessToken")
+        if (!accessToken.isNullOrEmpty())
+        {
+            val decodedToken=decodeJWT(accessToken)
+            val expirationDate=decodedToken.getLong("exp")
+            val currentTime=System.currentTimeMillis() / 1000
+
+            Log.d("LoginFragment", "decodedToken: ${decodedToken},Current time: $currentTime, Expiration date: $expirationDate")
+
+
+            if (currentTime < expirationDate)
+            {findNavController().navigate(R.id.action_login_fragment_to_selectedStocks)}
+        }
 
             binding.loginButton.setOnClickListener {
 
@@ -59,15 +72,16 @@ class LoginFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                     Log.d("LoginFragment", "Username and password cannot be empty")
-                } else {
-                    CSDviewModel.updateCredentialsfromServer(username, password)
-                    //Log.d("LoginFragment", "values: ${CSDviewModel.client_username} ${CSDviewModel.client_password}")
+                    return@setOnClickListener //recursion to retry with correct values
                 }
+                    CSDviewModel.updateCredentialsFromServer(username, password)
+                    //Log.d("LoginFragment", "values: ${CSDviewModel.client_username} ${CSDviewModel.client_password}")
 
 
 
 
-                CSDviewModel.credentials.observe(viewLifecycleOwner) {
+
+                CSDviewModel.tokensResponse.observe(viewLifecycleOwner) {
                     Log.d("LoginFragment", "observe called")
                     when (it.status) {
                         is Loading -> {
@@ -78,21 +92,24 @@ class LoginFragment : Fragment() {
 
                         is Success -> {
 
-                            //verify if the data wrapper is not null
-                            it.status.data?.let { gsonWrappedObject ->//list of one UserProfileTransitFromGson
-                                //verify if the object in the data is not null (list of only one UserProfile) and extract the final USERPROFILE object to the viewmodel
-                                gsonWrappedObject[0].let {fetchedUserProfile ->
-                                    CSDviewModel.loggedUser = fetchedUserProfile
-                                }
-                            }
+                            it.status.data?.let { data ->
+                                Log.d("LoginFragment", "Data received: $data")
+                                CSDviewModel.saveTokens(
+                                    data.accessToken ?: "",
+                                    data.refreshToken ?: ""
+                                )
+
+                                CSDviewModel.fetchedClientUsername = data.username ?: ""
+
 
                             Toast.makeText(
                                 requireContext(),
-                                getString(R.string.welcome_message, CSDviewModel.loggedUser.username),
+                                getString(R.string.welcome_message, data.username),
                                 Toast.LENGTH_LONG
                             ).show()
                             findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
                             Log.d("LoginFragment", "Success state")
+                            } ?: Log.d("LoginFragment", "Data is null")
                         }
 
                         is Error -> {
@@ -107,9 +124,6 @@ class LoginFragment : Fragment() {
             }
 
 
-            //val response: Response<UserProfileTransitFromGson> =
-
-            //TODO()
 
             binding.signUpText.setOnClickListener {
 

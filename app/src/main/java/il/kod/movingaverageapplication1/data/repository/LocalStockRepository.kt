@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.utils.Resource
 
-interface StockRepository
+interface LocalStockRepository
 {
     fun getAllStocks(): LiveData<List<Stock>>
 
@@ -22,4 +22,5 @@ interface StockRepository
     suspend fun updateStock(stock: Stock)
 
     fun getStocksByIds(vararg ids: Int): List<Stock>
+    fun userFollowsStock(stock: Stock):Resource<Void>
 }

@@ -20,7 +20,7 @@ interface StockDao {
     @Update
     suspend fun updateStock(stock: Stock)
 
-    @Query("SELECT * FROM stocks ORDER BY name ASC")
+    @Query("SELECT * FROM stocks ORDER BY name ASC LIMIT 10000")
      fun getAllStocks() : LiveData<List<Stock>>
 
 
@@ -34,8 +34,13 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE isSelected = 0")
      fun getUnselectedStocks(): LiveData<List<Stock>>
 
-    @Query("SELECT * FROM stocks WHERE id IN (:ids)")
+    @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
     fun getStocksByIds(ids: List<Int>): List<Stock>
+
+
+    @Query("SELECT * FROM stocks WHERE name LIKE '%' || :name_part || '%' " +
+            "OR symbol LIKE '%' || :name_part || '%' ORDER BY name LIMIT 10000")
+    suspend fun filterStockByName(name_part: String): List<Stock>?
 
 }
 

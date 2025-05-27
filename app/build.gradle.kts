@@ -55,6 +55,7 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+    implementation(libs.androidx.lifecycle.viewmodel.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -62,6 +63,7 @@ dependencies {
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
@@ -95,4 +97,9 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    //AndroidX Security
+    dependencies {
+        implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+    }
 }

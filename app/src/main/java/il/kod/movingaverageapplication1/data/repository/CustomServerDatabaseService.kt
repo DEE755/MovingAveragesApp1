@@ -1,6 +1,7 @@
 package il.kod.movingaverageapplication1.data.repository
-import android.util.Log
 import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.StringAdapterForGson
+import il.kod.movingaverageapplication1.data.models.AuthResponse
 
 import il.kod.movingaverageapplication1.data.models.UserProfileTransitFromGson
 
@@ -17,11 +18,17 @@ interface CustomServerDatabaseService {
     //LOGIN/SIGNUP
 
     //login
-    @GET("/login_request/")
+   /* @GET("/login_request/")
     suspend fun login(
         @Query("username") username: String,
         @Query("password") password: String
-    ): Response<List<UserProfileTransitFromGson>>
+    ): Response<List<UserProfileTransitFromGson>>*/
+
+     @GET("/login_request/")
+    suspend fun login(
+        @Query("username") username: String,
+        @Query("password") password: String
+    ): Response<AuthResponse>
 
 
     //sign up
@@ -30,7 +37,7 @@ interface CustomServerDatabaseService {
     suspend fun sign_up(
         @Field("username") username: String,
         @Field("password") password: String
-    ): Response<String>
+    ): Response<AuthResponse>
 
 
     //STOCKS
@@ -40,12 +47,22 @@ interface CustomServerDatabaseService {
     suspend fun get_all_stocks(): Response<List<Stock>>
 
 
+    @GET("/get_followed_stock_prices")
+    suspend fun getFollowedStockPrice(): Response<Double>
+
+    @POST("/user/follows_stock")
+    suspend fun setUserFollowsStock(stock: Stock) : Response<String>
+
+    @POST("/user/unfollows_stock")
+    suspend fun setUserUnfollowsStock(stock: Stock) : Response<String>
 
 //AI PERPLEXITY
     //ask a question:
     @FormUrlEncoded
     @POST("/ask")
-    suspend fun ask_question_ai(
+    suspend fun ask_ai(
         @Field("question") question: String
-    ): Response<String>
+    ): Response<StringAdapterForGson>
+
+
 }

@@ -1,6 +1,6 @@
 package il.kod.movingaverageapplication1.ui
 
-import AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
@@ -34,6 +35,7 @@ class StocksSelectionFragment : Fragment() {
 
     private var _binding: FragmentAllStockSelectionBinding? = null
     private val binding get() = _binding!!
+
 
 
 
@@ -86,37 +88,9 @@ class StocksSelectionFragment : Fragment() {
 
 //if a new stock is added to the unselectedlist, it will be added to the recycler view
 
-        viewModelAllStocks.unselectedStock.observe(viewLifecycleOwner)
-        {
+        viewModelAllStocks.unselectedStock.observe(viewLifecycleOwner) {setupRecyclerView(it,  R.id.action_stockSelection3_to_detailsItemFragment)}
 
-            binding.recyclerView.adapter = StockAdapterFragment(
-                viewModelAllStocks.unselectedStock?.value ?: emptyList(),
-                callBack = object : StockAdapterFragment.ItemListener {
-
-                    override fun onItemClicked(index: Int) {
-                        val clickedStock = viewModelAllStocks.unselectedStock?.value?.get(index)
-                        clickedStock?.let {
-                            viewModelDetailStock.setStock(clickedStock)
-                            findNavController().navigate(
-                                R.id.action_stockSelection3_to_detailsItemFragment
-                            )
-
-                        }
-                    }
-
-                    override fun onItemLongClicked(index: Int) {
-
-                    }
-
-
-                },
-                glide = glide
-            )
-
-        }
-
-
-
+        viewModelAllStocks.filteredStocksList.observe(viewLifecycleOwner){setupRecyclerView(it,  R.id.action_stockSelection3_to_detailsItemFragment)}
 
 
 binding.returntoselected.setOnClickListener {
@@ -124,7 +98,45 @@ binding.returntoselected.setOnClickListener {
 
 
 }
+        binding.searchView.apply {
+            setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModelAllStocks.filterStocksByName(newText)
+                    return true
+                }
+            })
+        }
+
+
         return binding.root
+    }
+
+
+
+
+    fun setupRecyclerView(listOfStocks: List<Stock>?, actionId: Int) {
+        binding.recyclerView.adapter = StockRecyclerAdapterFragment(
+            listOfStocks?: emptyList(),
+            callBack = object : StockRecyclerAdapterFragment.ItemListener {
+
+                override fun onItemClicked(index: Int) {
+                    val clickedStock =  listOfStocks?.get(index)
+                    clickedStock?.let {
+                        viewModelDetailStock.setStock(it)
+                        findNavController().navigate(
+                           actionId
+                        )
+                    }
+                }
+                override fun onItemLongClicked(index: Int) {}
+            },
+            glide = glide
+        )
+
     }
 
     override fun onResume() {

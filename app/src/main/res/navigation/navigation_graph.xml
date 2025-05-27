@@ -59,6 +59,9 @@
         <action
             android:id="@+id/action_detailsItemFragment_to_followSetCreationFragment"
             app:destination="@id/followSetCreationFragment" />
+        <action
+            android:id="@+id/action_detailsItemFragment_to_askAIFragment"
+            app:destination="@id/askAIFragment" />
     </fragment>
 
     <fragment
@@ -67,7 +70,7 @@
         android:label="login_fragment"
         tools:layout="@layout/login_fragment">
         <action
-            android:id="@+id/action_navigation_graph_to_selectedStocks"
+            android:id="@+id/action_login_fragment_to_selectedStocks"
             app:destination="@id/followedStocks" />
         <action
             android:id="@+id/action_navigation_graph_to_selectedStocks2"
@@ -123,6 +126,14 @@
         <action
             android:id="@+id/action_signUpFragment_to_followedStocks"
             app:destination="@id/followedStocks" />
+    </fragment>
+    <fragment
+        android:id="@+id/askAIFragment"
+        android:name="il.kod.movingaverageapplication1.ui.AskAIFragment"
+        android:label="AskAIFragment" >
+        <action
+            android:id="@+id/action_askAIFragment_to_detailsItemFragment"
+            app:destination="@id/detailsItemFragment" />
     </fragment>
 
 </navigation>

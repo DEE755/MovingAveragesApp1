@@ -44,5 +44,7 @@
     <string name="enter_password_again">Enter Password again</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_up">Sign Up</string>
+    <string name="find_stocks_you_want_to_follow">Find stocks you want to follow</string>
+    <string name="ticker">Ticker: %1$s</string>
 
 </resources>

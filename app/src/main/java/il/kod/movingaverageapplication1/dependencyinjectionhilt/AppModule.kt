@@ -1,6 +1,7 @@
 package il.kod.movingaverageapplication1.dependencyinjectionhilt
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -16,9 +17,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import android.util.Log
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.GlideApp
+import java.util.concurrent.TimeUnit
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -32,7 +38,9 @@ class AppModule {
             level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
         }
         val client_= OkHttpClient.Builder()
-            .addInterceptor(logging)
+            .addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS) // Increase connection timeout
+            .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
         return Retrofit.Builder()
@@ -76,6 +84,25 @@ class AppModule {
         Log.d("AppModule", "provideGlideInstance called")
         return GlideApp.with(context)
     }
+
+
+
+    @Provides
+    @Singleton
+    fun provideEncryptedPrefs(@ApplicationContext context: Context): SharedPreferences {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        return EncryptedSharedPreferences.create(
+            context,
+            "secure_auth",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
+
 
 
 }
