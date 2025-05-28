@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.core.text.isDigitsOnly
 import androidx.core.view.MenuProvider
 import androidx.navigation.NavController
@@ -89,38 +90,6 @@ fun showThresholdInputDialog(
 }
 
 
-
-
-    fun sharedMenuProvider( isListEmpty: Boolean=false, navController: NavController,
-        context: Context,
-    ): MenuProvider {
-        return object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_main_activity, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-
-                return when (menuItem.itemId) {
-                   R.id.action_follow_list -> {
-                        if (isListEmpty) {
-                            Toast.makeText(context, context.getString(R.string.select_stocks_first), Toast.LENGTH_SHORT).show()
-                        } else {
-                            navController.navigate(R.id.followSetFragment)
-                            Toast.makeText(context, context.getString(R.string.add_following_sets), Toast.LENGTH_SHORT).show()
-                        }
-                        true
-                    }
-                    R.id.action_stocks_list -> {
-                        navController.navigate(R.id.followedStocks)
-                        Toast.makeText(context, context.getString(R.string.view_followed_stocks), Toast.LENGTH_SHORT).show()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
-    }
 
 fun formatText(input: String): String {
     return input

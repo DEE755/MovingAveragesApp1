@@ -14,15 +14,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
-import il.kod.movingaverageapplication1.utils.sharedMenuProvider
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import javax.inject.Inject
 import kotlin.getValue
 
+@AndroidEntryPoint
 class ExistingFollowSetFragment : Fragment() {
+
+    @Inject
+    lateinit var appMenu: AppMenu
     private var _binding: FragmentFollowSetBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
@@ -48,7 +53,7 @@ class ExistingFollowSetFragment : Fragment() {
     ): View? {
         val menuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(
-            (sharedMenuProvider(
+            (appMenu.sharedMenuProvider(
                 context = requireContext(),
                 isListEmpty = false,
                 navController = findNavController())
@@ -79,7 +84,7 @@ class ExistingFollowSetFragment : Fragment() {
 
                     val clickedFollowSet = viewModelFollowSet.getFollowSetAt(index)
 
-                        showConfirmationDialog(
+                    showConfirmationDialog(
                         context = requireContext(),
                         title = getString(R.string.deletion_follow_set_title),
                         message = getString(R.string.delete_follow_set_message, clickedFollowSet?.name),

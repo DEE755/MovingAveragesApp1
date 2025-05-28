@@ -18,14 +18,18 @@ import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import il.kod.movingaverageapplication1.utils.sharedMenuProvider
+
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class FollowedStocksFragment : Fragment() {
+
 @Inject
+    lateinit var  appMenu: AppMenu
+    @Inject
     lateinit var glide: RequestManager
 
     private var _binding: FragmentSelectedStocksBinding? = null
@@ -66,7 +70,7 @@ class FollowedStocksFragment : Fragment() {
                 menuHost.removeMenuProvider(oldMenu)
             }
 
-            val newMenu = sharedMenuProvider(
+            val newMenu = appMenu.sharedMenuProvider(
                 context = requireContext(),
                 isListEmpty = isEmpty,
                 navController = findNavController()

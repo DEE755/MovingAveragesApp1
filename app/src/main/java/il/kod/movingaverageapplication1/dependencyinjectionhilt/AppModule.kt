@@ -10,7 +10,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
-import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseService
 import il.kod.movingaverageapplication1.utils.Constants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -19,41 +18,110 @@ import javax.inject.Singleton
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.bumptech.glide.Glide
+
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.GlideApp
-import java.util.concurrent.TimeUnit
+import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseServiceNoToken
+import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseServiceWithToken
 
+import il.kod.movingaverageapplication1.ui.AppMenu
+import java.util.concurrent.TimeUnit
+import javax.inject.Named
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
+    //okhttp3 client without token
     @Provides
     @Singleton
-    fun provideRetrofit(gson: Gson): Retrofit {
-    Log.d("AppModule", "provideRetrofit called")
-        val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
+    @Named("okHttpClientNoToken")
+    fun provideOkHttpClient(): OkHttpClient
+        { val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
             level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
         }
-        val client_= OkHttpClient.Builder()
-            .addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS) // Increase connection timeout
-            .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
-            .writeTimeout(30, TimeUnit.SECONDS)
+            val client_= OkHttpClient.Builder()
+                .addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS) // Increase connection timeout
+                .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build()
+
+            return client_
+    }
+
+    @Provides
+    @Singleton
+    @Named("okHttpClientWithToken")
+    fun provideOkHttpClientWithToken (sharedPreferences: SharedPreferences): OkHttpClient
+    { val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
+        level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+    }
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer ${sharedPreferences.getString("token", "NOT_FOUND")}")
+                    .build()
+                chain.proceed(request)
+            }
             .build()
 
+        return client
+    }
+
+
+
+    //RETROFIT -WITHOUT TOKEN
+    @Provides
+    @Singleton
+    @Named("nonTokenRetrofit")
+    fun provideRetrofit(gson: Gson, @Named("okHttpClientNoToken") client_: OkHttpClient): Retrofit {
+    Log.d("AppModule", "provideRetrofit called")
+
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(Constants.BASE_URL_PUBLIC)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client_)
             .build()
     }
 
 
+    //RETROFIT -WITH TOKEN
+    @Provides
+    @Singleton
+    @Named("tokenRetrofit")
+    fun provideRetrofitWithToken(gson: Gson, @Named("okHttpClientWithToken") client_ : OkHttpClient): Retrofit {
+        Log.d("AppModule", "provideRetrofitwithToken called")
+
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL_PRIVATE)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(client_)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomServerDataBaseService(@Named("nonTokenRetrofit") retrofit: Retrofit) : CustomServerDatabaseServiceNoToken =
+        retrofit.create(CustomServerDatabaseServiceNoToken::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCustomServerDataBaseServiceWithToken(@Named("tokenRetrofit") retrofit: Retrofit) : CustomServerDatabaseServiceWithToken =
+        retrofit.create(CustomServerDatabaseServiceWithToken::class.java)
 
 
 
+
+
+
+
+
+
+
+
+//GSON
     @Provides
     fun provideGson(): Gson {
         Log.d("AppModule", "provideGson called")
@@ -61,9 +129,6 @@ class AppModule {
     }
 
 
-    @Provides
-    fun provideCustomServerDataBaseService(retrofit: Retrofit) : CustomServerDatabaseService =
-        retrofit.create(CustomServerDatabaseService::class.java)
 
 
 
@@ -103,6 +168,18 @@ class AppModule {
         )
     }
 
+
+
+    @Provides
+    @Singleton
+    fun providesSessionManager(@ApplicationContext context: Context): SessionManager {
+       return SessionManager(provideEncryptedPrefs(context))
+    }
+
+@Provides
+    fun providesAppMenu(@ApplicationContext context: Context): AppMenu
+    {return AppMenu(providesSessionManager(context), context)
+    }
 
 
 }

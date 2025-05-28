@@ -13,16 +13,20 @@ import androidx.navigation.fragment.findNavController
 import il.kod.movingaverageapplication1.data.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
+import androidx.core.view.MenuProvider
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import javax.inject.Inject
+import javax.inject.Named
 
 
 @AndroidEntryPoint
 class DetailsStockFragment: Fragment() {
+
+
     @Inject
     lateinit var glide: RequestManager
 

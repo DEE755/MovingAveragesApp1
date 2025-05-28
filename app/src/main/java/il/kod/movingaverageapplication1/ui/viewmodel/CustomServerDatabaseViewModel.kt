@@ -1,6 +1,8 @@
 package il.kod.movingaverageapplication1.ui.viewmodel
 
+import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +12,7 @@ import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseRepo
 import il.kod.movingaverageapplication1.utils.Resource
 import javax.inject.Inject
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class CustomServerDatabaseViewModel @Inject constructor(
@@ -22,7 +25,6 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
     lateinit var signupResult : LiveData<Resource<AuthResponse>>
 
-    lateinit var http_response : LiveData<Resource<String>>
 
     lateinit var allStocks : LiveData<Resource<List<Stock>>>
 
@@ -56,6 +58,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
         //fetchedClientUsername = username
         signupResult = CSDRepository.signUp(newEntrySignupName,chosenPassword)
     }
+
 
 
 
