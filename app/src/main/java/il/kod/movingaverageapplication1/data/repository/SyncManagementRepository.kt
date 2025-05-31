@@ -1,7 +1,7 @@
 package il.kod.movingaverageapplication1.data.repository
 
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import javax.inject.Inject
 
 

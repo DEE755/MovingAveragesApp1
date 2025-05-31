@@ -1,7 +1,7 @@
 package il.kod.movingaverageapplication1.utils
 
 
-class Resource<out T> private constructor(val status: Status<T>) {
+class Resource<T> private constructor(val status: Status<T>) {
     companion object {
         fun <T> success(message: String, data: T) = Resource(Success(message,data))
 
@@ -15,7 +15,7 @@ class Resource<out T> private constructor(val status: Status<T>) {
 }
 
 
-sealed class Status<out T>(val data : T? =null)
+sealed class Status<T>(var data : T? =null)
 
 class Success<T>(val message: String, data: T) : Status<T>(data)
 class Loading<T>(data: T? = null) : Status<T>(data)

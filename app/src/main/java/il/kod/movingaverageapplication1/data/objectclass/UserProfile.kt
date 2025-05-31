@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.data
+package il.kod.movingaverageapplication1.data.objectclass
 
 class UserProfile (
     var id: Int,

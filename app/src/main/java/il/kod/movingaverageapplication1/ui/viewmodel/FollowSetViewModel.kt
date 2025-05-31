@@ -1,10 +1,11 @@
-package il.kod.movingaverageapplication1.data
+package il.kod.movingaverageapplication1.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import kotlinx.coroutines.launch
 

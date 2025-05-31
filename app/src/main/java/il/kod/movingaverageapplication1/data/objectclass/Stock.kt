@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.data
+package il.kod.movingaverageapplication1.data.objectclass
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "stocks")
+@Entity(tableName = "stocks", indices = [Index(value = ["symbol"], unique = true)])
 
 data class Stock(
     @ColumnInfo(name="currency")
@@ -53,6 +53,3 @@ data class Stock(
         stockList.add(this)
     }
 }
-
-
-

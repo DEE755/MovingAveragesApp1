@@ -1,0 +1,78 @@
+package il.kod.movingaverageapplication1.ui.fragment
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
+import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.data.objectclass.Stock
+import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
+
+class StockPagingAdapterFragment(
+    private val callBack: ItemListener,
+    private val glide: RequestManager
+) : PagingDataAdapter<Stock, StockPagingAdapterFragment.ItemViewHolder1>(DIFF_CALLBACK) {
+
+    interface ItemListener {
+        fun onItemClicked(stock: Stock)
+        fun onItemLongClicked(stock: Stock)
+    }
+
+    inner class ItemViewHolder1(private val binding: ItemLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
+
+        private var currentStock: Stock? = null
+
+        init {
+            binding.root.setOnClickListener(this)
+            binding.root.setOnLongClickListener(this)
+        }
+
+        fun bind(stock: Stock) {
+            currentStock = stock
+            binding.itemTitle.text = stock.name
+            binding.itemDescription.text =
+                binding.root.context.getString(R.string.ticker, stock.symbol)
+
+            glide.load(stock.logo_url)
+                .error(R.mipmap.ic_launcher)
+                .into(binding.itemImage)
+        }
+
+        override fun onClick(p0: View?) {
+            currentStock?.let { callBack.onItemClicked(it) }
+        }
+
+        override fun onLongClick(p0: View?): Boolean {
+            currentStock?.let { callBack.onItemLongClicked(it) }
+            return true
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder1 {
+        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemViewHolder1(binding)
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder1, position: Int) {
+        val stock = getItem(position)
+        if (stock != null) {
+            holder.bind(stock)
+        }
+    }
+
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Stock>() {
+            override fun areItemsTheSame(oldItem: Stock, newItem: Stock): Boolean {
+                return oldItem.symbol == newItem.symbol
+            }
+
+            override fun areContentsTheSame(oldItem: Stock, newItem: Stock): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+}

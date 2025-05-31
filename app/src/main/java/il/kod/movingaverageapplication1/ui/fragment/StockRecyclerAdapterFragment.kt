@@ -1,21 +1,20 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
-import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.ui.StockRecyclerAdapterFragment.ItemViewHolder
-import kotlin.getValue
+import il.kod.movingaverageapplication1.data.objectclass.Stock
+import il.kod.movingaverageapplication1.ui.fragment.StockRecyclerAdapterFragment.ItemViewHolder
 
 
-class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>() {
+class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>()
+{
 
 
     interface ItemListener {

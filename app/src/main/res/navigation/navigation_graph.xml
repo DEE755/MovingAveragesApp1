@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/followedStocks"
-        android:name="il.kod.movingaverageapplication1.ui.FollowedStocksFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.FollowedStocksFragment"
         android:label="fragment_selected_stocks"
         tools:layout="@layout/fragment_selected_stocks" >
         <action
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/stockSelection3"
-        android:name="il.kod.movingaverageapplication1.ui.StocksSelectionFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.StocksSelectionFragment"
         android:label="StockSelection" >
         <action
             android:id="@+id/action_stockSelection3_to_selectedStocks"
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsItemFragment"
-        android:name="il.kod.movingaverageapplication1.ui.DetailsStockFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.DetailsStockFragment"
         android:label="details_stock_layout"
         tools:layout="@layout/details_stock_layout" >
         <action
@@ -66,7 +66,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="il.kod.movingaverageapplication1.ui.LoginFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.LoginFragment"
         android:label="login_fragment"
         tools:layout="@layout/login_fragment">
         <action
@@ -83,7 +83,7 @@
     </fragment>
     <fragment
         android:id="@+id/followSetFragment"
-        android:name="il.kod.movingaverageapplication1.ui.ExistingFollowSetFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.ExistingFollowSetFragment"
         android:label="fragment_follow_set"
         tools:layout="@layout/fragment_follow_set" >
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/followSetCreationFragment"
-        android:name="il.kod.movingaverageapplication1.ui.FollowSetCreationFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.FollowSetCreationFragment"
         android:label="FollowSetCreationFragment" >
         <action
             android:id="@+id/action_followSetCreationFragment_to_detailsItemFragment"
@@ -107,7 +107,7 @@
 
     <fragment
         android:id="@+id/insideFollowSetFragment"
-        android:name="il.kod.movingaverageapplication1.ui.InsideFollowSetFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.InsideFollowSetFragment"
         android:label="InsideFollowSetFragment" >
         <action
             android:id="@+id/action_insideFollowSetFragment_to_detailsItemFragment"
@@ -118,7 +118,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="il.kod.movingaverageapplication1.ui.SignUpFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.SignUpFragment"
         android:label="SignUpFragment" >
         <action
             android:id="@+id/action_signUpFragment_to_loginFragment"
@@ -129,7 +129,7 @@
     </fragment>
     <fragment
         android:id="@+id/askAIFragment"
-        android:name="il.kod.movingaverageapplication1.ui.AskAIFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.AskAIFragment"
         android:label="AskAIFragment" >
         <action
             android:id="@+id/action_askAIFragment_to_detailsItemFragment"

@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +20,6 @@ import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
 import il.kod.movingaverageapplication1.utils.decodeJWT
-import java.time.Instant
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {

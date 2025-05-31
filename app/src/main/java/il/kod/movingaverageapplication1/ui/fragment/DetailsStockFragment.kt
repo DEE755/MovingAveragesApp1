@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
@@ -10,17 +10,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
-import androidx.core.view.MenuProvider
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.DetailStockViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import javax.inject.Inject
-import javax.inject.Named
 
 
 @AndroidEntryPoint

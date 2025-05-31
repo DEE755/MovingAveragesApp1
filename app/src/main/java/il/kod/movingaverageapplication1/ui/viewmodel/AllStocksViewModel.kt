@@ -1,20 +1,23 @@
 package il.kod.movingaverageapplication1.ui.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
 import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.lang.reflect.Constructor
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,8 +31,13 @@ class AllStocksViewModel @Inject constructor(
     val unselectedStock : LiveData<List<Stock>> = localRepository.getUnselectedStocks()
     val followedStocks : LiveData<List<Stock>> = localRepository.getSelectedStocks()
     val filteredStocksList: MutableLiveData<List<Stock>> = MutableLiveData()
+    var availableStockCount: LiveData<Int> = MutableLiveData()
+    var searchStockCount: Int = 0
 
-        //for the future API, for now the initial stock data is hardcoded into the database
+
+
+    lateinit var pagedStocks: LiveData<PagingData<Stock>>
+
     fun addStock(stock: Stock){
             viewModelScope.launch {  localRepository.addStock(stock)}}
     fun removeStock(stock: Stock) {viewModelScope.launch{localRepository.removeStock(stock)}}
@@ -63,12 +71,32 @@ class AllStocksViewModel @Inject constructor(
 
         viewModelScope.launch {
             filteredStocksList.value = localRepository.filterStocksByName(name_part?:"")
+            searchStockCount= filteredStocksList.value?.size ?: 0
         }
 
+    }
+
+    fun getAvailableStockCount()= viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            availableStockCount=localRepository.getAvailableStockCount()
+        }
+    }
+
+    fun getLastSymbol(): String? {
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                localRepository.getLastSymbol()
+            }
+        }
     }
 
     fun getSelectedStocks(): LiveData<List<Stock>> {
         return localRepository.getSelectedStocks()
     }
+
+    fun getAllStocks() {
+        pagedStocks=localRepository.getPagedStocks().cachedIn(viewModelScope)
+    }
+
 
 }

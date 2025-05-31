@@ -7,9 +7,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import il.kod.movingaverageapplication1.IntListConverter
-import il.kod.movingaverageapplication1.data.FollowSet
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.utils.IntListConverter
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

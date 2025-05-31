@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.FollowSet
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 
 class FollowSetAdapterFragment(
@@ -57,7 +57,7 @@ class FollowSetAdapterFragment(
 
 
     override fun onBindViewHolder(
-        holder: FollowSetAdapterFragment.FollowSetViewHolder,
+        holder: FollowSetViewHolder,
         position: Int
     ) {
         holder.bind(followSets[position])

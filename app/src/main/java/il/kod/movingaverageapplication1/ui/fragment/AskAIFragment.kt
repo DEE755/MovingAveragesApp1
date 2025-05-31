@@ -1,7 +1,8 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.DetailStockViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.databinding.AskAiLayoutBinding
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
@@ -89,7 +90,7 @@ class AskAIFragment: Fragment() {
                             AIText.text = it.status.data.toString()
 
                             AIText.movementMethod =
-                                android.text.method.ScrollingMovementMethod.getInstance()
+                                ScrollingMovementMethod.getInstance()
                             AIText.isVerticalScrollBarEnabled = true
                         }
                     }

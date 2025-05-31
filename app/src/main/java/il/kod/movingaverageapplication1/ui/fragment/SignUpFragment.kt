@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +20,6 @@ import kotlin.getValue
 
 class SignUpFragment : Fragment()
 {
-
     var _binding: SignupFragmentBinding? = null
     val binding get() = _binding!!
 

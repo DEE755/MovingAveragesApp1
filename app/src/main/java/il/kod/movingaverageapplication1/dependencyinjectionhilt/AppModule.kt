@@ -22,8 +22,8 @@ import androidx.security.crypto.MasterKey
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.GlideApp
 import il.kod.movingaverageapplication1.SessionManager
-import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseServiceNoToken
-import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseServiceWithToken
+import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
+import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
 
 import il.kod.movingaverageapplication1.ui.AppMenu
 import java.util.concurrent.TimeUnit
@@ -178,7 +178,7 @@ class AppModule {
 
 @Provides
     fun providesAppMenu(@ApplicationContext context: Context): AppMenu
-    {return AppMenu(providesSessionManager(context), context)
+    {return AppMenu(providesSessionManager(context))
     }
 
 

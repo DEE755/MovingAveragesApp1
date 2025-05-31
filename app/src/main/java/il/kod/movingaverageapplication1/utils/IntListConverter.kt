@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.utils
 
 import androidx.room.TypeConverter
 

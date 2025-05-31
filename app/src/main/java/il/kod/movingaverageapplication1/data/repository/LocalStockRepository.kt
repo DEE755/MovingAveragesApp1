@@ -1,7 +1,7 @@
 package il.kod.movingaverageapplication1.data.repository
 
 import androidx.lifecycle.LiveData
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.utils.Resource
 
 interface LocalStockRepository

@@ -2,11 +2,15 @@ package il.kod.movingaverageapplication1.data.repository
 
 import android.util.Log
 import il.kod.movingaverageapplication1.data.BaseDataSource
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
+import il.kod.movingaverageapplication1.data.models.StringAdapterCount
+import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
+import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
 import il.kod.movingaverageapplication1.utils.HttpMethod
 import il.kod.movingaverageapplication1.utils.Resource
 import il.kod.movingaverageapplication1.utils.formatText
+import org.json.JSONObject
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -48,12 +52,17 @@ class CustomServerDatabaseRemoteDataSource @Inject constructor(
 
     suspend fun getAllStocks(): Resource<List<Stock>> =
         getResult({
-            CSDPublicService.get_all_stocks()
+            CSDPublicService.getAllStocks()
         })
+
+
+    suspend fun nbOfStocksInRemoteDB(): Int =
+       CSDPublicService.nbOfStocksInRemoteDB().body()?.count?: 0
+
+
 
 /*    suspend fun getStockPrice(stock: Stock): Resource<String> =
         {return }*/
-
     suspend fun userFollowsStock(stock: Stock, follow: Boolean): Resource<String> =
         if (follow) {
             getResult({
@@ -75,4 +84,5 @@ class CustomServerDatabaseRemoteDataSource @Inject constructor(
     }, HttpMethod.POST)
 
 }
+
 

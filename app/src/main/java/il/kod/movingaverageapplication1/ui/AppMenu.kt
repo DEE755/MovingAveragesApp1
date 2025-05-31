@@ -19,7 +19,7 @@ import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AppMenu @Inject constructor(private val sessionManager: SessionManager, @ApplicationContext context: Context) : Fragment() {
+class AppMenu @Inject constructor(private val sessionManager: SessionManager) : Fragment() {
 
     fun sharedMenuProvider(
         isListEmpty: Boolean = false, navController: NavController,

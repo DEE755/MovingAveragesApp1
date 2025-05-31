@@ -1,7 +1,7 @@
 package il.kod.movingaverageapplication1.data.repository
 
 import androidx.lifecycle.LiveData
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.utils.Resource
 import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
@@ -34,10 +34,12 @@ class CustomServerDatabaseRepository @Inject constructor(
 
     fun getAllStocks() =
         performFetchingAndSaving (
-            {localDataSource.getAllStocks()},
+            {localDataSource.getPagedStocks()},
             {remoteDataSource.getAllStocks()},
             {localDataSource.saveAllStocks(it)}
         )
+
+    suspend fun nbOfStocksInRemoteDB() = remoteDataSource.nbOfStocksInRemoteDB()
 
 
     fun setUserFollowsStock(stock: Stock, follow: Boolean) =

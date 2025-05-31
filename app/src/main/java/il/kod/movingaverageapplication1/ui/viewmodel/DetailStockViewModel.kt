@@ -1,15 +1,14 @@
-package il.kod.movingaverageapplication1
+package il.kod.movingaverageapplication1.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import il.kod.movingaverageapplication1.data.Stock
-import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseRepository
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 
 class DetailStockViewModel : ViewModel() {
 
 
-    private val _clickedStock=MutableLiveData<Stock>()
+    private val _clickedStock= MutableLiveData<Stock>()
     val clickedStock get()=_clickedStock
 
     fun setStock(stock: Stock){

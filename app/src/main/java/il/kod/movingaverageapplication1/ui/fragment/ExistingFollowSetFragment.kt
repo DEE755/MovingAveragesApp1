@@ -1,4 +1,4 @@
-package il.kod.movingaverageapplication1.ui
+package il.kod.movingaverageapplication1.ui.fragment
 
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
@@ -15,10 +15,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.DetailStockViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.FollowSetViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
+import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 import javax.inject.Inject
 import kotlin.getValue

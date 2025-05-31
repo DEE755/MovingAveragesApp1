@@ -56,6 +56,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.androidx.paging.common.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -99,7 +100,13 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     //AndroidX Security
-    dependencies {
+
         implementation ("androidx.security:security-crypto:1.1.0-alpha06")
-    }
+
+
+
+    //Paging
+    implementation("androidx.paging:paging-runtime:3.2.1")
+
+    implementation("androidx.room:room-paging:2.6.1")
 }

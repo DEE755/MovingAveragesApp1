@@ -1,13 +1,14 @@
 package il.kod.movingaverageapplication1.data.local_db
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
 
 @Dao
 interface StockDao {
@@ -20,8 +21,8 @@ interface StockDao {
     @Update
     suspend fun updateStock(stock: Stock)
 
-    @Query("SELECT * FROM stocks ORDER BY name ASC LIMIT 10000")
-     fun getAllStocks() : LiveData<List<Stock>>
+    @Query("SELECT * FROM stocks ORDER BY name ASC")
+     fun getAllStocks() : PagingSource<Int, Stock>
 
 
     @Query("SELECT * FROM stocks WHERE id LIKE :id")
@@ -42,5 +43,10 @@ interface StockDao {
             "OR symbol LIKE '%' || :name_part || '%' ORDER BY name LIMIT 10000")
     suspend fun filterStockByName(name_part: String): List<Stock>?
 
+    @Query("SELECT COUNT(*) FROM stocks")
+    fun getAvailableStockCount(): LiveData<Int>
+
+    @Query("SELECT symbol FROM stocks ORDER BY symbol DESC LIMIT 1")
+    fun getLastSymbol(): String?
 }
 
