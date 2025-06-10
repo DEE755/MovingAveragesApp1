@@ -39,6 +39,17 @@
         tools:listitem="@layout/item_layout" />
 
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/button_add_foreground"
+        android:layout_marginEnd="300dp"
+        android:layout_marginBottom="100dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/testbutton" />
+
 
 
    <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,6 +79,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
+
+    <ProgressBar
+
+        android:id="@+id/progressBarpager"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:padding="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="400dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/loadingText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerView" />
 
     <TextView
         android:id="@+id/loadingText"

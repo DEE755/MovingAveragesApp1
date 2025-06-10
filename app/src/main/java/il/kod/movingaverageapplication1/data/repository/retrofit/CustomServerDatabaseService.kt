@@ -3,7 +3,6 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.StringAdapterForGson
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.data.models.StringAdapterCount
-import org.json.JSONObject
 
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -39,19 +38,23 @@ import retrofit2.http.Query
         //STOCKS
 
         //get all stocks /run once in a while + button to update stocks + maybe AI that tell you if there is more stocks that should be added
-        @GET("/getall_remoteDB_stocks")
+        @GET("/getall_remoteDB_stocks/?limit=2000")
         suspend fun getAllStocks(
         ): Response<List<Stock>>
+
+        @GET("/get_stocks_from_to/")
+        suspend fun getStocksStartingFromSymbol(@Query("symbol") symbol: String): Response<List<Stock>>
 
 
 
         @GET("/get_number_of_stocks")
-        suspend fun nbOfStocksInRemoteDB() : Response<StringAdapterCount>
+        suspend fun getNbOfStocksInRemoteDB() : Response<StringAdapterCount>
+
 
         //AI PERPLEXITY
         //ask a question:
         @FormUrlEncoded
-        @POST("/ask")
+        @POST("/ask_ai")
         suspend fun ask_ai(
             @Field("question") question: String
         ): Response<StringAdapterForGson>
@@ -61,14 +64,24 @@ import retrofit2.http.Query
 
     interface CustomServerDatabaseServiceWithToken {
 //this interface uses the version of retrofit that already has implemented the token in the header and the protected base_url /user
-        //ALL BASE URL ALREADY HAS /user IN IT
+        //ALL BASE URL ALREADY HAS /user IN IT and the token is already added to the header
 
-        @GET("/get_followed_stock_prices")
-        suspend fun getFollowedStockPrice(): Response<Double>
+        @FormUrlEncoded
+        @POST("follows_stock")
+        suspend fun setUserFollowsStock(
+            @Field("stockSymbol") stockSymbol: String
+        )
 
-        @POST("/follows_stock")
-        suspend fun setUserFollowsStock(stock: Stock): Response<String>
+        @GET("get_update_for_followed_stocksPR")
+        suspend fun getFollowedStockPrice(): Response<List<Stock>>
 
-        @POST("/unfollows_stock")
-        suspend fun setUserUnfollowsStock(stock: Stock): Response<String>
+
+        @GET("get_update_for_followed_stocksMA")
+        suspend fun getFollowedMovingAverages(): Response<List<Stock>>
+
+
+        @FormUrlEncoded
+        @POST("unfollows_stock")
+        suspend fun setUserUnfollowsStock(
+            @Field("symbol") symbol: String): Response<String>
     }

@@ -2,6 +2,7 @@ package il.kod.movingaverageapplication1.ui.fragment
 
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
@@ -19,10 +21,20 @@ import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
+import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
 
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable.isActive
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 
 @AndroidEntryPoint
@@ -41,10 +53,20 @@ class FollowedStocksFragment : Fragment() {
 
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
+    private val CSDViewModel: CustomServerDatabaseViewModel by activityViewModels()
+
+    private var priceUpdateJob: Job? = null
+
+
+
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -141,6 +163,73 @@ class FollowedStocksFragment : Fragment() {
             }
 
 
+CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
+{
+
+    when (it.status) {
+        is Success -> {
+            it?.status?.data.let { listOfStockPriceOnly ->
+                if (listOfStockPriceOnly != null) {
+                    for (stock in listOfStockPriceOnly) {
+                        viewModelAllStocks.updateStockPrice(stock.symbol, stock.current_price)
+                    }
+                }
+            }
+        }
+
+        is Error -> {
+            Log.d("FollowedStocksFragment", "Error fetching stock prices: ${it.status.message}")
+
+            Toast.makeText(requireContext(), "Problem Fetching Prices", Toast.LENGTH_SHORT).show()
+        }
+
+
+        is Loading-> {
+            //TODO()/*FIND THE FOLLOWED STOCKS BINDING AND WRITE "LOADING"*/
+            Toast.makeText(requireContext(), "Updating stock prices", Toast.LENGTH_SHORT).show()
+
+            }
+        }
+
+}
+
+        CSDViewModel.getFollowedMovingAverages().observe(viewLifecycleOwner)
+        {
+            when (it.status) {
+                is Error -> {
+                    Log.d(
+                        "FollowedStocksFragment",
+                        "Error fetching moving averages: ${it.status.message}"
+                    )
+                    Toast.makeText(
+                        requireContext(),
+                        "Problem Fetching Moving Averages",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is Loading -> {
+                    //TODO()/*FIND THE FOLLOWED STOCKS BINDING AND WRITE "LOADING"*/
+                    Toast.makeText(requireContext(), "Updating Moving Averages", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                is Success -> {
+                    it.status.data?.let { listOfStockMovingAveragesOnly ->
+                        for (stock in listOfStockMovingAveragesOnly) {
+                            viewModelAllStocks.updateMovingAverages(
+                                stock.symbol,
+                                stock.ma_50,
+                                stock.ma_25,
+                                stock.ma_150,
+                                stock.ma_200
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
 
             binding.addStockButtonBig.setOnClickListener {
 
@@ -161,13 +250,21 @@ class FollowedStocksFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.followed_stocks_title)
+
+
+                    CSDViewModel.getFollowedStockPrice() // Explicitly trigger the request
+
     }
 
 
 
     override fun onDestroyView() {
         super.onDestroyView()
+        priceUpdateJob?.cancel()
+
         _binding = null
+
+
     }
 }
 

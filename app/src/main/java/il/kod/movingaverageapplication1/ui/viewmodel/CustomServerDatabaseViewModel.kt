@@ -12,105 +12,175 @@ import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseRepo
 import il.kod.movingaverageapplication1.utils.Resource
 import javax.inject.Inject
 import androidx.core.content.edit
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.utils.Constants
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
+
 
 @HiltViewModel
 class CustomServerDatabaseViewModel @Inject constructor(
-    val CSDRepository: CustomServerDatabaseRepository, private val encryptedPreferences: SharedPreferences
-): ViewModel()
-{
-    var fetchedStockFlag=false
+    val CSDRepository: CustomServerDatabaseRepository,
+    private val sessionManager: SessionManager,
+): ViewModel() {
+    var fetchedStockFlag = false
 
-    lateinit var fetchedClientUsername :String
+    lateinit var fetchedClientUsername: String
 
-    lateinit var tokensResponse : LiveData<Resource<AuthResponse>>
+    var fetchedClientId = -1
 
-    lateinit var signupResult : LiveData<Resource<AuthResponse>>
+    lateinit var tokensResponse: LiveData<Resource<AuthResponse>>
 
+     var updatedStockPrice: LiveData<Resource<List<Stock>>> =
+        MutableLiveData<Resource<List<Stock>>>(Resource.loading(null))
 
-    private var _allStocks: LiveData<Resource<PagingData<Stock>>> = MutableLiveData<Resource<PagingData<Stock>>>(Resource.loading(null))
-    val allStocks: LiveData<Resource<PagingData<Stock>>> get() = _allStocks
-
-    lateinit var AI_Answer : LiveData<Resource<String>>
-
-    var nbOfStockInRemoteDB : Int = 0
+    lateinit var signupResult: LiveData<Resource<AuthResponse>>
 
 
-    private var _percentage = MutableLiveData<Int>()
-    val percentage: LiveData<Int> get() = _percentage
+    private var _allStocks: LiveData<Resource<PagingData<Stock>>> =
+        MutableLiveData<Resource<PagingData<Stock>>>(Resource.loading(null))
+
+    val allStocks: LiveData<PagingData<Stock>> =
+        CSDRepository.getAllStocks().map { resource: Resource<PagingData<Stock>> ->
+
+            resource.status.data ?: PagingData.empty<Stock>()
+        }.cachedIn(viewModelScope)
+
+    private val _cachedStocks = MediatorLiveData<Resource<PagingData<Stock>>>()
+    val cachedStocks: LiveData<Resource<PagingData<Stock>>> get() = _cachedStocks
+
+    init {
+        _cachedStocks.addSource(_allStocks) { _cachedStocks.value = it }
+    }
 
 
+    var AI_Answer: LiveData<Resource<String>> =
+        MutableLiveData<Resource<String>>(Resource.loading(null))
+
+    var nbOfStockInRemoteDB: Int = 0
+    var fetchedStocksCount: Int = 0
+
+    internal var percentoge: Int = 0
 
 
-    val limit = 100
-    var lastSymbol : String = "A"
+    var lastSymbol: String = "A"
 
 
-    fun saveTokens(token: String, refresh: String) {
-        encryptedPreferences.edit {
+    fun saveTokens(
+        token: String,
+        refresh: String,
+        username: String,
+        clientId: Int
+    ) {//insert the tokens into the encrypted shared preferences
+        sessionManager.preferences.edit {
             putString("access_token", token)
                 .putString("refresh_token", refresh)
+                .putString("client_username", username)
+                .putInt("client_id", clientId)
         }
     }
 
+
     fun getAccessTokenFromPreferences(): String? {
-        return encryptedPreferences.getString("access_token", null)
+        return sessionManager.preferences.getString("access_token", null)
     }
-
-
-
 
 
     fun updateCredentialsFromServer(userLogin: String, password: String) {
         fetchedClientUsername = userLogin
-        tokensResponse = CSDRepository.login( userLogin, password)
+        tokensResponse = CSDRepository.login(userLogin, password)
 
     }
 
-    fun signUpNewUserToServer(newEntrySignupName: String, chosenPassword: String)  {
+    fun signUpNewUserToServer(newEntrySignupName: String, chosenPassword: String) {
         //fetchedClientUsername = username
-        signupResult = CSDRepository.signUp(newEntrySignupName,chosenPassword)
+        signupResult = CSDRepository.signUp(newEntrySignupName, chosenPassword)
     }
-
-
 
 
     fun getAllStocks() {
         _allStocks = CSDRepository.getAllStocks()
     }
 
-    fun askAI(stock: Stock)  {
+    /* suspend fun getStocksStartingFromSymbol(symbol: String) {
+        Log.d("CustomServerDatabaseViewModel", "Fetching stocks starting from symbol: $symbol")
+        _allStocks=CSDRepository.getStocksStartingFromSymbol(symbol, viewModelScope)
+    }*/
+
+    fun askAI(stock: Stock) {
         AI_Answer = CSDRepository.askAI(stock)
 
     }
 
+    /*fun testUserFollowsStock(stockSymbol: String, follow: Boolean) {
+
+
+    CSDRepository.setUserFollowsStock(stockSymbol, follow)
+
+
+    }*/
+
+
     fun getNbOfStocksInRemoteDB() {
         viewModelScope.launch {
             try {
-                nbOfStockInRemoteDB= CSDRepository.nbOfStocksInRemoteDB()
-                Log.d("CustomServerDatabaseViewModel", "Number of stocks in remote DB: $nbOfStockInRemoteDB")
+                nbOfStockInRemoteDB = CSDRepository.getNbOfStocksInRemoteDB()
+                Log.d(
+                    "CustomServerDatabaseViewModel",
+                    "Number of stocks in remote DB: $nbOfStockInRemoteDB"
+                )
             } catch (e: Exception) {
-                Log.e("CustomServerDatabaseViewModel", "Error fetching number of stocks: ${e.message}")
+                Log.e(
+                    "CustomServerDatabaseViewModel",
+                    "Error fetching number of stocks: ${e.message}"
+                )
             }
         }
     }
 
 
+    fun calculatePercentageFetchStocks(numberOfStocksInLocalDB: Int, override: Boolean) {
+        if (nbOfStockInRemoteDB == 0) return
+        if (override) {
+            nbOfStockInRemoteDB =
+                Constants.DATABASE_LIMIT // if we chosed not to use the whole database, we override the value by this value}
 
-    fun calculatePercentageFetchStocks(numberOfStocksInLocalDB: Int) {
-        if (nbOfStockInRemoteDB==0) return
+            percentoge = (numberOfStocksInLocalDB * 100) / nbOfStockInRemoteDB
+        }
 
-        _percentage.value = (numberOfStocksInLocalDB * 100) / nbOfStockInRemoteDB
     }
 
 
+    fun getFollowedStockPrice() {
+         this.updatedStockPrice = CSDRepository.getFollowedStockPrice()
 
+//function to be observed by the UI to get the followed stock prices
+    }
 
-
+    fun getFollowedMovingAverages() =
+        CSDRepository.getFollowedMovingAverages()
 }
+
+
+
+
+
+
+
 
 
 

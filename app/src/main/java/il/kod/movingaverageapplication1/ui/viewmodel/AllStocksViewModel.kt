@@ -5,15 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
 import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
+import il.kod.movingaverageapplication1.ui.fragment.StocksSelectionFragment.ResultCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,18 +32,19 @@ class AllStocksViewModel @Inject constructor(
 
 
 
-    lateinit var pagedStocks: LiveData<PagingData<Stock>>
+
+    //val pagedStocks: LiveData<PagingData<Stock>>=localRepository.pagedStocks(viewModelScope)
+
 
     fun addStock(stock: Stock){
             viewModelScope.launch {  localRepository.addStock(stock)}}
     fun removeStock(stock: Stock) {viewModelScope.launch{localRepository.removeStock(stock)}}
 
 
-    fun followStock(stock: Stock, follow: Boolean) =
-        viewModelScope.launch{syncManagementRepository.setUserFollowsStock(stock, follow) }
+    fun followStock(stock: Stock, follow: Boolean) = syncManagementRepository.setUserFollowsStock(stock, follow)
 
 
-
+    
     fun onItemClicked(index: Int): Stock? {
         return followedStocks.value?.get(index)
     }
@@ -76,17 +73,22 @@ class AllStocksViewModel @Inject constructor(
 
     }
 
-    fun getAvailableStockCount()= viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            availableStockCount=localRepository.getAvailableStockCount()
+    fun getAvailableStockCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+           availableStockCount= localRepository.getAvailableStockCount()
+            }
+        }
+
+    fun updateStockPrice(symbol: String, currentPrice: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.updateStockPrice(symbol, currentPrice)
         }
     }
 
-    fun getLastSymbol(): String? {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                localRepository.getLastSymbol()
-            }
+    fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double)
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            localRepository.updateMovingAverages(symbol, ma50, ma25, ma150, ma200)
         }
     }
 
@@ -94,9 +96,11 @@ class AllStocksViewModel @Inject constructor(
         return localRepository.getSelectedStocks()
     }
 
-    fun getAllStocks() {
-        pagedStocks=localRepository.getPagedStocks().cachedIn(viewModelScope)
+    fun getAllStocks()
+    {
+
     }
+
 
 
 }

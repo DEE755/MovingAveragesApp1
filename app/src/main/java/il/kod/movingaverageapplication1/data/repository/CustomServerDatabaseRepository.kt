@@ -6,7 +6,9 @@ import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.utils.Resource
 import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
+import kod.il.movingaverageapplication1.utils.performFetchingFromServerEveryTenSeconds
 import kod.il.movingaverageapplication1.utils.performPostingToServer
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,16 +36,30 @@ class CustomServerDatabaseRepository @Inject constructor(
 
     fun getAllStocks() =
         performFetchingAndSaving (
-            {localDataSource.getPagedStocks()},
+            {localDataSource.getAllStocks()},
             {remoteDataSource.getAllStocks()},
             {localDataSource.saveAllStocks(it)}
         )
 
-    suspend fun nbOfStocksInRemoteDB() = remoteDataSource.nbOfStocksInRemoteDB()
+   /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
+        performFetchingAndSaving (
+            {localDataSource.getAllStocks(scope)},
+            {remoteDataSource.getStocksStartingFromSymbol(symbol)},
+            {localDataSource.saveAllStocks(it)}
+        )*/
 
+    suspend fun getNbOfStocksInRemoteDB() = remoteDataSource.getNbOfStocksInRemoteDB()
 
-    fun setUserFollowsStock(stock: Stock, follow: Boolean) =
-        performPostingToServer { remoteDataSource.userFollowsStock(stock, follow) }
+         fun getFollowedStockPrice()=
+             performFetchingFromServerEveryTenSeconds {
+                 remoteDataSource.getFollowedStockPrice()
+             }
+
+fun getFollowedMovingAverages() =
+    performFetchingFromServer {remoteDataSource.getFollowedMovingAverages()}
+
+    suspend fun setUserFollowsStock(stockSymbol: String, follow: Boolean, clientId: Int) =
+         remoteDataSource.userFollowsStock(stockSymbol, follow, clientId)
 
 
     fun askAI(stock: Stock) = performPostingToServer { remoteDataSource.askAI(stock) }

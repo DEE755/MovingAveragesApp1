@@ -9,6 +9,9 @@ import il.kod.movingaverageapplication1.utils.Success
 import il.kod.movingaverageapplication1.utils.Error //IMPORTANT BECAUSE IT THINKS IT IS kotlin.error if not !!!
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlin.coroutines.coroutineContext
 
 fun <T,A> performFetchingAndSaving(localDbFetch: () -> LiveData<T>,
                                     remoteDbFetch: suspend () ->Resource<A>,
@@ -53,6 +56,25 @@ fun <T> performFetchingFromServer(remoteDbFetch: suspend () ->Resource<T>) : Liv
 
 
 
+fun <T> performFetchingFromServerEveryTenSeconds(remoteDbFetch: suspend () -> Resource<T>): LiveData<Resource<T>> =
+    liveData(Dispatchers.IO) {
+        while (coroutineContext.isActive) {
+            emit(Resource.loading())
+            val fetchResource = remoteDbFetch()
+            if (fetchResource.status is kotlin.Error) {
+                emit(Resource.error(fetchResource.status.message ?: "Unknown error"))
+            } else {
+                emit(Resource.success("Success", fetchResource.status.data!!))
+            }
+            delay(10000)
+        }
+    }
+
+
+
+
+
+
 fun <T> performPostingToServer2(remoteDbPost: suspend () ->Resource<T>) : LiveData<Resource<T>> =
 
     liveData(Dispatchers.IO) {
@@ -77,6 +99,7 @@ fun <T> performPostingToServer(remoteDbPost: suspend () ->Resource<T>) : LiveDat
 
     liveData(Dispatchers.IO) {
 
+        Log.d("performPostingToServer","called")
         emit(Resource.loading())//tell the lave data observer that we are loading
 
         val receivedResource = remoteDbPost()
@@ -89,6 +112,6 @@ fun <T> performPostingToServer(remoteDbPost: suspend () ->Resource<T>) : LiveDat
             } else {
                 emit(Resource.success("Success", receivedResource.status.data!!))
             }
-            emit(Resource.success("Success", receivedResource.status.data!!))
+            //emit(Resource.success("Success", receivedResource.status.data!!))
         }
     }

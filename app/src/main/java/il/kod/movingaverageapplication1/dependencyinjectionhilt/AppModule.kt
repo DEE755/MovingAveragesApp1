@@ -26,6 +26,7 @@ import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDat
 import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
 
 import il.kod.movingaverageapplication1.ui.AppMenu
+import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 
@@ -54,21 +55,37 @@ class AppModule {
     @Provides
     @Singleton
     @Named("okHttpClientWithToken")
-    fun provideOkHttpClientWithToken (sharedPreferences: SharedPreferences): OkHttpClient
-    { val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
-        level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
-    }
-        val client = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${sharedPreferences.getString("token", "NOT_FOUND")}")
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
+    fun provideOkHttpClientWithToken(sharedPreferences: SharedPreferences): OkHttpClient {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
 
-        return client
+        return try {
+            OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val token = sharedPreferences.getString("access_token", null)
+                    Log.d("AppModule", "Token retrieved: $token")
+
+                    val requestBuilder = chain.request().newBuilder()
+                    if (!token.isNullOrEmpty()) {
+                        requestBuilder.addHeader("Authorization", "Bearer $token")
+                    } else {
+                        Log.w("AppModule", "No token found in SharedPreferences")
+                    }
+
+                    chain.proceed(requestBuilder.build())
+                }
+                .addInterceptor(logging)
+                .build()
+        } catch (e: Exception) {
+            Log.e("AppModule", "Error building OkHttpClient: ${e.message}")
+            // Return a fallback client without token
+            OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build()
+        }
     }
+
 
 
 

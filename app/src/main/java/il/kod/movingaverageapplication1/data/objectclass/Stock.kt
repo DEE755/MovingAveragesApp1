@@ -5,11 +5,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "stocks", indices = [Index(value = ["symbol"], unique = true)])
-
+@Entity(tableName = "stocks", indices = [Index(value = ["symbol"], unique = false)])
+//PAY ATTENTION THE NAMES FITS THE DATABASE TABLE NAMES
 data class Stock(
     @ColumnInfo(name="currency")
     val currency: String,
@@ -18,6 +19,7 @@ data class Stock(
 
     @ColumnInfo(name="symbol")
     val symbol: String,
+
 
     @ColumnInfo(name="current_price")
     val current_price: Double,

@@ -3,14 +3,21 @@ package il.kod.movingaverageapplication1.data.repository
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
+import androidx.paging.cachedIn
 import androidx.paging.liveData
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
+import il.kod.movingaverageapplication1.utils.Constants
+import il.kod.movingaverageapplication1.utils.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -30,17 +37,24 @@ class LocalStocksRepository @Inject constructor(application: Application) {
     }
 
 
-    fun getPagedStocks(): LiveData<PagingData<Stock>> {
+
+    /*fun getAllStocks(scope: CoroutineScope): LiveData<PagingData<Stock>> {
+        Log.d("LocalStocksRepository", "getAllStocks called")
         return Pager(
-            config = PagingConfig(pageSize = 100),
-            pagingSourceFactory = { stockDao.getAllStocks() }
-        ).liveData
-    }
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { stockDao.getAllStocks()}
+        ).flow
+            .cachedIn(scope) // cache in given scope
+            .asLiveData()
+    }*/
 
 
-    fun getAllStocks(): PagingSource<Int, Stock> {
-        return stockDao.getAllStocks()
-    }
+    fun getAllStocks(): LiveData<PagingData<Stock>> {
+    return Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { stockDao.getAllStocks(Constants.DATABASE_LIMIT) }
+    ).liveData
+}
 
     fun getSelectedStocks(): LiveData<List<Stock>> {
         return stockDao.getSelectedStocks()
@@ -80,6 +94,7 @@ class LocalStocksRepository @Inject constructor(application: Application) {
     }
 
     suspend fun setUserFollowsStock(stock: Stock, follow: Boolean) {
+        Log.d("LocalStocksRepository", "setUserFollowsStock called with stock: $stock, follow: $follow")
         stock.isSelected = follow
         updateStock(stock)
     }
@@ -91,8 +106,11 @@ class LocalStocksRepository @Inject constructor(application: Application) {
         return stockDao.getLastSymbol()
     }
 
+    fun updateStockPrice(symbol: String, currentPrice: Double) : Unit =
+        stockDao.updateStockPrice(symbol,currentPrice)
 
 
-
+    fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double) =
+        stockDao.updateMovingAverages(symbol, ma50, ma25, ma150, ma200)
 
 }

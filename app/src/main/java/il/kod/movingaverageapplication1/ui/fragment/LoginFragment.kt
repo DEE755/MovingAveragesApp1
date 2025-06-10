@@ -93,12 +93,16 @@ class LoginFragment : Fragment() {
 
                             it.status.data?.let { data ->
                                 Log.d("LoginFragment", "Data received: $data")
+                                CSDviewModel.fetchedClientUsername = data.username ?: ""
+                                CSDviewModel.fetchedClientId= data.userId ?: -1
                                 CSDviewModel.saveTokens(
                                     data.accessToken ?: "",
-                                    data.refreshToken ?: ""
+                                    data.refreshToken ?: "",
+                                    CSDviewModel.fetchedClientUsername,
+                                    CSDviewModel.fetchedClientId
                                 )
 
-                                CSDviewModel.fetchedClientUsername = data.username ?: ""
+
 
 
                             Toast.makeText(

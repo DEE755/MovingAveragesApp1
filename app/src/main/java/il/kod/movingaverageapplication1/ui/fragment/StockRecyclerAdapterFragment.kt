@@ -46,7 +46,7 @@ class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val 
         fun bind(stock: Stock) {
 
             binding.itemTitle.text = stock.name
-            binding.itemDescription.text = binding.root.context.getString(R.string.ticker, stock.symbol)
+            binding.itemDescription.text = "${binding.root.context.getString(R.string.ticker, stock.symbol)}, price: ${stock.current_price}"
 
             Log.d("StockAdapterFragment", "name: ${stock.name},image: ${stock.logo_url}")
             glide.load(stock.logo_url).error(R.mipmap.ic_launcher).into(binding.itemImage)

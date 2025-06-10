@@ -20,6 +20,7 @@ import kotlin.getValue
 
 class SignUpFragment : Fragment()
 {
+
     var _binding: SignupFragmentBinding? = null
     val binding get() = _binding!!
 
@@ -78,7 +79,9 @@ class SignUpFragment : Fragment()
                                 Log.d("SignupFragment", "Data received: $data")
                                 CSDviewModel.saveTokens(
                                     data.accessToken ?: "",
-                                    data.refreshToken ?: ""
+                                    data.refreshToken ?: "",
+                                    data.username ?: "",
+                                    data.userId ?: 0
                                 )
                             Log.d("SignupFragment", "Success state")
                                 }

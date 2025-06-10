@@ -21,8 +21,8 @@ interface StockDao {
     @Update
     suspend fun updateStock(stock: Stock)
 
-    @Query("SELECT * FROM stocks ORDER BY name ASC")
-     fun getAllStocks() : PagingSource<Int, Stock>
+    @Query("SELECT * FROM stocks ORDER BY name ASC LIMIT :limit")
+     fun getAllStocks(limit: Int) : PagingSource<Int, Stock>
 
 
     @Query("SELECT * FROM stocks WHERE id LIKE :id")
@@ -48,5 +48,11 @@ interface StockDao {
 
     @Query("SELECT symbol FROM stocks ORDER BY symbol DESC LIMIT 1")
     fun getLastSymbol(): String?
+
+    @Query("UPDATE stocks SET current_price=:currentPrice WHERE symbol=:symbol")
+    fun updateStockPrice(symbol: String, currentPrice: Double): Unit
+
+    @Query("UPDATE stocks SET ma_50=:ma50, ma_25=:ma25, ma_150=:ma150, ma_200=:ma200 WHERE symbol=:symbol")
+    fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double): Unit
 }
 

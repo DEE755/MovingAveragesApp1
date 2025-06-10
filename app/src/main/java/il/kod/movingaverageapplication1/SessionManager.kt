@@ -14,6 +14,12 @@ import javax.inject.Singleton
 @Singleton
 class SessionManager @Inject constructor(val preferences: SharedPreferences): Service() {
 
+    val refreshToken= preferences.getString("refresh_token", null)
+    val accessToken = preferences.getString("access_token", null)
+    val username = preferences.getString("username", null)
+    val clientId = preferences.getInt("client_id", -1)
+
+
 
     fun logOutClient() {
         preferences.edit { clear() }

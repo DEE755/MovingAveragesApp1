@@ -13,6 +13,7 @@ abstract class BaseDataSource {
     protected suspend fun <T>
             getResult( call : suspend () -> Response<T>, method: HttpMethod = HttpMethod.GET) : Resource<T> {
         try {
+            Log.d("BaseDataSource", "entered try")
             val result  = call()
             val message_: String
             if(result.isSuccessful) {
