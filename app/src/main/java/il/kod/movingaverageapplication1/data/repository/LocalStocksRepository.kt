@@ -3,21 +3,11 @@ package il.kod.movingaverageapplication1.data.repository
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.PagingSource
-import androidx.paging.cachedIn
-import androidx.paging.liveData
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 import il.kod.movingaverageapplication1.utils.Constants
 import il.kod.movingaverageapplication1.utils.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -49,12 +39,11 @@ class LocalStocksRepository @Inject constructor(application: Application) {
     }*/
 
 
-    fun getAllStocks(): LiveData<PagingData<Stock>> {
-    return Pager(
-        config = PagingConfig(pageSize = 20),
-        pagingSourceFactory = { stockDao.getAllStocks(Constants.DATABASE_LIMIT) }
-    ).liveData
-}
+
+
+    fun getAllStocks() =
+        stockDao.getAllStocks(Constants.DATABASE_LIMIT)
+
 
     fun getSelectedStocks(): LiveData<List<Stock>> {
         return stockDao.getSelectedStocks()
@@ -82,8 +71,8 @@ class LocalStocksRepository @Inject constructor(application: Application) {
         return stockDao.getStocksByIds(ids.toList())
     }
 
-    suspend fun saveAllStocks(allStocks: List<Stock>) {
-        for (stock in allStocks) {
+    suspend fun saveAllStocks(allStocks: Resource<List<Stock>>) {
+        for (stock in allStocks.status.data ?: emptyList()) {
             stockDao.addStock(stock)
         }
     }

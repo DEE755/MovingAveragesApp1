@@ -1,7 +1,12 @@
 package il.kod.movingaverageapplication1.ui.fragment
 
+import android.graphics.Color
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +23,8 @@ import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
+import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
 
 
@@ -54,16 +61,52 @@ class DetailsStockFragment: Fragment() {
 
         val clickedStock : MutableLiveData<Stock> = viewModelDetailStock.clickedStock
         clickedStock.let {stock->
-            if (!stock.value!!.isSelected){
-                binding.addButton.visibility = View.VISIBLE
+            val selecStock=stock.value
+            if (selecStock.isSelected){
+
+                binding.addButton.text = "Currently Following"
+                binding.addButton.isEnabled=false
+
             } else {
-                binding.addButton.visibility = View.GONE
+
+                binding.addButton.visibility = View.VISIBLE
             }
-            binding.stockSymbol.text ="Ticker: ${stock.value?.symbol}"
+            binding.stockSymbol.text =stock.value?.symbol
+
+            if (selecStock.ma_25.isNaN() || selecStock.ma_25 == 0.00) {
+                binding.maView.visibility = View.GONE
+            } else {
+                binding.maView.visibility = View.VISIBLE
+                val title="Moving Averages:"
+                val ma25="25: ${BigDecimal(selecStock.ma_25).setScale(2, RoundingMode.HALF_UP).toDouble()}"
+                val ma50="50: ${BigDecimal(selecStock.ma_50).setScale(2, RoundingMode.HALF_UP).toDouble()}"
+                val ma150="150: ${BigDecimal(selecStock.ma_150).setScale(2, RoundingMode.HALF_UP).toDouble()}"
+                val ma200="200: ${BigDecimal(selecStock.ma_200).setScale(2, RoundingMode.HALF_UP).toDouble()}"
+
+               val full="$title\n\t\t\t\t\t\t$ma25\n\t\t\t\t\t\t$ma50\n\t\t\t\t\t\t$ma150\n\t\t\t\t\t\t$ma200"
+
+                // Create a SpannableString to style the text
+               val spannableString = SpannableString(full)
+                spannableString.setSpan(
+                    ForegroundColorSpan(Color.WHITE),
+                    0, title.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                spannableString.setSpan(
+                    AbsoluteSizeSpan(20, true),
+                    0, title.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+
+                binding.maView.text = spannableString
+
+
+            }
+
 
             binding.stockCompany.text =stock.value?.name?:"N/A"
-            binding.stockPrice.text = if (stock.value?.current_price != null) {
-                "Current prices: ${stock.value?.current_price}"
+            binding.stockPrice.text = if (stock.value?.current_price != 0.00) {
+                "Live price: ${stock.value?.current_price}"
             } else {
                 "Follow to get live updates"
             }

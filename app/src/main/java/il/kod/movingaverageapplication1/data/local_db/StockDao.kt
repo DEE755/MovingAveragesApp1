@@ -12,7 +12,7 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 
 @Dao
 interface StockDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addStock(stock: Stock)
 
     @Delete
@@ -21,7 +21,7 @@ interface StockDao {
     @Update
     suspend fun updateStock(stock: Stock)
 
-    @Query("SELECT * FROM stocks ORDER BY name ASC LIMIT :limit")
+    @Query("SELECT DISTINCT * FROM stocks ORDER BY name ASC LIMIT :limit")
      fun getAllStocks(limit: Int) : PagingSource<Int, Stock>
 
 

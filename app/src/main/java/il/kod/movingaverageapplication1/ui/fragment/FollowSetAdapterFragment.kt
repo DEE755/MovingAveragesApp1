@@ -46,12 +46,12 @@ class FollowSetAdapterFragment(
         }
 
         fun bind(followSet: FollowSet) {
-            binding.itemTitle.text = followSet.name
-            binding.itemDescription.text = binding.root.context.getString(R.string.follow_set_description, followSet.size())
+            binding.stockTitle.text = followSet.name
+            binding.stockTicker.text = binding.root.context.getString(R.string.follow_set_description, followSet.size())
             Glide.with(binding.root)
                 .load(followSet.imageUri)
                 .error(R.mipmap.button_follow_set)
-                .into(binding.itemImage)
+                .into(binding.stockImage)
         }
     }
 

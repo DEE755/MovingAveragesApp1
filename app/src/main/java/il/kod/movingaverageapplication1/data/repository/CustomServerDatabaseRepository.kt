@@ -1,14 +1,14 @@
 package il.kod.movingaverageapplication1.data.repository
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.utils.Resource
-import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
+import kod.il.movingaverageapplication1.utils.performFetchingAndSavingPaging
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
 import kod.il.movingaverageapplication1.utils.performFetchingFromServerEveryTenSeconds
 import kod.il.movingaverageapplication1.utils.performPostingToServer
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,12 +34,13 @@ class CustomServerDatabaseRepository @Inject constructor(
          remoteDataSource.signUp(username, password) }
 
 
-    fun getAllStocks() =
-        performFetchingAndSaving (
-            {localDataSource.getAllStocks()},
+    fun getAllStocks() : LiveData<PagingData<Stock>> =
+        performFetchingAndSavingPaging(
+            {localDataSource.getAllStocks()}, // return LiveData<PagingData<Stock>>
             {remoteDataSource.getAllStocks()},
-            {localDataSource.saveAllStocks(it)}
+            { allStocks -> localDataSource.saveAllStocks(allStocks) }
         )
+
 
    /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
         performFetchingAndSaving (
@@ -62,7 +63,7 @@ fun getFollowedMovingAverages() =
          remoteDataSource.userFollowsStock(stockSymbol, follow, clientId)
 
 
-    fun askAI(stock: Stock) = performPostingToServer { remoteDataSource.askAI(stock) }
+    fun askAI(stock: Stock, question: String) = performPostingToServer { remoteDataSource.askAI(stock, question) }
 
 
 

@@ -24,17 +24,13 @@ import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewMod
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.databinding.FragmentAllStockSelectionBinding
 import il.kod.movingaverageapplication1.utils.AutoClearedValue
-import il.kod.movingaverageapplication1.utils.Error
-import il.kod.movingaverageapplication1.utils.Loading
-import il.kod.movingaverageapplication1.utils.Success
-import kotlinx.coroutines.Dispatchers
 
 
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import androidx.paging.LoadState
-import kotlinx.coroutines.CoroutineScope
-import retrofit2.Response
+import il.kod.movingaverageapplication1.data.objectclass.Stock.Companion.stockList
+import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 
 @AndroidEntryPoint
 class StocksSelectionFragment : Fragment() {
@@ -47,23 +43,20 @@ class StocksSelectionFragment : Fragment() {
         fun onError(error: Throwable)
     }
 
-    private var _binding: FragmentAllStockSelectionBinding by AutoClearedValue<FragmentAllStockSelectionBinding>(this)
+    private var _binding: FragmentAllStockSelectionBinding by AutoClearedValue<FragmentAllStockSelectionBinding>(
+        this
+    )
     private val binding get() = _binding
 
 
-
-
-        //shared viewmodels
+    //shared viewmodels
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
-    private val  CSDViewModel : CustomServerDatabaseViewModel by activityViewModels()
+    private val CSDViewModel: CustomServerDatabaseViewModel by activityViewModels()
 
 
 
-    private var lastUpdateTime = 0L
-    private val updateInterval = 500L
-   // lateinit var stockObserver: Observer<Int>
-
+     //lateinit var currentObserver: Observer<List<Stock>>
 
 
     override fun onCreateView(
@@ -75,7 +68,7 @@ class StocksSelectionFragment : Fragment() {
 
         _binding = FragmentAllStockSelectionBinding.inflate(inflater, container, false)
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
 
 
         if (!CSDViewModel.fetchedStockFlag) { //if stocks are not fetched for current launch, fetch them (if needed)
@@ -88,11 +81,10 @@ class StocksSelectionFragment : Fragment() {
                 "there is at start ${viewModelAllStocks.availableStockCount.value}"
             )
 
-            CSDViewModel.getAllStocks()
+            //CSDViewModel.getAllStocks()
 
-            CSDViewModel.fetchedStockFlag= true //set flag to true so it wont fetch again
+            CSDViewModel.fetchedStockFlag = true //set flag to true so it wont fetch again
         }
-
 
 
 //if a new stock is added to the unselectedlist, it will be added to the recycler view
@@ -100,36 +92,16 @@ class StocksSelectionFragment : Fragment() {
         setupRecyclerView(R.id.action_stockSelection3_to_detailsItemFragment)
         //viewModelAllStocks.unselectedStock.observe(viewLifecycleOwner) {setupRecyclerView(it,  R.id.action_stockSelection3_to_detailsItemFragment)}
 
-        viewModelAllStocks.filteredStocksList.observe(viewLifecycleOwner){setupRecyclerView(R.id.action_stockSelection3_to_detailsItemFragment)}
 
-binding.testbutton.setOnClickListener { }//CSDViewModel.testUserFollowsStock("AAPL", true) }
 
-       CSDViewModel.AI_Answer.observe(viewLifecycleOwner) { answer ->
-            answer?.let {
-                when(it.status) {
-                    is Loading -> {
-                        binding.progressBar.isVisible = true
+        binding.returntoselected.setOnClickListener {
 
-                    }
-                    is Error -> {
+            findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
 
-                        Toast.makeText(requireContext(), it.status.message, Toast.LENGTH_SHORT).show()
-                        binding.progressBar.isVisible = false
-                    }
-                    is Success -> {
-                        binding.progressBar.isVisible = false
 
-                    }
-                }
-            }
         }
 
-binding.returntoselected.setOnClickListener {
 
-    findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
-
-
-}
         binding.searchView.apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -137,6 +109,18 @@ binding.returntoselected.setOnClickListener {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.isNullOrEmpty()) {
+                        binding.recyclerView.isVisible=true
+                        binding.searchingRecyclerView.isVisible=false
+                        viewModelAllStocks.filteredStocksList.value = stockList
+                        updateCountView(stockList.size)
+
+                    }
+                    else {
+                            binding.recyclerView.isVisible=false
+                            binding.searchingRecyclerView.isVisible=true}
+
+
                     viewModelAllStocks.filterStocksByName(newText)
                     updateCountView(viewModelAllStocks.searchStockCount)
 
@@ -164,86 +148,167 @@ binding.returntoselected.setOnClickListener {
             glide = glide
         )
 
-adapter.addLoadStateListener { binding.progressBarpager.isVisible=it.source.refresh is  LoadState.Loading }
+        adapter.addLoadStateListener { loadState ->
+            val binding = _binding ?: return@addLoadStateListener // Ensure binding is valid
+
+            // Show progress bar during loading
+            binding.progressBarpager.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.loadingText.isVisible = loadState.source.refresh is LoadState.Loading
+
+            // Handle empty state
+            val isEmpty = loadState.source.refresh is LoadState.NotLoading && adapter.itemCount == 0
+            binding.loadingText.isVisible = isEmpty
+            binding.recyclerView.isVisible = !isEmpty
+
+            // Handle error state (optional)
+            val errorState = loadState.source.refresh as? LoadState.Error
+            errorState?.let {
+                Toast.makeText(requireContext(), "Error: ${it.error.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+        //PAGING RECYCLER VIEW
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
+        //SEARCHING RECYCLER VIEW
+        binding.searchingRecyclerView.layoutManager= LinearLayoutManager(requireContext())
+        val searchingAdapter=
+            StockRecyclerAdapterFragment(
+            emptyList(),
+            callBack = object : StockRecyclerAdapterFragment.ItemListener {
+                override fun onItemClicked(index: Int) {
+
+                    viewModelAllStocks.followedStocks.value?.get(index)
+                        ?.let { selectedStock ->
+                            viewModelDetailStock.clickedStock.value = selectedStock
+                            findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
+                        }
+                }
+
+                override fun onItemLongClicked(index: Int) {
+                    val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
+
+                    showConfirmationDialog(
+                        context = requireContext(),
+                        title = getString(R.string.deletion_stock_title),
+                        message = getString(R.string.delete_stock_message, clickedStock?.name),
+                        onYes = {
+                            viewModelAllStocks.followStock(clickedStock!!, false)
+                            (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
+                                index
+                            )
+
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.successfully_removed, clickedStock.name),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
+                        onNo = {}
+                    )
+                }
+            },
+            glide = glide
+        )
+
+        binding.searchingRecyclerView.adapter =searchingAdapter
+
+
+
         CSDViewModel.allStocks.observe(viewLifecycleOwner) {
-        if (it != null) {
-            lifecycleScope.launch {
-
-                CSDViewModel.calculatePercentageFetchStocks(++CSDViewModel.fetchedStocksCount, true)
-            }
-
-                    if (CSDViewModel.percentoge>5 && CSDViewModel.percentoge < 95) {
-
-                        binding.loadingText.text= "Indexing large amount of data, please wait..."
-                        binding.loadingText.textSize= 12f
-                        val layoutParams = binding.progressBar.layoutParams as ViewGroup.MarginLayoutParams
-                        layoutParams.topMargin = 0 // Set the desired top margin
-                        layoutParams.width = 900
-                        binding.progressBar.layoutParams = layoutParams
-
-                        binding.recyclerView.isVisible = true
-
-
-                    } else if (CSDViewModel.percentoge >= 95) {
-                        binding.progressBar.isVisible = false
-                        binding.loadingText.isVisible = false
-                        binding.recyclerView.isVisible = true
-                    }
-
-                    if (CSDViewModel.percentoge < 95) {
-
-                        binding.progressBar.progress = CSDViewModel.percentoge
-                        updateCountView(CSDViewModel.fetchedStocksCount)
-
-                        //TODO(DAO UTILITY: SET DAO IN NEW UTILITY TABLE FLAG SO FETCHING WONT HAPPEN FOR NEXT TIME)_
-                        //TODO(OR FIND OUT WITH NB OF STOCKS IN DB BUT DOESNT WORK FOR NOW)
-
-                    } else {
-                        binding.progressBar.isVisible = false
-                        binding.loadingText.isVisible = false
-                        binding.recyclerView.isVisible = true
-//                            Toast.makeText(
-//                                requireContext(),
-//                                "Stocks fetched successfully",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-
-
-                    }
+            if (it != null) {
+                Log.d("StocksSelectionFragment", "Observing")
+                lifecycleScope.launch {
+                    adapter.submitData(lifecycle, it)//submit the data to the adapter
+                    CSDViewModel.fetchedStocksCount = adapter.itemCount
+                    CSDViewModel.calculatePercentageFetchStocks(
+                        CSDViewModel.fetchedStocksCount,
+                        true
+                    )
+                    Log.d("StocksSelectionFragment", "adapter item count: ${adapter.itemCount}")
                 }
 
 
-            //RECYCLER
-            it?.let { data ->
-                adapter.submitData(lifecycle, data)//submit the data to the adapter
 
-            } ?: run {
-                Log.e("StocksSelectionFragment", "PagingData or its data is null")
+                if (CSDViewModel.percentoge > 5 && CSDViewModel.percentoge < 95) {
+
+                    binding.loadingText.text = "Indexing large amount of data, please wait..."
+                    binding.loadingText.textSize = 12f
+                    val layoutParams =
+                        binding.progressBar.layoutParams as ViewGroup.MarginLayoutParams
+                    layoutParams.topMargin = 0 // Set the desired top margin
+                    layoutParams.width = 900
+                    binding.progressBar.layoutParams = layoutParams
+
+                    binding.recyclerView.isVisible = true
+
+
+                } else if (CSDViewModel.percentoge >= 95 || CSDViewModel.percentoge == 0) {
+                    binding.progressBar.isVisible = false
+                    binding.loadingText.isVisible = false
+                    binding.recyclerView.isVisible = true
+                }
+
+                if (CSDViewModel.percentoge < 95) {
+
+                    binding.progressBar.progress = CSDViewModel.percentoge
+                    updateCountView(CSDViewModel.fetchedStocksCount)
+
+                    //TODO(DAO UTILITY: SET DAO IN NEW UTILITY TABLE FLAG SO FETCHING WONT HAPPEN FOR NEXT TIME)_
+                    //TODO(OR FIND OUT WITH NB OF STOCKS IN DB BUT DOESNT WORK FOR NOW)
+
+                } else {
+                    binding.progressBar.isVisible = false
+                    binding.loadingText.isVisible = false
+                    binding.recyclerView.isVisible = true
+
+                }
             }
-        }}
+
+
+        }
 
 
 
 
 
-    fun updateCountView(count: Int) {
-   var countText: String= "Available Stocks"
-        if (count>0) countText=countText.plus(": $count stocks")
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Available Stocks: $count stocks"
+
+        viewModelAllStocks.filteredStocksList.observe(viewLifecycleOwner) {
+
+                lifecycleScope.launch {
+                    searchingAdapter.updateData(it)//submit the data to the adapter
+                    val filteredCount= searchingAdapter.itemCount
+
+                    Log.d("StocksSelectionFragment", "adapter item count: ${filteredCount}")
+                    updateCountView(filteredCount)
+                }
+
+        }
     }
-    override fun onResume() {
-        super.onResume()
-        //updateCountView(CSDViewModel.fetchedStocksCount)
+
+
+
+
+        fun updateCountView(count: Int) {
+            if (!isAdded) return // Ensure the Fragment is attached to an activity
+            var countText: String = "Available Stocks"
+            if (count > 0) countText = countText.plus(": $count stocks")
+            (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                "Available Stocks: $count stocks"
+        }
+
+        override fun onResume() {
+            super.onResume()
+            //updateCountView(CSDViewModel.fetchedStocksCount)
+        }
+
+        override fun onDestroyView() {
+            super.onDestroyView()
+
+        }
+
+
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-    }
-
-
-}

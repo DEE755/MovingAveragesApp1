@@ -3,6 +3,7 @@ package il.kod.movingaverageapplication1.ui.fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -33,13 +34,13 @@ class StockPagingAdapterFragment(
 
         fun bind(stock: Stock) {
             currentStock = stock
-            binding.itemTitle.text = stock.name
-            binding.itemDescription.text =
-                binding.root.context.getString(R.string.ticker, stock.symbol)
+            binding.stockTitle.text = stock.name
+            binding.stockTicker.text = stock.symbol
+            binding.stockPrice.isVisible=false
 
             glide.load(stock.logo_url)
                 .error(R.mipmap.ic_launcher)
-                .into(binding.itemImage)
+                .into(binding.stockImage)
         }
 
         override fun onClick(p0: View?) {

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "stocks", indices = [Index(value = ["symbol"], unique = false)])
+@Entity(tableName = "stocks", indices = [Index(value = ["symbol"], unique = true)])
 //PAY ATTENTION THE NAMES FITS THE DATABASE TABLE NAMES
 data class Stock(
     @ColumnInfo(name="currency")

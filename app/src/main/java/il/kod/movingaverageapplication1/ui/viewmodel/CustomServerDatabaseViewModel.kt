@@ -51,21 +51,20 @@ class CustomServerDatabaseViewModel @Inject constructor(
     lateinit var signupResult: LiveData<Resource<AuthResponse>>
 
 
-    private var _allStocks: LiveData<Resource<PagingData<Stock>>> =
-        MutableLiveData<Resource<PagingData<Stock>>>(Resource.loading(null))
+    private var _allStocks: LiveData<PagingData<Stock>> =
+        MutableLiveData<PagingData<Stock>>().apply {
+            value = PagingData.empty<Stock>()
+        }
 
     val allStocks: LiveData<PagingData<Stock>> =
-        CSDRepository.getAllStocks().map { resource: Resource<PagingData<Stock>> ->
-
-            resource.status.data ?: PagingData.empty<Stock>()
-        }.cachedIn(viewModelScope)
+        CSDRepository.getAllStocks().cachedIn(viewModelScope)
 
     private val _cachedStocks = MediatorLiveData<Resource<PagingData<Stock>>>()
     val cachedStocks: LiveData<Resource<PagingData<Stock>>> get() = _cachedStocks
 
-    init {
+    /*init {
         _cachedStocks.addSource(_allStocks) { _cachedStocks.value = it }
-    }
+    }*/
 
 
     var AI_Answer: LiveData<Resource<String>> =
@@ -121,8 +120,8 @@ class CustomServerDatabaseViewModel @Inject constructor(
         _allStocks=CSDRepository.getStocksStartingFromSymbol(symbol, viewModelScope)
     }*/
 
-    fun askAI(stock: Stock) {
-        AI_Answer = CSDRepository.askAI(stock)
+    fun askAI(stock: Stock, question: String) {
+        AI_Answer = CSDRepository.askAI(stock, question)
 
     }
 

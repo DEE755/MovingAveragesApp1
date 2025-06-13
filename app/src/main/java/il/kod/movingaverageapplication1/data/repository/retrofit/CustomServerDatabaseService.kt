@@ -38,8 +38,8 @@ import retrofit2.http.Query
         //STOCKS
 
         //get all stocks /run once in a while + button to update stocks + maybe AI that tell you if there is more stocks that should be added
-        @GET("/getall_remoteDB_stocks/?limit=2000")
-        suspend fun getAllStocks(
+        @GET("/getall_remoteDB_stocks/")
+        suspend fun getAllStocks(@Query("limit") limit: Int
         ): Response<List<Stock>>
 
         @GET("/get_stocks_from_to/")
@@ -54,7 +54,7 @@ import retrofit2.http.Query
         //AI PERPLEXITY
         //ask a question:
         @FormUrlEncoded
-        @POST("/ask_ai")
+        @POST("/ask")
         suspend fun ask_ai(
             @Field("question") question: String
         ): Response<StringAdapterForGson>

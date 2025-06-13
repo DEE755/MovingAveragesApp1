@@ -45,11 +45,22 @@ class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val 
 
         fun bind(stock: Stock) {
 
-            binding.itemTitle.text = stock.name
-            binding.itemDescription.text = "${binding.root.context.getString(R.string.ticker, stock.symbol)}, price: ${stock.current_price}"
+            binding.stockTitle.text = stock.name
+            binding.stockTicker.text = stock.symbol
+            if (stock.current_price==0.00 || stock.ma_25.isNaN() || stock.ma_25==0.00) {
+                binding.stockPrice.visibility = View.GONE
+
+
+            } else {
+                binding.stockPrice.text= stock.current_price.toString()
+                binding.stockPrice.visibility = View.VISIBLE
+
+            }
+
+
 
             Log.d("StockAdapterFragment", "name: ${stock.name},image: ${stock.logo_url}")
-            glide.load(stock.logo_url).error(R.mipmap.ic_launcher).into(binding.itemImage)
+            glide.load(stock.logo_url).error(R.mipmap.ic_launcher).into(binding.stockImage)
 
 
         }

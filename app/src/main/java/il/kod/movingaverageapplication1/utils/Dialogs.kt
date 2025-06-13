@@ -1,17 +1,13 @@
 package il.kod.movingaverageapplication1.utils
 
 import android.content.Context
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.edit
 import androidx.core.text.isDigitsOnly
-import androidx.core.view.MenuProvider
-import androidx.navigation.NavController
 import il.kod.movingaverageapplication1.R
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 
 fun showConfirmationDialog(
@@ -91,17 +87,38 @@ fun showThresholdInputDialog(
 
 
 
-fun formatText(input: String): String {
-    return input
-        .replace("## (.*?)\\n".toRegex()) { matchResult ->
-            "\n\n${matchResult.groupValues[1].uppercase()}\n\n"
+suspend fun showCustomQuestionInputDialog(
+    context: Context,
+    title: String,
+    message: String
+): String? = suspendCancellableCoroutine { continuation ->
+    val editText = EditText(context).apply {
+        hint = message
+    }
+
+    android.app.AlertDialog.Builder(context)
+        .setTitle(title)
+        .setView(editText)
+        .setPositiveButton("Ask") { dialog, _ ->
+            val input = editText.text.toString()
+            if (input.isNotBlank()) {
+                continuation.resume(input)
+            } else {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.valid_number_prompt),
+                    Toast.LENGTH_SHORT
+                ).show()
+                continuation.resume(null)
+            }
+            dialog.dismiss()
         }
-        .replace("### (.*?)\\n".toRegex()) { matchResult ->
-            "- ${matchResult.groupValues[1]}"
+        .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
+            continuation.resume(null)
+            dialog.dismiss()
         }
-        .replace("\\*\\*(.*?)\\*\\*".toRegex()) { matchResult ->
-            matchResult.groupValues[1].uppercase()
+        .setOnCancelListener {
+            continuation.resume(null)
         }
-        .replace("\\[\\d+\\]".toRegex(), "") // Remove reference markers like [1], [2]
-        .trim()
+        .show()
 }

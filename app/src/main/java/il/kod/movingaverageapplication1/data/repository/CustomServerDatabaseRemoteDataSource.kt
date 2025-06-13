@@ -8,6 +8,7 @@
         import il.kod.movingaverageapplication1.data.models.AuthResponse
         import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
         import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
+        import il.kod.movingaverageapplication1.utils.Constants
         import il.kod.movingaverageapplication1.utils.HttpMethod
         import il.kod.movingaverageapplication1.utils.Resource
         import il.kod.movingaverageapplication1.utils.formatText
@@ -54,7 +55,7 @@
 
             suspend fun getAllStocks(): Resource<List<Stock>> =
                 getResult({
-                    CSDPublicService.getAllStocks()
+                    CSDPublicService.getAllStocks(Constants.DATABASE_LIMIT)
                 })
 
             suspend fun getStocksStartingFromSymbol(symbol: String): Resource<List<Stock>> {
@@ -99,9 +100,11 @@
             suspend fun getFollowedMovingAverages(): Resource<List<Stock>> =
                 getResult({CSDPrivateService.getFollowedMovingAverages()}, HttpMethod.GET)
 
-            suspend fun askAI(stock: Stock): Resource<String> = getResult({
-                val question = "What can you tell me about the stock ${stock.name}?"
-                val response = CSDPublicService.ask_ai(question)
+            suspend fun askAI(stock: Stock, question: String): Resource<String> = getResult({
+
+                val completeQuestion = "$question about the stock ${stock.name}?"
+                val promptPrecision="Please provide a detailed answer with relevant data and insights. If something in this prompt is not related to the stock, don't answer anything, just kindly answer something like 'This question is not related to this stock or company, I can only answer questions about stocks or companies'."
+                val response = CSDPublicService.ask_ai(completeQuestion+"\n" +promptPrecision)
 
                 val reply = formatText(response.body()?.reply ?: "No reply found")
                 Response.success(reply)

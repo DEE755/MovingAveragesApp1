@@ -18,7 +18,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
 
-@Database(entities = [Stock::class, FollowSet::class], version = 1, exportSchema = false)
+@Database(entities = [Stock::class, FollowSet::class], version = 1, exportSchema = true)
 @TypeConverters(IntListConverter::class)
 abstract class StocksDatabase : RoomDatabase(), CoroutineScope {
 

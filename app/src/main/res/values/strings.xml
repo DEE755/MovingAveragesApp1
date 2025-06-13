@@ -21,7 +21,7 @@
     <string name="alert_threshold_reached">You will be alerted when threshold reaches %1$s</string>
     <string name="alert_set_at">Alert set at %1$s</string>
     <string name="welcome_message">Welcome: %1$s !</string>
-    <string name="stock_details">Ticker Symbol: %1$s</string>
+
     <string name="available_stocks">Available Stocks</string>
     <string name="menu_title">Menu</string>
     <string name="select_stocks_first">Please select stocks first before adding follow sets and alerts</string>
@@ -45,6 +45,6 @@
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="find_stocks_you_want_to_follow">Find stocks you want to follow</string>
-    <string name="ticker">Ticker: %1$s</string>
+
 
 </resources>
