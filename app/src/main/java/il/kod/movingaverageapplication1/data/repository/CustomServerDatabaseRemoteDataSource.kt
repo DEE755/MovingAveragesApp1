@@ -1,8 +1,6 @@
         package il.kod.movingaverageapplication1.data.repository
 
         import android.util.Log
-        import android.widget.Toast
-        import androidx.core.content.ContentProviderCompat.requireContext
         import il.kod.movingaverageapplication1.data.BaseDataSource
         import il.kod.movingaverageapplication1.data.objectclass.Stock
         import il.kod.movingaverageapplication1.data.models.AuthResponse
