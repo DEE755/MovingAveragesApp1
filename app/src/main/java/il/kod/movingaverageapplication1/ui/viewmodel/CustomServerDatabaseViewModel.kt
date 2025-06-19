@@ -125,6 +125,11 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
     }
 
+    fun askAIFollowSet(vararg allStocksName: String, question: String) {
+        AI_Answer = CSDRepository.askAIFollowSet(*allStocksName, question=question)
+
+    }
+
     /*fun testUserFollowsStock(stockSymbol: String, follow: Boolean) {
 
 

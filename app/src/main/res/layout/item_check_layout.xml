@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="120dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:adnroid="http://schemas.android.com/tools"
     app:cardUseCompatPadding="true"
     app:contentPadding="10dp"
     app:cardCornerRadius="10dp">
@@ -20,27 +19,31 @@
             android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginStart="20sp">
+            android:layout_marginStart="20sp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
                 android:text="Main item Title"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <CheckBox
-                    android:id="@+id/checkBox"
-                 android:layout_height="60dp"
-                    android:layout_width="60dp"
-                    android:layout_gravity="end"/>
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="-10dp"
+            />
 
 
 

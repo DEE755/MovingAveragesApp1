@@ -8,11 +8,12 @@ import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 import il.kod.movingaverageapplication1.utils.Constants
 import il.kod.movingaverageapplication1.utils.Resource
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
 
-class LocalStocksRepository @Inject constructor(application: Application) {
+class LocalStocksRepository @Inject constructor(private val application: Application) {
 
 
     private var stockDao: StockDao
@@ -37,7 +38,6 @@ class LocalStocksRepository @Inject constructor(application: Application) {
             .cachedIn(scope) // cache in given scope
             .asLiveData()
     }*/
-
 
 
 
@@ -71,6 +71,10 @@ class LocalStocksRepository @Inject constructor(application: Application) {
         return stockDao.getStocksByIds(ids.toList())
     }
 
+    fun getStockById(id: Int): Stock {
+        return stockDao.getStockById(id)
+    }
+
     suspend fun saveAllStocks(allStocks: Resource<List<Stock>>) {
         for (stock in allStocks.status.data ?: emptyList()) {
             stockDao.addStock(stock)
@@ -101,5 +105,8 @@ class LocalStocksRepository @Inject constructor(application: Application) {
 
     fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double) =
         stockDao.updateMovingAverages(symbol, ma50, ma25, ma150, ma200)
+
+
+    fun observePrice(id: Int):  Flow<Double> = stockDao.observePrice(id)
 
 }

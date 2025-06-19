@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
-import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
+import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 
 class FollowSetAdapterFragment(
     private var followSets: List<FollowSet>,
@@ -15,7 +15,7 @@ class FollowSetAdapterFragment(
 ) : RecyclerView.Adapter<FollowSetAdapterFragment.FollowSetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowSetViewHolder {
-        val binding = ItemLayoutBinding.inflate(
+        val binding = StockLayoutBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -28,7 +28,7 @@ class FollowSetAdapterFragment(
         fun onItemLongClicked(index: Int)
     }
 
-    inner class FollowSetViewHolder(private val binding: ItemLayoutBinding) :
+    inner class FollowSetViewHolder(private val binding: StockLayoutBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         init {

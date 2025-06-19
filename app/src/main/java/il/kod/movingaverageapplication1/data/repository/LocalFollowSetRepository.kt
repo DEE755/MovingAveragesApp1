@@ -24,6 +24,7 @@ class LocalFollowSetRepository(application: Application)
     fun getAllFollowSet(): LiveData<List<FollowSet>> {
         return followSetDao.getAllFollowSet()
     }
+    suspend fun getFollowSetWithNotifications() = followSetDao.getFollowSetWithNotifications()
 
     suspend fun addFollowSet(followSet: FollowSet) {
        followSetDao.addFollowSet(followSet)
@@ -33,7 +34,7 @@ class LocalFollowSetRepository(application: Application)
         followSetDao.deleteFollowSet(followSet)
     }
 
-    suspend fun updateStock(followSet: FollowSet) {
+    suspend fun updateFollowSet(followSet: FollowSet) {
         followSetDao.updateFollowSet(followSet)
     }
 

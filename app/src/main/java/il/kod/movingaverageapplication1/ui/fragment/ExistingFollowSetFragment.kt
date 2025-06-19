@@ -1,5 +1,8 @@
 package il.kod.movingaverageapplication1.ui.fragment
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.fragment.app.Fragment
@@ -15,20 +19,35 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import il.kod.movingaverageapplication1.NotificationService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
+import il.kod.movingaverageapplication1.ui.NotificationHandler
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import android.Manifest
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import javax.inject.Inject
 import kotlin.getValue
+import kotlin.jvm.java
+import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class ExistingFollowSetFragment : Fragment() {
 
+
+    @Inject
+    lateinit var notificationHandler: NotificationHandler
+
     @Inject
     lateinit var appMenu: AppMenu
+
     private var _binding: FragmentFollowSetBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
@@ -37,13 +56,40 @@ class ExistingFollowSetFragment : Fragment() {
 
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
 
-    private val viewModelFollowSet: FollowSetViewModel by viewModels()
+    private val viewModelFollowSet: FollowSetViewModel by activityViewModels()
 
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
+        // Start the NotificationService when the fragment is created (Because first after login)
+        try {
+            val intent = Intent(requireContext(), NotificationService::class.java)
+            requireContext().startService(intent)
+            Log.d("ExistingFollowSetFragment", "NotificationService started successfully")
+        } catch (e: Exception) {
+            Log.d("ExistingFollowSetFragment", "NotificationService error starting: ${e.message}")
+        }
+
+
+
+        requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                Log.d("ExistingFollowSetFragment", "Notification permission granted")
+                //notificationHandler.showNotification("Title", "Message")
+            } else {
+                Log.d("ExistingFollowSetFragment", "Notification permission denied")
+                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_LONG).show()
+            }
+        }
+
+       askNotificationPermission()
     }
 
 
@@ -72,6 +118,7 @@ class ExistingFollowSetFragment : Fragment() {
 
                         viewModelFollowSet.onItemClicked(index)?.let { followSet ->
                             viewModelFollowSet.clickedFollowSet.value = followSet
+                            Log.d("ExistingFollowSetFragment", "Clicked FollowSet: ${followSet.name}")
 
                             findNavController().navigate(R.id.action_followSetFragment_to_insideFollowSetFragment,
                                 bundleOf("clickedFollowSet" to followSet, "position" to index)
@@ -138,6 +185,36 @@ class ExistingFollowSetFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            when {
+                ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Notifications are active, permission already granted",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                shouldShowRequestPermissionRationale(permission) -> {
+                    Toast.makeText(requireContext(), "Notification permission required", Toast.LENGTH_LONG).show()
+                    requestPermissionLauncher.launch(permission)
+                }
+
+                else -> {
+                    requestPermissionLauncher.launch(permission)
+                }
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Notifications are active by default",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     override fun onResume() {

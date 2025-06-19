@@ -4,6 +4,7 @@
         import il.kod.movingaverageapplication1.data.BaseDataSource
         import il.kod.movingaverageapplication1.data.objectclass.Stock
         import il.kod.movingaverageapplication1.data.models.AuthResponse
+        import il.kod.movingaverageapplication1.data.objectclass.FollowSet
         import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
         import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
         import il.kod.movingaverageapplication1.utils.Constants
@@ -22,6 +23,9 @@
             private val CSDPrivateService: CustomServerDatabaseServiceWithToken,
 
         ) : BaseDataSource() {
+
+            private val promptPrecision : String ="Please provide a detailed answer with relevant data and insights. If nothing in this prompt is not at all related to the stock(s), don't answer about it, just kindly answer something like 'This question is not related to this stock or company, I can only answer questions about stocks or companies'."
+
             suspend fun login(username: String, password: String):Resource<AuthResponse> =
                 getResult({ CSDPublicService.login(username, password) })
 
@@ -101,7 +105,20 @@
             suspend fun askAI(stock: Stock, question: String): Resource<String> = getResult({
 
                 val completeQuestion = "$question about the stock ${stock.name}?"
-                val promptPrecision="Please provide a detailed answer with relevant data and insights. If something in this prompt is not related to the stock, don't answer anything, just kindly answer something like 'This question is not related to this stock or company, I can only answer questions about stocks or companies'."
+                val response = CSDPublicService.ask_ai(completeQuestion+"\n" +promptPrecision)
+
+                val reply = formatText(response.body()?.reply ?: "No reply found")
+                Response.success(reply)
+            }, HttpMethod.POST)
+
+
+            suspend fun askAIFollowSet(vararg allStockNames: String, question: String): Resource<String> = getResult({
+
+
+
+                val completeQuestion = "$question concerning those following stocks ${allStockNames.joinToString(",")}."
+
+                Log.d("CustomServerDatabaseRemoteDataSource", "askAIFollowSet called with question: $completeQuestion")
                 val response = CSDPublicService.ask_ai(completeQuestion+"\n" +promptPrecision)
 
                 val reply = formatText(response.body()?.reply ?: "No reply found")

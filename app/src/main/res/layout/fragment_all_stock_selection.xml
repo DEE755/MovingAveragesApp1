@@ -36,7 +36,7 @@
         app:layout_constraintStart_toEndOf="@id/textView"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
-        tools:listitem="@layout/item_layout" />
+        tools:listitem="@layout/stock_layout" />
 
     <ProgressBar
 
@@ -62,7 +62,7 @@
         app:layout_constraintStart_toEndOf="@id/textView"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
-        tools:listitem="@layout/item_layout" />
+        tools:listitem="@layout/stock_layout" />
 
 
 

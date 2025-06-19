@@ -115,6 +115,9 @@
         <action
             android:id="@+id/action_insideFollowSetFragment_to_followSetFragment"
             app:destination="@id/followSetFragment" />
+        <action
+            android:id="@+id/action_insideFollowSetFragment_to_followSetAskAIFragment"
+            app:destination="@id/followSetAskAIFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -135,5 +138,9 @@
             android:id="@+id/action_askAIFragment_to_detailsItemFragment"
             app:destination="@id/detailsItemFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/followSetAskAIFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.FollowSetAskAIFragment"
+        android:label="FollowSetAskAIFragment" />
 
 </navigation>

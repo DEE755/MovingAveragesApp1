@@ -1,3 +1,4 @@
+/*
 package il.kod.movingaverageapplication1.data.repository
 
 import androidx.lifecycle.LiveData
@@ -23,4 +24,4 @@ interface LocalStockRepository
 
     fun getStocksByIds(vararg ids: Int): List<Stock>
     fun userFollowsStock(stock: Stock):Resource<Void>
-}
+}*/

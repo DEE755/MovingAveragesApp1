@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.Stock
-import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
+import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 
 class StockPagingAdapterFragment(
     private val callBack: ItemListener,
@@ -22,7 +22,7 @@ class StockPagingAdapterFragment(
         fun onItemLongClicked(stock: Stock)
     }
 
-    inner class ItemViewHolder1(private val binding: ItemLayoutBinding) :
+    inner class ItemViewHolder1(private val binding: StockLayoutBinding) :
         RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         private var currentStock: Stock? = null
@@ -54,7 +54,7 @@ class StockPagingAdapterFragment(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder1 {
-        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = StockLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ItemViewHolder1(binding)
     }
 

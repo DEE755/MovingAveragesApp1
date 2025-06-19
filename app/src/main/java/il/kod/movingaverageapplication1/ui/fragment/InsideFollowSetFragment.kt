@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
+import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,6 +36,15 @@ class InsideFollowSetFragment : Fragment() {
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
+    private val viewModelFollowSet : FollowSetViewModel by activityViewModels()
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            viewModelFollowSet.bindService()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,9 +55,9 @@ class InsideFollowSetFragment : Fragment() {
         Log.d("InsideFollowSetFragment", "onCreateView called")
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
 
-        arguments?.let {
-            val followSet: FollowSet? = it.getParcelable("clickedFollowSet")
 
+        viewModelFollowSet.clickedFollowSet.value.let { followSet ->
+            Log.d("InsideFollowSetFragment", "FollowSet: $followSet")
             lifecycleScope.launch {
                 val extractedIds = followSet?.extractStocksToIntArray()
 
@@ -55,6 +65,7 @@ class InsideFollowSetFragment : Fragment() {
                     viewModelAllStocks.getStocksByIds(*extractedIds ?: intArrayOf())
                 }
 
+                /* binding.recyclerView.layoutManager= GridLayoutManager(requireContext(), 4)*/
                 binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                     extractedStocks,
                     callBack = object : StockRecyclerAdapterFragment.ItemListener {
@@ -77,26 +88,47 @@ class InsideFollowSetFragment : Fragment() {
             binding.textView.text = followSet?.name
 
             binding.setThresholdButton.setOnClickListener {
-                showThresholdInputDialog(
-                    requireContext(),
-                    { Toast.makeText(
-                        context,
-                        getString(R.string.alert_threshold_reached, it),
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                        binding.textView2.text = getString(R.string.alert_set_at, it)
-                    },
-                    getString(R.string.set_threshold_alert, followSet?.name),
-                    getString(R.string.alert_threshold_message)
+                val items = listOf(
+                    "Set an Alert for this FollowSet",
+                    "Ask AI adviser about this followset",
+                    "Item 3"
                 )
-            }
-        }
+                val dialog = RecyclerDialogFragment(items) { selectedItem ->
+                    if (selectedItem == items[0]) {
+                        showThresholdInputDialog(
+                            requireContext(),
+                            {
+                                viewModelFollowSet.addNotification(followSet!!, it)
 
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
+                                Toast.makeText(
+                                    context,
+                                    getString(R.string.alert_threshold_reached, it.toString()),
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                binding.textView2.text =
+                                    getString(R.string.alert_set_at, it.toString())
+                            },
+                            getString(R.string.set_threshold_alert, followSet?.name),
+                            getString(R.string.alert_threshold_message)
+                        )
+                    } else if (selectedItem == items[1]) {
+                        findNavController().navigate(
+                            R.id.action_insideFollowSetFragment_to_followSetAskAIFragment
+                        )
+                    }
+                }
+                dialog.show(parentFragmentManager, "RecyclerDialog")
+
+
+            }
+
+
+            binding.backButton.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            return binding.root
         }
-        return binding.root
     }
 
     override fun onResume() {
@@ -108,5 +140,8 @@ class InsideFollowSetFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        lifecycleScope.launch {
+            viewModelFollowSet.unbindService()
+        }
     }
 }

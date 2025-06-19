@@ -31,6 +31,22 @@ fun showConfirmationDialog(
     builder.create().show()
 }
 
+fun showNotificationDialog(
+    context: Context,
+    title: String,
+    message: String,
+    onYes: () -> Unit,
+) {
+    val builder = AlertDialog.Builder(context)
+    builder.setTitle(title)
+    builder.setMessage(message)
+    builder.setPositiveButton("I Understand") { dialog, _ ->
+        onYes()
+        dialog.dismiss()
+    }
+    builder.create().show()
+}
+
 fun showNameInputDialog(
     context: Context,
     onNameEntered: (String) -> Unit,
@@ -60,11 +76,13 @@ fun showNameInputDialog(
 
 fun showThresholdInputDialog(
     context: Context,
-    onNumberEntered: (String) -> Unit,
+    onNumberEntered: (Double) -> Unit,
     title: String,
     message: String
 ) {
-    val editText = EditText(context)
+    val editText = EditText(context).apply {
+        inputType = android.text.InputType.TYPE_CLASS_NUMBER
+    }
     editText.hint = message
 
     AlertDialog.Builder(context)
@@ -73,7 +91,7 @@ fun showThresholdInputDialog(
         .setPositiveButton(context.getString(R.string.ok)) { dialog, _ ->
             val number = editText.text.toString()
             if (number.isNotBlank() && number.isDigitsOnly()) {
-                onNumberEntered(number)
+                onNumberEntered(number.toDouble())
             } else {
                 Toast.makeText(context, context.getString(R.string.valid_number_prompt), Toast.LENGTH_SHORT).show()
             }

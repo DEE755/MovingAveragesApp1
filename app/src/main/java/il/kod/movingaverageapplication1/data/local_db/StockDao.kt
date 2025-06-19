@@ -9,6 +9,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import il.kod.movingaverageapplication1.data.objectclass.Stock
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StockDao {
@@ -38,6 +39,9 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
     fun getStocksByIds(ids: List<Int>): List<Stock>
 
+    @Query("SELECT * FROM stocks WHERE id = :id")
+    fun getStockById(id: Int) : Stock
+
 
     @Query("SELECT * FROM stocks WHERE name LIKE '%' || :name_part || '%' " +
             "OR symbol LIKE '%' || :name_part || '%' ORDER BY name LIMIT 10000")
@@ -54,5 +58,8 @@ interface StockDao {
 
     @Query("UPDATE stocks SET ma_50=:ma50, ma_25=:ma25, ma_150=:ma150, ma_200=:ma200 WHERE symbol=:symbol")
     fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double): Unit
+
+    @Query("SELECT current_price FROM stocks WHERE id = :id LIMIT 1")
+    fun observePrice(id : Int) : Flow<Double>
 }
 

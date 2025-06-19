@@ -1,11 +1,7 @@
 package il.kod.movingaverageapplication1.data.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.data.objectclass.Stock
-import il.kod.movingaverageapplication1.utils.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,9 +14,11 @@ class SyncManagementRepository @Inject constructor(
     val sessionManager: SessionManager
 )
 {
+
     lateinit var setUserAnswer: String
 
-    fun setUserFollowsStock(stock: Stock, follow: Boolean) {
+    fun setUserFollowsStockData(stock: Stock, follow: Boolean)
+        {
         //local Update:
        CoroutineScope(Dispatchers.IO).launch {
            localStockRepository.setUserFollowsStock(stock, follow)

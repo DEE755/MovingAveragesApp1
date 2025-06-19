@@ -66,6 +66,8 @@ fun getFollowedMovingAverages() =
     fun askAI(stock: Stock, question: String) = performPostingToServer { remoteDataSource.askAI(stock, question) }
 
 
+    fun askAIFollowSet(vararg allStocksName: String, question: String) =
+        performPostingToServer { remoteDataSource.askAIFollowSet(*allStocksName, question = question) }
 
 }
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import il.kod.movingaverageapplication1.data.objectclass.AiQuestion
-import il.kod.movingaverageapplication1.databinding.ItemLayoutBinding
 
 import il.kod.movingaverageapplication1.databinding.QuestionLayoutBinding
 import il.kod.movingaverageapplication1.ui.fragment.QuestionRecyclerAdapterFragment.QuestionViewHolder

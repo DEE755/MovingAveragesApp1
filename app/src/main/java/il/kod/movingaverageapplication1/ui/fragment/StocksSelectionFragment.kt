@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -96,7 +97,10 @@ class StocksSelectionFragment : Fragment() {
 
         binding.returntoselected.setOnClickListener {
 
+
             findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
+
+
 
 
         }
@@ -184,6 +188,11 @@ class StocksSelectionFragment : Fragment() {
                     viewModelAllStocks.followedStocks.value?.get(index)
                         ?.let { selectedStock ->
                             viewModelDetailStock.clickedStock.value = selectedStock
+                        ///TODO(FIX THIS ITS NOT DOING ANYTHING -->CHANGE THE COLOR)
+                            val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(index)
+                            viewHolder?.itemView?.findViewById<View>(R.id.stock_card_view)?.setBackgroundColor(
+                                ContextCompat.getColor(requireContext(), R.color.green)
+                            )
                             findNavController().navigate(R.id.action_selectedStocks_to_detailsItemFragment)
                         }
                 }
@@ -191,11 +200,20 @@ class StocksSelectionFragment : Fragment() {
                 override fun onItemLongClicked(index: Int) {
                     val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
 
+
+                    val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(index)
+                    viewHolder?.itemView?.findViewById<View>(R.id.stock_card_view)?.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                    )
+
+
                     showConfirmationDialog(
                         context = requireContext(),
                         title = getString(R.string.deletion_stock_title),
                         message = getString(R.string.delete_stock_message, clickedStock?.name),
                         onYes = {
+                            //TODO(FIX THIS ITS NOT DOING ANYTHING -->CHANGE THE COLOR)
+
                             viewModelAllStocks.followStock(clickedStock!!, false)
                             (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
                                 index

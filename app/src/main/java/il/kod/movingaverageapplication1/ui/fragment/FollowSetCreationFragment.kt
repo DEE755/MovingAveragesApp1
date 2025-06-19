@@ -102,7 +102,8 @@ class FollowSetCreationFragment : Fragment()
                                     name = name,
                                     imageUri = "TODO()",
                                     userComments = "TODO()",
-                                    set_ids = selectedIds
+                                    set_ids = selectedIds,
+                                    -1.00
                                 )
 
                         viewModelFollowStock.addFollowSet(createdFollowSet)

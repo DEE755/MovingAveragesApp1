@@ -1,5 +1,6 @@
 package il.kod.movingaverageapplication1.dependencyinjectionhilt
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
@@ -20,8 +21,12 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 import com.bumptech.glide.RequestManager
+import dagger.hilt.android.qualifiers.ActivityContext
 import il.kod.movingaverageapplication1.GlideApp
+import il.kod.movingaverageapplication1.MainActivity
+import il.kod.movingaverageapplication1.NotificationService
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
 import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
 
@@ -29,11 +34,14 @@ import il.kod.movingaverageapplication1.ui.AppMenu
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
+import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
+import il.kod.movingaverageapplication1.ui.NotificationHandler
 
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
 
     //okhttp3 client without token
     @Provides
@@ -190,13 +198,55 @@ class AppModule {
     @Provides
     @Singleton
     fun providesSessionManager(@ApplicationContext context: Context): SessionManager {
-       return SessionManager(provideEncryptedPrefs(context))
+        return SessionManager(provideEncryptedPrefs(context))
     }
 
-@Provides
+    @Provides
+    @Singleton
     fun providesAppMenu(@ApplicationContext context: Context): AppMenu
     {return AppMenu(providesSessionManager(context))
     }
 
+    @Provides
+    @Singleton
+    fun provideLocalStocksRepository(
+        application: Application
+    ): LocalStocksRepository {
+            return LocalStocksRepository(application)
+    }
 
+
+    @Provides
+    @Singleton
+    fun provideLocalFollowSetRepository(
+        @ApplicationContext context: Context
+    ): LocalFollowSetRepository {
+        return LocalFollowSetRepository(context as Application)
+
+    }
+
+    /*@Provides
+    fun provideApplication(@ApplicationContext context: Context): Application
+    {
+   return context as Application
+    }*/
+
+/* @Provides
+fun provideApplicationContext(@ApplicationContext context: Context): Context {
+   return context
+}
+*/
+
+@Provides
+@Singleton
+fun providesNotificationHandler(@ApplicationContext context: Context): NotificationHandler {
+   return NotificationHandler(context)
+}
+
+
+@Provides
+@Singleton
+fun providesNotificationService(): NotificationService {
+   return NotificationService()
+}
 }

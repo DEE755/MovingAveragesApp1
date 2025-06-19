@@ -1,5 +1,6 @@
 package il.kod.movingaverageapplication1.ui.fragment
 
+import android.content.Intent
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
 import android.util.Log
@@ -17,11 +18,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
+import il.kod.movingaverageapplication1.NotificationService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
@@ -40,14 +44,20 @@ import kotlin.coroutines.coroutineContext
 @AndroidEntryPoint
 class FollowedStocksFragment : Fragment() {
 
-@Inject
-    lateinit var  appMenu: AppMenu
     @Inject
     lateinit var glide: RequestManager
+
+    @Inject
+    lateinit var appMenu: AppMenu
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     private var _binding: FragmentSelectedStocksBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
+
+    // Shared ViewModels
 
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
 
@@ -64,10 +74,16 @@ class FollowedStocksFragment : Fragment() {
 
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
 
-
+            //START THE NOTIFICATION SERVICE (WILL BIND IT LATER)
+        if (sessionManager.isNotificationsServiceStarted==false)
+        { val intent = Intent(context, NotificationService::class.java)
+        context?.startService(intent)
+        sessionManager.isNotificationsServiceStarted = true
+        }
     }
 
 

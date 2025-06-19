@@ -1,6 +1,5 @@
 package il.kod.movingaverageapplication1.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,10 +8,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
 import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
-import il.kod.movingaverageapplication1.ui.fragment.StocksSelectionFragment.ResultCallback
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -33,6 +31,7 @@ class AllStocksViewModel @Inject constructor(
 
 
 
+
     //val pagedStocks: LiveData<PagingData<Stock>>=localRepository.pagedStocks(viewModelScope)
 
 
@@ -41,7 +40,7 @@ class AllStocksViewModel @Inject constructor(
     fun removeStock(stock: Stock) {viewModelScope.launch{localRepository.removeStock(stock)}}
 
 
-    fun followStock(stock: Stock, follow: Boolean) = syncManagementRepository.setUserFollowsStock(stock, follow)
+    fun followStock(stock: Stock, follow: Boolean) = syncManagementRepository.setUserFollowsStockData(stock, follow)
 
 
     
@@ -96,11 +95,9 @@ class AllStocksViewModel @Inject constructor(
         return localRepository.getSelectedStocks()
     }
 
-    fun getAllStocks()
-    {
-
-    }
 
 
+
+    fun observePrice(id: Int):  Flow<Double> = localRepository.observePrice(id)
 
 }

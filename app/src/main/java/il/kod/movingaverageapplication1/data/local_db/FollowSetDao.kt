@@ -27,5 +27,8 @@ interface FollowSetDao {
     fun getAllFollowSet() : LiveData<List<FollowSet>>
 
 
+    @Query("SELECT * FROM follow_set WHERE notifications_prices IS NOT NULL AND notifications_prices > -1")
+    suspend fun getFollowSetWithNotifications(): List<FollowSet>//NOT LIVE DATA BECAUSE MEANT TO USE IN A SERVICE
+
 
 }

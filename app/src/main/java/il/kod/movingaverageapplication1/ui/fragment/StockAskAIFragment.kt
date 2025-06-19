@@ -63,8 +63,6 @@ class AskAIFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         val clickedStock  = viewModelDetailStock.clickedStock.value
         clickedStock.let {stock->
 
