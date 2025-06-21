@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.local_db.FollowSetDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
+import il.kod.movingaverageapplication1.data.objectclass.Stock
+import il.kod.movingaverageapplication1.utils.Resource
 
 
 class LocalFollowSetRepository(application: Application)
@@ -21,8 +23,8 @@ class LocalFollowSetRepository(application: Application)
     }
 
 
-    fun getAllFollowSet(): LiveData<List<FollowSet>> {
-        return followSetDao.getAllFollowSet()
+    fun getAllUserFollowSet(): LiveData<List<FollowSet>> {
+        return followSetDao.getAllUserFollowSet()
     }
     suspend fun getFollowSetWithNotifications() = followSetDao.getFollowSetWithNotifications()
 
@@ -37,6 +39,11 @@ class LocalFollowSetRepository(application: Application)
     suspend fun updateFollowSet(followSet: FollowSet) {
         followSetDao.updateFollowSet(followSet)
     }
+
+
+    suspend fun saveAllFollowSets(allFollowSets: List<FollowSet>) =
+        allFollowSets.forEach {followSet-> followSetDao.addFollowSet(followSet) }
+
 
 
 }

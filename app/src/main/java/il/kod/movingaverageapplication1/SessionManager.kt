@@ -18,7 +18,20 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences) {
     val username = preferences.getString("username", null)
     val clientId = preferences.getInt("client_id", -1)
 
+
     var isNotificationsServiceStarted: Boolean=false
+
+
+    fun isFirstTimeLaunch(): Boolean {
+        val alreadyLaunched = preferences.getBoolean("has_been_launched", false)
+//if the hase been launched val is set to true, and if the app hasn't been launched the boolean doesn't exist and so val is set to false
+        return if (alreadyLaunched) {
+            false
+        } else {
+            preferences.edit {putBoolean("has_been_launched", true)}
+            true
+        }
+    }
 
 
 

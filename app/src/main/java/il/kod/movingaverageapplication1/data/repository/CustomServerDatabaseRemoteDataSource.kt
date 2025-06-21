@@ -93,7 +93,11 @@
                     Log.e("CustomServerDatabaseViewModel", "Unexpected error: ${e.message}")
                 }
 
+            suspend fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet) =
+                getResult({CSDPrivateService.pushFollowSetToRemoteDB(createdFollowSet)}, HttpMethod.POST)
 
+            suspend fun pullUserFollowSetsFromToRemoteDB() : Resource<List<FollowSet>> =
+                getResult({CSDPrivateService.pullUserFollowSetFromRemoteDB()})
 
         suspend fun getFollowedStockPrice(): Resource<List<Stock>> =
            getResult({CSDPrivateService.getFollowedStockPrice()}, HttpMethod.GET)
@@ -115,7 +119,6 @@
             suspend fun askAIFollowSet(vararg allStockNames: String, question: String): Resource<String> = getResult({
 
 
-
                 val completeQuestion = "$question concerning those following stocks ${allStockNames.joinToString(",")}."
 
                 Log.d("CustomServerDatabaseRemoteDataSource", "askAIFollowSet called with question: $completeQuestion")
@@ -124,6 +127,9 @@
                 val reply = formatText(response.body()?.reply ?: "No reply found")
                 Response.success(reply)
             }, HttpMethod.POST)
+
+
+
 
         }
 

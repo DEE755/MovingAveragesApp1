@@ -36,8 +36,10 @@ data class Stock(
     @ColumnInfo(name="logo_url")
     internal var logo_url: String? =null,
     @ColumnInfo(name="isSelected")
-    var isSelected: Boolean = false
+    var isSelected: Boolean = false,
 
+    @ColumnInfo(name="isDirty")
+    var isDirty: Boolean = false
 
 ): Parcelable {
     @PrimaryKey(autoGenerate = true)

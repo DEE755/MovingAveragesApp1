@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.utils.Resource
+import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
 import kod.il.movingaverageapplication1.utils.performFetchingAndSavingPaging
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
 import kod.il.movingaverageapplication1.utils.performFetchingFromServerEveryTenSeconds
@@ -19,30 +21,33 @@ import javax.inject.Singleton
 @Singleton
 class CustomServerDatabaseRepository @Inject constructor(
     private val remoteDataSource: CustomServerDatabaseRemoteDataSource,
-    private val localDataSource: LocalStocksRepository,
-){
+    private val localDataSource: LocalStocksRepository, //consider to move to sync management with all its functions
+    private val localFollowSetRepository: LocalFollowSetRepository
+) {
     fun login(
         username: String,
         password: String
     ) = performFetchingFromServer {
-        remoteDataSource.login(username, password) }
+        remoteDataSource.login(username, password)
+    }
 
     fun signUp(
         username: String,
         password: String
     ): LiveData<Resource<AuthResponse>> = performPostingToServer {
-         remoteDataSource.signUp(username, password) }
+        remoteDataSource.signUp(username, password)
+    }
 
 
-    fun getAllStocks() : LiveData<PagingData<Stock>> =
+    fun getAllStocks(): LiveData<PagingData<Stock>> =
         performFetchingAndSavingPaging(
-            {localDataSource.getAllStocks()}, // return LiveData<PagingData<Stock>>
-            {remoteDataSource.getAllStocks()},
+            { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
+            { remoteDataSource.getAllStocks() },
             { allStocks -> localDataSource.saveAllStocks(allStocks) }
         )
 
 
-   /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
+    /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
         performFetchingAndSaving (
             {localDataSource.getAllStocks(scope)},
             {remoteDataSource.getStocksStartingFromSymbol(symbol)},
@@ -51,27 +56,41 @@ class CustomServerDatabaseRepository @Inject constructor(
 
     suspend fun getNbOfStocksInRemoteDB() = remoteDataSource.getNbOfStocksInRemoteDB()
 
-         fun getFollowedStockPrice()=
-             performFetchingFromServerEveryTenSeconds {
-                 remoteDataSource.getFollowedStockPrice()
-             }
+    fun getFollowedStockPrice() =
+        performFetchingFromServerEveryTenSeconds {
+            remoteDataSource.getFollowedStockPrice()
+        }
 
-fun getFollowedMovingAverages() =
-    performFetchingFromServer {remoteDataSource.getFollowedMovingAverages()}
+    fun getFollowedMovingAverages() =
+        performFetchingFromServer { remoteDataSource.getFollowedMovingAverages() }
 
     suspend fun setUserFollowsStock(stockSymbol: String, follow: Boolean, clientId: Int) =
-         remoteDataSource.userFollowsStock(stockSymbol, follow, clientId)
+        remoteDataSource.userFollowsStock(stockSymbol, follow, clientId)
 
 
-    fun askAI(stock: Stock, question: String) = performPostingToServer { remoteDataSource.askAI(stock, question) }
+    fun askAI(stock: Stock, question: String) =
+        performPostingToServer { remoteDataSource.askAI(stock, question) }
 
 
     fun askAIFollowSet(vararg allStocksName: String, question: String) =
-        performPostingToServer { remoteDataSource.askAIFollowSet(*allStocksName, question = question) }
+        performPostingToServer {
+            remoteDataSource.askAIFollowSet(
+                *allStocksName,
+                question = question
+            )
+        }
+
+
+    fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet) {
+        performPostingToServer{remoteDataSource.pushFollowSetToRemoteDB(createdFollowSet)}
+    }
+
+    fun pullUserFollowSetsFromToRemoteDB() =
+        performFetchingAndSaving (
+            localDbFetch={ localFollowSetRepository.getAllUserFollowSet()},
+            remoteDbFetch = {remoteDataSource.pullUserFollowSetsFromToRemoteDB()},
+           localDbSave =  {followSetList->localFollowSetRepository.saveAllFollowSets(followSetList)})
+
+
 
 }
-
-
-
-
-

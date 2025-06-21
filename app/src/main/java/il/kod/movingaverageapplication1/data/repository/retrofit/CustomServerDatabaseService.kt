@@ -3,10 +3,12 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.StringAdapterForGson
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.data.models.StringAdapterCount
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Query
@@ -79,6 +81,18 @@ import retrofit2.http.Query
         @GET("get_update_for_followed_stocksMA")
         suspend fun getFollowedMovingAverages(): Response<List<Stock>>
 
+
+
+
+        //TODO(TO IMPLEMENT)
+
+
+        @POST("followset/push")
+        suspend fun pushFollowSetToRemoteDB(
+            @Body followSet: FollowSet) : Response<Any>
+
+        @GET("followset/pull")
+        suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>>
 
         @FormUrlEncoded
         @POST("unfollows_stock")

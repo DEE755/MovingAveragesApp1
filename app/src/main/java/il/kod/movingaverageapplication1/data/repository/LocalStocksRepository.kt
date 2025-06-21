@@ -75,10 +75,8 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
         return stockDao.getStockById(id)
     }
 
-    suspend fun saveAllStocks(allStocks: Resource<List<Stock>>) {
-        for (stock in allStocks.status.data ?: emptyList()) {
-            stockDao.addStock(stock)
-        }
+    suspend fun saveAllStocks(allStocks: List<Stock>) {
+        allStocks.forEach {stock-> stockDao.addStock(stock)}
     }
 
     suspend fun filterStocksByName(name_part: String): List<Stock>? {

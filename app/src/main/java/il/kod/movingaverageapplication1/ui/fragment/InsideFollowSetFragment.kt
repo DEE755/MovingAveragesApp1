@@ -90,7 +90,7 @@ class InsideFollowSetFragment : Fragment() {
             binding.setThresholdButton.setOnClickListener {
                 val items = listOf(
                     "Set an Alert for this FollowSet",
-                    "Ask AI adviser about this followset",
+                    "Ask AI adviser about this FollowSet",
                     "Item 3"
                 )
                 val dialog = RecyclerDialogFragment(items) { selectedItem ->

@@ -215,15 +215,14 @@ class AppModule {
             return LocalStocksRepository(application)
     }
 
-
     @Provides
     @Singleton
     fun provideLocalFollowSetRepository(
-        @ApplicationContext context: Context
-    ): LocalFollowSetRepository {
-        return LocalFollowSetRepository(context as Application)
-
+        application: Application
+    ):  LocalFollowSetRepository {
+        return  LocalFollowSetRepository(application)
     }
+
 
     /*@Provides
     fun provideApplication(@ApplicationContext context: Context): Application

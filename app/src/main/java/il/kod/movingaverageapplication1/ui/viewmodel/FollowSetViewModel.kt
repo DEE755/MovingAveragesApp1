@@ -15,9 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import il.kod.movingaverageapplication1.NotificationService
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,7 +30,7 @@ class FollowSetViewModel @Inject constructor(
 
     var repository = LocalFollowSetRepository(application)
 
-    var existingFollowSet: LiveData<List<FollowSet>> = repository.getAllFollowSet()
+    var existingFollowSet: LiveData<List<FollowSet>> = repository.getAllUserFollowSet()
 
     private var isBound = false
 

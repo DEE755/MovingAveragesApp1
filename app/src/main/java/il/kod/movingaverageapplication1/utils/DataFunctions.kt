@@ -81,11 +81,16 @@ fun <T,A> performFetchingAndSaving(localDbFetch: () -> LiveData<T>,
 
         val fetchResource = remoteDbFetch()
 
-        if(fetchResource.status is Success){
-            Log.d("performFetchingAndSaving","RemoteDbSuccess")
-            localDbSave(fetchResource.status.data!!)}
+        if (fetchResource.status is Success) {
+            Log.d("performFetchingAndSaving", "RemoteDbSuccess")
+            val data = fetchResource.status.data
+            if (data != null) {
+                localDbSave(data) // Save the list of FollowSet to the local database
+            } else {
+                emit(Resource.error("Remote data is null"))
+            }
 
-        else if(fetchResource.status is Error){
+       } else if(fetchResource.status is Error){
             emit(Resource.error(fetchResource.status.message))
             emitSource(source)
             Log.d("performFetchingAndSaving","RemoteDbFailure: ${fetchResource.status.message}")
@@ -182,9 +187,8 @@ fun <T> performPostingToServer(remoteDbPost: suspend () ->Resource<T>) : LiveDat
 @OptIn(ExperimentalPagingApi::class)
 fun <T : Any, A> performFetchingAndSavingPaging(
     pagingSourceFactory: () -> PagingSource<Int, T>,
-    remoteDbFetch: suspend () -> A,
+    remoteDbFetch: suspend () -> Resource<A>,
     localDbSave: suspend (A) -> Unit,
-
 ): LiveData<PagingData<T>> {
 
     val mediator = object : RemoteMediator<Int, T>() {
@@ -194,8 +198,12 @@ fun <T : Any, A> performFetchingAndSavingPaging(
         ): MediatorResult {
             return try {
                 if (loadType == LoadType.REFRESH) {
-                    val remoteData = remoteDbFetch()
-                    localDbSave(remoteData)
+                    val fetchResource = remoteDbFetch()
+                    if (fetchResource.status is Success) {
+                        fetchResource.status.data?.let { localDbSave(it) }
+                    } else if (fetchResource.status is Error) {
+                        return MediatorResult.Error(Exception(fetchResource.status.message))
+                    }
                 }
 
                 MediatorResult.Success(endOfPaginationReached = true)
@@ -210,5 +218,4 @@ fun <T : Any, A> performFetchingAndSavingPaging(
         remoteMediator = mediator,
         pagingSourceFactory = pagingSourceFactory
     ).liveData
-
 }

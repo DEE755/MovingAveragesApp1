@@ -24,7 +24,7 @@ interface FollowSetDao {
     suspend fun updateFollowSet(followSet: FollowSet)
 
     @Query("SELECT * FROM follow_set ORDER BY name ASC")
-    fun getAllFollowSet() : LiveData<List<FollowSet>>
+    fun getAllUserFollowSet() : LiveData<List<FollowSet>>
 
 
     @Query("SELECT * FROM follow_set WHERE notifications_prices IS NOT NULL AND notifications_prices > -1")

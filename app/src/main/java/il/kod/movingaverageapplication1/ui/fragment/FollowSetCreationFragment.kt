@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
+import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetCreationBinding
 import il.kod.movingaverageapplication1.utils.showNameInputDialog
+import javax.inject.Inject
 import kotlin.getValue
 
-class FollowSetCreationFragment : Fragment()
+class FollowSetCreationFragment @Inject constructor(private val syncManager: SyncManagementRepository): Fragment()
 {
+
 
         private var _binding: FragmentFollowSetCreationBinding? = null
         private val binding get() = _binding!!
@@ -28,7 +31,7 @@ class FollowSetCreationFragment : Fragment()
         //shared viewmodels
         private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
         private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
-        private val viewModelFollowStock: FollowSetViewModel by activityViewModels()
+        private val viewModelFollowSet: FollowSetViewModel by activityViewModels()
 
 
 
@@ -97,7 +100,7 @@ class FollowSetCreationFragment : Fragment()
                     context = requireContext(),
                             title = getString(R.string.follow_set_name),
                             message = getString(R.string.enter_follow_set_name),
-                            onNameEntered = { name ->
+                            onNameEntered = { name -> //actions to perform after confirming the dialog
                                 val createdFollowSet = FollowSet(
                                     name = name,
                                     imageUri = "TODO()",
@@ -105,11 +108,8 @@ class FollowSetCreationFragment : Fragment()
                                     set_ids = selectedIds,
                                     -1.00
                                 )
-
-                        viewModelFollowStock.addFollowSet(createdFollowSet)
-
-
-                        findNavController().popBackStack()
+                                syncManager.pushFollowSetToRemoteDB(createdFollowSet)//add to both local and remote db
+                                findNavController().popBackStack()
 
                     }
 

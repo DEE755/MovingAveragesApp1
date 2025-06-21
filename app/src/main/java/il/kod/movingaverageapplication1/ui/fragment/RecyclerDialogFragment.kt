@@ -29,9 +29,11 @@ class RecyclerDialogFragment(
         binding.recyclerView.adapter = SimpleAdapter(items, onItemClick)
 
         dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
+            (resources.displayMetrics.widthPixels * 0.75).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+
+        binding.returnButton.setOnClickListener { dialog.dismiss() }
 
         return dialog
     }
