@@ -2,10 +2,12 @@ package il.kod.movingaverageapplication1.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
+import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.utils.Resource
+import kod.il.movingaverageapplication1.utils.FetchFromLocalPaging
 import kod.il.movingaverageapplication1.utils.performFetchingAndSaving
 import kod.il.movingaverageapplication1.utils.performFetchingAndSavingPaging
 import kod.il.movingaverageapplication1.utils.performFetchingFromServer
@@ -22,7 +24,9 @@ import javax.inject.Singleton
 class CustomServerDatabaseRepository @Inject constructor(
     private val remoteDataSource: CustomServerDatabaseRemoteDataSource,
     private val localDataSource: LocalStocksRepository, //consider to move to sync management with all its functions
-    private val localFollowSetRepository: LocalFollowSetRepository
+    private val localFollowSetRepository: LocalFollowSetRepository,
+    private val sessionManager: SessionManager
+
 ) {
     fun login(
         username: String,
@@ -40,11 +44,17 @@ class CustomServerDatabaseRepository @Inject constructor(
 
 
     fun getAllStocks(): LiveData<PagingData<Stock>> =
-        performFetchingAndSavingPaging(
-            { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
-            { remoteDataSource.getAllStocks() },
-            { allStocks -> localDataSource.saveAllStocks(allStocks) }
-        )
+        if (sessionManager.isFirstTimeLaunch()) {
+            performFetchingAndSavingPaging(
+                { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
+                { remoteDataSource.getAllStocks() },
+                { allStocks -> localDataSource.saveAllStocks(allStocks) }
+            )
+        } else {
+            FetchFromLocalPaging { localDataSource.getAllStocks() }
+        }
+
+
 
 
     /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
@@ -81,16 +91,14 @@ class CustomServerDatabaseRepository @Inject constructor(
         }
 
 
-    fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet) {
+    fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet)  =
         performPostingToServer{remoteDataSource.pushFollowSetToRemoteDB(createdFollowSet)}
-    }
+
 
     fun pullUserFollowSetsFromToRemoteDB() =
         performFetchingAndSaving (
             localDbFetch={ localFollowSetRepository.getAllUserFollowSet()},
             remoteDbFetch = {remoteDataSource.pullUserFollowSetsFromToRemoteDB()},
            localDbSave =  {followSetList->localFollowSetRepository.saveAllFollowSets(followSetList)})
-
-
 
 }

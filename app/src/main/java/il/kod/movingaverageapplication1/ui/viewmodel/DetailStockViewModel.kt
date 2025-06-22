@@ -13,7 +13,7 @@ class DetailStockViewModel : ViewModel() {
 
     fun setStock(stock: Stock){
         _clickedStock.value=stock
-        Log.d("DetailStockViewModel", "setStock: ${_clickedStock.value}")
+        Log.d("DetailStockViewModel", "setStock: ${_clickedStock.value}, ${clickedStock.value?.id}")
     }
 
 

@@ -40,7 +40,7 @@ class AllStocksViewModel @Inject constructor(
     fun removeStock(stock: Stock) {viewModelScope.launch{localRepository.removeStock(stock)}}
 
 
-    fun followStock(stock: Stock, follow: Boolean) = syncManagementRepository.setUserFollowsStockData(stock, follow)
+    fun setUserFollowsStockData(stock: Stock, follow: Boolean) = syncManagementRepository.setUserFollowsStockData(stock, follow)
 
 
     

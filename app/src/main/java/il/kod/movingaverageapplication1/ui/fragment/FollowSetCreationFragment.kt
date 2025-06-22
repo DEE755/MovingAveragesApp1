@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
@@ -18,11 +20,15 @@ import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetCreationBinding
 import il.kod.movingaverageapplication1.utils.showNameInputDialog
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 import kotlin.getValue
 
-class FollowSetCreationFragment @Inject constructor(private val syncManager: SyncManagementRepository): Fragment()
+@AndroidEntryPoint
+class FollowSetCreationFragment : Fragment()
 {
 
+        @Inject
+        lateinit var syncManager: SyncManagementRepository
 
         private var _binding: FragmentFollowSetCreationBinding? = null
         private val binding get() = _binding!!
@@ -108,7 +114,8 @@ class FollowSetCreationFragment @Inject constructor(private val syncManager: Syn
                                     set_ids = selectedIds,
                                     -1.00
                                 )
-                                syncManager.pushFollowSetToRemoteDB(createdFollowSet)//add to both local and remote db
+                                syncManager.pushFollowSetToRemoteDB(createdFollowSet, viewLifecycleOwner)//add to both local and remote db
+
                                 findNavController().popBackStack()
 
                     }

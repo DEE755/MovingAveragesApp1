@@ -42,7 +42,7 @@ data class Stock(
     var isDirty: Boolean = false
 
 ): Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)// TODO(FOR NOW IT MAKES TROUBLES, ONLY 1 STOCK IS IN THE RECYCLER IF PUTTING =FALSE)
     var id: Int = 0
 
     companion object {

@@ -218,4 +218,32 @@ fun <T : Any, A> performFetchingAndSavingPaging(
         remoteMediator = mediator,
         pagingSourceFactory = pagingSourceFactory
     ).liveData
+
 }
+
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun <T : Any> FetchFromLocalPaging(
+        pagingSourceFactory: () -> PagingSource<Int, T>
+    ): LiveData<PagingData<T>> {
+
+        val mediator = object : RemoteMediator<Int, T>() {
+            override suspend fun load(
+                loadType: LoadType,
+                state: PagingState<Int, T>
+            ): MediatorResult {
+                return try {
+                    MediatorResult.Success(endOfPaginationReached = true)
+                } catch (e: Exception) {
+                    MediatorResult.Error(e)
+                }
+            }
+        }
+
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = mediator,
+            pagingSourceFactory = pagingSourceFactory
+        ).liveData
+
+    }

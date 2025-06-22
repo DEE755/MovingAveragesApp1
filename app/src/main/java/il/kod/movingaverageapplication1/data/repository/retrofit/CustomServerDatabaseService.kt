@@ -89,7 +89,7 @@ import retrofit2.http.Query
 
         @POST("followset/push")
         suspend fun pushFollowSetToRemoteDB(
-            @Body followSet: FollowSet) : Response<Any>
+            @Body followSet: FollowSet) : Response<String>
 
         @GET("followset/pull")
         suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>>

@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
@@ -25,7 +24,6 @@ import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
-import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
@@ -33,12 +31,7 @@ import il.kod.movingaverageapplication1.utils.Success
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.isActive
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 
 @AndroidEntryPoint
@@ -145,7 +138,7 @@ class FollowedStocksFragment : Fragment() {
                             title = getString(R.string.deletion_stock_title),
                             message = getString(R.string.delete_stock_message, clickedStock?.name),
                             onYes = {
-                                viewModelAllStocks.followStock(clickedStock!!, false)
+                                viewModelAllStocks.setUserFollowsStockData(clickedStock!!, false)
                                 (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
                                     index
                                 )

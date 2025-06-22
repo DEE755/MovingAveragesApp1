@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
-import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.FragmentInsideFollowSetBinding
 import il.kod.movingaverageapplication1.utils.showThresholdInputDialog
 import android.widget.Toast
@@ -25,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.toString
 
 @AndroidEntryPoint
 class InsideFollowSetFragment : Fragment() {
@@ -87,13 +87,13 @@ class InsideFollowSetFragment : Fragment() {
 
             binding.textView.text = followSet?.name
 
-            binding.setThresholdButton.setOnClickListener {
+            binding.setMoreActionsButton.setOnClickListener {
                 val items = listOf(
                     "Set an Alert for this FollowSet",
                     "Ask AI adviser about this FollowSet",
                     "Item 3"
                 )
-                val dialog = RecyclerDialogFragment(items) { selectedItem ->
+                val dialog = RecyclerDialogFragment(items) { selectedItem, dialogInstance ->
                     if (selectedItem == items[0]) {
                         showThresholdInputDialog(
                             requireContext(),
@@ -117,6 +117,7 @@ class InsideFollowSetFragment : Fragment() {
                             R.id.action_insideFollowSetFragment_to_followSetAskAIFragment
                         )
                     }
+                    dialogInstance.dismiss() // Dismiss the dialog
                 }
                 dialog.show(parentFragmentManager, "RecyclerDialog")
 

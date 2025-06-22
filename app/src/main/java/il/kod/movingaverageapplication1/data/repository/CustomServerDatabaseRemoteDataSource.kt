@@ -1,6 +1,7 @@
         package il.kod.movingaverageapplication1.data.repository
 
         import android.util.Log
+        import il.kod.movingaverageapplication1.SessionManager
         import il.kod.movingaverageapplication1.data.BaseDataSource
         import il.kod.movingaverageapplication1.data.objectclass.Stock
         import il.kod.movingaverageapplication1.data.models.AuthResponse
@@ -20,7 +21,7 @@
         //used to call the cloud database service and envelop the data inside a pattern with success/failure responses
         class CustomServerDatabaseRemoteDataSource @Inject constructor(
             private val CSDPublicService: CustomServerDatabaseServiceNoToken,
-            private val CSDPrivateService: CustomServerDatabaseServiceWithToken,
+            private val CSDPrivateService: CustomServerDatabaseServiceWithToken
 
         ) : BaseDataSource() {
 

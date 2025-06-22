@@ -56,8 +56,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
             value = PagingData.empty<Stock>()
         }
 
-    val allStocks: LiveData<PagingData<Stock>> =
-        CSDRepository.getAllStocks().cachedIn(viewModelScope)
+    //lateinit var allStocks: LiveData<PagingData<Stock>>
 
     private val _cachedStocks = MediatorLiveData<Resource<PagingData<Stock>>>()
     val cachedStocks: LiveData<Resource<PagingData<Stock>>> get() = _cachedStocks
@@ -111,9 +110,9 @@ class CustomServerDatabaseViewModel @Inject constructor(
     }
 
 
-    fun getAllStocks() {
-        _allStocks = CSDRepository.getAllStocks()
-    }
+    fun getAllStocks()  =
+         CSDRepository.getAllStocks()
+
 
     /* suspend fun getStocksStartingFromSymbol(symbol: String) {
         Log.d("CustomServerDatabaseViewModel", "Fetching stocks starting from symbol: $symbol")

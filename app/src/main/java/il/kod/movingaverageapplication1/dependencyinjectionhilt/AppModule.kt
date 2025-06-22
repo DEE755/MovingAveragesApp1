@@ -26,6 +26,7 @@ import il.kod.movingaverageapplication1.GlideApp
 import il.kod.movingaverageapplication1.MainActivity
 import il.kod.movingaverageapplication1.NotificationService
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseRepository
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceNoToken
 import il.kod.movingaverageapplication1.data.repository.retrofit.CustomServerDatabaseServiceWithToken
@@ -35,6 +36,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
+import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
 import il.kod.movingaverageapplication1.ui.NotificationHandler
 
 
@@ -47,17 +49,18 @@ class AppModule {
     @Provides
     @Singleton
     @Named("okHttpClientNoToken")
-    fun provideOkHttpClient(): OkHttpClient
-        { val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
+    fun provideOkHttpClient(): OkHttpClient {
+        val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
             level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
         }
-            val client_= OkHttpClient.Builder()
-                .addInterceptor(logging).connectTimeout(30, TimeUnit.SECONDS) // Increase connection timeout
-                .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .build()
+        val client_ = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .connectTimeout(30, TimeUnit.SECONDS) // Increase connection timeout
+            .readTimeout(30, TimeUnit.SECONDS)    // Increase read timeout
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
 
-            return client_
+        return client_
     }
 
     @Provides
@@ -95,14 +98,12 @@ class AppModule {
     }
 
 
-
-
     //RETROFIT -WITHOUT TOKEN
     @Provides
     @Singleton
     @Named("nonTokenRetrofit")
     fun provideRetrofit(gson: Gson, @Named("okHttpClientNoToken") client_: OkHttpClient): Retrofit {
-    Log.d("AppModule", "provideRetrofit called")
+        Log.d("AppModule", "provideRetrofit called")
 
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL_PUBLIC)
@@ -116,7 +117,10 @@ class AppModule {
     @Provides
     @Singleton
     @Named("tokenRetrofit")
-    fun provideRetrofitWithToken(gson: Gson, @Named("okHttpClientWithToken") client_ : OkHttpClient): Retrofit {
+    fun provideRetrofitWithToken(
+        gson: Gson,
+        @Named("okHttpClientWithToken") client_: OkHttpClient
+    ): Retrofit {
         Log.d("AppModule", "provideRetrofitwithToken called")
 
         return Retrofit.Builder()
@@ -128,25 +132,16 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideCustomServerDataBaseService(@Named("nonTokenRetrofit") retrofit: Retrofit) : CustomServerDatabaseServiceNoToken =
+    fun provideCustomServerDataBaseService(@Named("nonTokenRetrofit") retrofit: Retrofit): CustomServerDatabaseServiceNoToken =
         retrofit.create(CustomServerDatabaseServiceNoToken::class.java)
 
     @Provides
     @Singleton
-    fun provideCustomServerDataBaseServiceWithToken(@Named("tokenRetrofit") retrofit: Retrofit) : CustomServerDatabaseServiceWithToken =
+    fun provideCustomServerDataBaseServiceWithToken(@Named("tokenRetrofit") retrofit: Retrofit): CustomServerDatabaseServiceWithToken =
         retrofit.create(CustomServerDatabaseServiceWithToken::class.java)
 
 
-
-
-
-
-
-
-
-
-
-//GSON
+    //GSON
     @Provides
     fun provideGson(): Gson {
         Log.d("AppModule", "provideGson called")
@@ -154,18 +149,14 @@ class AppModule {
     }
 
 
-
-
-
     @Provides
     @Singleton
-    fun provideLocalDatabase(@ApplicationContext appContext: Context): StocksDatabase
-            = StocksDatabase.getDatabase(appContext)
+    fun provideLocalDatabase(@ApplicationContext appContext: Context): StocksDatabase =
+        StocksDatabase.getDatabase(appContext)
 
     @Provides
     @Singleton
     fun provideStocksDao(database: StocksDatabase) = database.stocksDao()
-
 
 
     @Provides
@@ -174,7 +165,6 @@ class AppModule {
         Log.d("AppModule", "provideGlideInstance called")
         return GlideApp.with(context)
     }
-
 
 
     @Provides
@@ -194,7 +184,6 @@ class AppModule {
     }
 
 
-
     @Provides
     @Singleton
     fun providesSessionManager(@ApplicationContext context: Context): SessionManager {
@@ -203,8 +192,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesAppMenu(@ApplicationContext context: Context): AppMenu
-    {return AppMenu(providesSessionManager(context))
+    fun providesAppMenu(@ApplicationContext context: Context): AppMenu {
+        return AppMenu(providesSessionManager(context))
     }
 
     @Provides
@@ -212,15 +201,15 @@ class AppModule {
     fun provideLocalStocksRepository(
         application: Application
     ): LocalStocksRepository {
-            return LocalStocksRepository(application)
+        return LocalStocksRepository(application)
     }
 
     @Provides
     @Singleton
     fun provideLocalFollowSetRepository(
         application: Application
-    ):  LocalFollowSetRepository {
-        return  LocalFollowSetRepository(application)
+    ): LocalFollowSetRepository {
+        return LocalFollowSetRepository(application)
     }
 
 
@@ -230,22 +219,40 @@ class AppModule {
    return context as Application
     }*/
 
-/* @Provides
+    /* @Provides
 fun provideApplicationContext(@ApplicationContext context: Context): Context {
    return context
 }
 */
 
-@Provides
-@Singleton
-fun providesNotificationHandler(@ApplicationContext context: Context): NotificationHandler {
-   return NotificationHandler(context)
-}
+    @Provides
+    @Singleton
+    fun providesNotificationHandler(@ApplicationContext context: Context): NotificationHandler {
+        return NotificationHandler(context)
+    }
 
 
-@Provides
-@Singleton
-fun providesNotificationService(): NotificationService {
-   return NotificationService()
-}
+    @Provides
+    @Singleton
+    fun providesNotificationService(): NotificationService {
+        return NotificationService()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideSyncManagementRepository(
+        csdRepository: CustomServerDatabaseRepository,
+        localStockRepository: LocalStocksRepository,
+        sessionManager: SessionManager,
+        localFollowSetRepository: LocalFollowSetRepository
+    ): SyncManagementRepository {
+        return SyncManagementRepository(
+            csdRepository,
+            localStockRepository,
+            sessionManager,
+            localFollowSetRepository
+        )
+    }
+
 }

@@ -170,6 +170,10 @@ class StocksSelectionFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${it.error.message}", Toast.LENGTH_SHORT)
                     .show()
             }
+
+            CSDViewModel.fetchedStocksCount = adapter.itemCount
+            updateCountView(CSDViewModel.fetchedStocksCount)
+
         }
 
         //PAGING RECYCLER VIEW
@@ -214,7 +218,7 @@ class StocksSelectionFragment : Fragment() {
                         onYes = {
                             //TODO(FIX THIS ITS NOT DOING ANYTHING -->CHANGE THE COLOR)
 
-                            viewModelAllStocks.followStock(clickedStock!!, false)
+                            viewModelAllStocks.setUserFollowsStockData(clickedStock!!, false)
                             (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
                                 index
                             )
@@ -236,7 +240,7 @@ class StocksSelectionFragment : Fragment() {
 
 
 
-        CSDViewModel.allStocks.observe(viewLifecycleOwner) {
+        CSDViewModel.getAllStocks().observe(viewLifecycleOwner) {
             if (it != null) {
                 Log.d("StocksSelectionFragment", "Observing")
                 lifecycleScope.launch {
@@ -273,7 +277,7 @@ class StocksSelectionFragment : Fragment() {
                 if (CSDViewModel.percentoge < 95) {
 
                     binding.progressBar.progress = CSDViewModel.percentoge
-                    updateCountView(CSDViewModel.fetchedStocksCount)
+
 
                     //TODO(DAO UTILITY: SET DAO IN NEW UTILITY TABLE FLAG SO FETCHING WONT HAPPEN FOR NEXT TIME)_
                     //TODO(OR FIND OUT WITH NB OF STOCKS IN DB BUT DOESNT WORK FOR NOW)
@@ -283,9 +287,11 @@ class StocksSelectionFragment : Fragment() {
                     binding.loadingText.isVisible = false
                     binding.recyclerView.isVisible = true
 
+
                 }
             }
 
+            updateCountView(CSDViewModel.fetchedStocksCount)
 
         }
 
@@ -312,7 +318,7 @@ class StocksSelectionFragment : Fragment() {
 
         fun updateCountView(count: Int) {
             if (!isAdded) return // Ensure the Fragment is attached to an activity
-            var countText: String = "Available Stocks"
+            var countText = "Available Stocks"
             if (count > 0) countText = countText.plus(": $count stocks")
             (requireActivity() as AppCompatActivity).supportActionBar?.title =
                 "Available Stocks: $count stocks"

@@ -125,6 +125,7 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                                 }
                             }
                         }
+
                     }
 
                     override fun onItemLongClicked(index: Int) {}

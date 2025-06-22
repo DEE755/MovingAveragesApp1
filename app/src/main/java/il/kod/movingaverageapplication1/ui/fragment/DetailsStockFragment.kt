@@ -118,7 +118,7 @@ class DetailsStockFragment: Fragment() {
             binding.addButton.setOnClickListener {
 
                 Log.d("DetailsStockFragment", "stoclk clicked: ${stock.value}")
-                viewModelAllStocks.followStock(stock.value!!, true)
+                viewModelAllStocks.setUserFollowsStockData(stock.value!!, true)
 
                 findNavController().popBackStack()
                 Toast.makeText(requireContext(), "${stock.value?.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()

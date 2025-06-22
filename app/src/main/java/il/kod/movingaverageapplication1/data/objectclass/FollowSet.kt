@@ -5,7 +5,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
-import il.kod.movingaverageapplication1.NotificationService
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,11 +12,11 @@ import kotlinx.parcelize.Parcelize
 data class FollowSet(
     @ColumnInfo(name="name") @Expose
     var name: String,
-    @ColumnInfo(name="imageUri") @Expose
+    @ColumnInfo(name="image_uri") @Expose
     internal var imageUri: String? =null,
-    @ColumnInfo(name="user_comments") @Expose
+    @ColumnInfo(name="user_description") @Expose
     val userComments: String="",
-    @ColumnInfo(name="set_ids") @Expose(serialize = false, deserialize = false)
+    @ColumnInfo(name="set_ids")
     val set_ids : List<Int>, //(not mutable for parcelization purposes --> handled via type converter)
 
     @ColumnInfo(name="notifications_prices") @Expose
@@ -29,7 +28,8 @@ data class FollowSet(
 ): Parcelable {
 
     @PrimaryKey(autoGenerate = true)
-    var id : Int =0
+    @ColumnInfo(name = "id")
+    var id_front : Int =0
     // Update the list (not mutable for parcelization purposes)
     fun updateSet(newSet: List<Int>): FollowSet {
         return this.copy(set_ids = newSet)

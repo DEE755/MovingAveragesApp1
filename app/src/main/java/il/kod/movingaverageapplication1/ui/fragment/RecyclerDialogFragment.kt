@@ -11,7 +11,7 @@ import il.kod.movingaverageapplication1.databinding.FragmentRecyclerPopUpBinding
 
 class RecyclerDialogFragment(
     private val items: List<String>,
-    private val onItemClick: (String) -> Unit
+    private val onItemClick: (String, RecyclerDialogFragment) -> Unit
 ) : DialogFragment() {
 
     private var _binding: FragmentRecyclerPopUpBinding? = null
@@ -22,11 +22,11 @@ class RecyclerDialogFragment(
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         // Properly initialize _binding
-        _binding = FragmentRecyclerPopUpBinding.inflate(LayoutInflater.from(context))
+        _binding = FragmentRecyclerPopUpBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = SimpleAdapter(items, onItemClick)
+        binding.recyclerView.adapter = SimpleAdapter(items){selectedItem ->onItemClick(selectedItem, this)}
 
         dialog.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.75).toInt(),

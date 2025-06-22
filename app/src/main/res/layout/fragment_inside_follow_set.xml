@@ -50,7 +50,7 @@
         android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/set_thresholdButton"
+        android:id="@+id/set_more_actions_button"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
