@@ -1,4 +1,5 @@
 package il.kod.movingaverageapplication1.data.repository.retrofit
+import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.StringAdapterForGson
 import il.kod.movingaverageapplication1.data.models.AuthResponse
@@ -84,15 +85,25 @@ import retrofit2.http.Query
 
 
 
-        //TODO(TO IMPLEMENT)
+
 
 
         @POST("followset/push")
         suspend fun pushFollowSetToRemoteDB(
             @Body followSet: FollowSet) : Response<String>
 
+
+
+        //TODO(TO IMPLEMENT)
+
         @GET("followset/pull")
         suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>>
+
+        @GET("stocks/pull")
+        suspend fun pullUserFollowedStockFromRemoteDB(): Response<List<AdapterStockIdGson>> //returns ids only
+
+
+
 
         @FormUrlEncoded
         @POST("unfollows_stock")

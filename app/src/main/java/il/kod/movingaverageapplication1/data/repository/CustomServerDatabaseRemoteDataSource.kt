@@ -3,6 +3,7 @@
         import android.util.Log
         import il.kod.movingaverageapplication1.SessionManager
         import il.kod.movingaverageapplication1.data.BaseDataSource
+        import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
         import il.kod.movingaverageapplication1.data.objectclass.Stock
         import il.kod.movingaverageapplication1.data.models.AuthResponse
         import il.kod.movingaverageapplication1.data.objectclass.FollowSet
@@ -99,6 +100,9 @@
 
             suspend fun pullUserFollowSetsFromToRemoteDB() : Resource<List<FollowSet>> =
                 getResult({CSDPrivateService.pullUserFollowSetFromRemoteDB()})
+
+            suspend fun pullUserFollowedStockFromRemoteDB() : Resource<List<AdapterStockIdGson>> =
+                getResult({CSDPrivateService.pullUserFollowedStockFromRemoteDB()})
 
         suspend fun getFollowedStockPrice(): Resource<List<Stock>> =
            getResult({CSDPrivateService.getFollowedStockPrice()}, HttpMethod.GET)

@@ -187,7 +187,7 @@ class AppModule {
     @Provides
     @Singleton
     fun providesSessionManager(@ApplicationContext context: Context): SessionManager {
-        return SessionManager(provideEncryptedPrefs(context))
+        return SessionManager(provideEncryptedPrefs(context), provideLocalStocksRepository(context))
     }
 
     @Provides
@@ -199,17 +199,17 @@ class AppModule {
     @Provides
     @Singleton
     fun provideLocalStocksRepository(
-        application: Application
+        @ApplicationContext context: Context
     ): LocalStocksRepository {
-        return LocalStocksRepository(application)
+        return LocalStocksRepository(context as Application)
     }
 
     @Provides
     @Singleton
     fun provideLocalFollowSetRepository(
-        application: Application
+        @ApplicationContext context: Context
     ): LocalFollowSetRepository {
-        return LocalFollowSetRepository(application)
+        return LocalFollowSetRepository(context as Application)
     }
 
 

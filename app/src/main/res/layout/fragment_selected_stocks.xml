@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:gravity="center"
-        android:text="@string/you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks"
+        android:text="Download stocks set to continue"
         app:layout_constraintBottom_toTopOf="@id/addStockButtonBig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

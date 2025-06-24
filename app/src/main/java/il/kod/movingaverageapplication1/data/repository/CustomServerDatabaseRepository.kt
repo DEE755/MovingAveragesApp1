@@ -3,6 +3,7 @@ package il.kod.movingaverageapplication1.data.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
@@ -55,8 +56,6 @@ class CustomServerDatabaseRepository @Inject constructor(
         }
 
 
-
-
     /* suspend fun getStocksStartingFromSymbol(symbol: String, scope: CoroutineScope) =
         performFetchingAndSaving (
             {localDataSource.getAllStocks(scope)},
@@ -71,7 +70,7 @@ class CustomServerDatabaseRepository @Inject constructor(
             remoteDataSource.getFollowedStockPrice()
         }
 
-    fun getFollowedMovingAverages() =
+    fun getFollowedMovingAverages() : LiveData<Resource<List<Stock>>> =
         performFetchingFromServer { remoteDataSource.getFollowedMovingAverages() }
 
     suspend fun setUserFollowsStock(stockSymbol: String, follow: Boolean, clientId: Int) =
@@ -95,10 +94,25 @@ class CustomServerDatabaseRepository @Inject constructor(
         performPostingToServer{remoteDataSource.pushFollowSetToRemoteDB(createdFollowSet)}
 
 
-    fun pullUserFollowSetsFromToRemoteDB() =
+    fun pullUserFollowSetsFromToRemoteDB() : LiveData<Resource<List<FollowSet>>> =
         performFetchingAndSaving (
             localDbFetch={ localFollowSetRepository.getAllUserFollowSet()},
             remoteDbFetch = {remoteDataSource.pullUserFollowSetsFromToRemoteDB()},
            localDbSave =  {followSetList->localFollowSetRepository.saveAllFollowSets(followSetList)})
+
+
+    /*fun pullUserFollowedStockFromRemoteDB() : LiveData<Resource<List<Stock>>> =
+        performFetchingAndSaving (
+            localDbFetch = { localDataSource.getAllStocks() },
+            {remoteDataSource.pullUserFollowedStockFromRemoteDB()},
+
+            {stockList -> localDataSource.saveAllStocks(stockList) }
+    )*/
+
+    fun pullUserFollowedStockFromRemoteDB(): LiveData<Resource<List<AdapterStockIdGson>>> =
+        performFetchingFromServer {
+            remoteDataSource.pullUserFollowedStockFromRemoteDB()
+        }
+
 
 }

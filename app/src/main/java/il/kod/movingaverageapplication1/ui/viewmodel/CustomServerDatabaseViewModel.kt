@@ -22,6 +22,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.utils.Constants
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
@@ -45,10 +46,13 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
     lateinit var tokensResponse: LiveData<Resource<AuthResponse>>
 
-     var updatedStockPrice: LiveData<Resource<List<Stock>>> =
+    var updatedStockPrice: LiveData<Resource<List<Stock>>> =
         MutableLiveData<Resource<List<Stock>>>(Resource.loading(null))
 
     lateinit var signupResult: LiveData<Resource<AuthResponse>>
+
+
+    lateinit var newallStocks : LiveData<PagingData<Stock>>
 
 
     private var _allStocks: LiveData<PagingData<Stock>> =
@@ -110,9 +114,10 @@ class CustomServerDatabaseViewModel @Inject constructor(
     }
 
 
-    fun getAllStocks()  =
-         CSDRepository.getAllStocks()
-
+    fun getAllStocks() {
+        Log.d("CustomServerDatabaseViewModel", "Fetching all stocks")
+     newallStocks=   CSDRepository.getAllStocks()
+    }
 
     /* suspend fun getStocksStartingFromSymbol(symbol: String) {
         Log.d("CustomServerDatabaseViewModel", "Fetching stocks starting from symbol: $symbol")
@@ -125,7 +130,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
     }
 
     fun askAIFollowSet(vararg allStocksName: String, question: String) {
-        AI_Answer = CSDRepository.askAIFollowSet(*allStocksName, question=question)
+        AI_Answer = CSDRepository.askAIFollowSet(*allStocksName, question = question)
 
     }
 
@@ -139,7 +144,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
 
     fun getNbOfStocksInRemoteDB() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 nbOfStockInRemoteDB = CSDRepository.getNbOfStocksInRemoteDB()
                 Log.d(
@@ -168,20 +173,27 @@ class CustomServerDatabaseViewModel @Inject constructor(
     }
 
 
-    fun getFollowedStockPrice() {
-         this.updatedStockPrice = CSDRepository.getFollowedStockPrice()
+    fun getFollowedStockPrice()
+    {
+        this.updatedStockPrice = CSDRepository.getFollowedStockPrice()
 
 //function to be observed by the UI to get the followed stock prices
     }
 
     fun getFollowedMovingAverages() =
         CSDRepository.getFollowedMovingAverages()
+
+
+    fun pullUserFollowSetsFromToRemoteDB() = //function to be observed by the UI to get the user follow sets at first launch only
+        CSDRepository.pullUserFollowSetsFromToRemoteDB()
+
+
+
+
+
+
+
 }
-
-
-
-
-
 
 
 

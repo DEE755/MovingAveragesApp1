@@ -35,6 +35,7 @@ import kotlin.getValue
 import kotlin.jvm.java
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.lifecycleScope
+import kod.il.movingaverageapplication1.utils.sessionManager
 import kotlinx.coroutines.launch
 
 
@@ -160,6 +161,11 @@ class ExistingFollowSetFragment : Fragment() {
 
         viewModelFollowSet.getAllFollowSet().observe(viewLifecycleOwner) {
             (binding.recyclerView.adapter as? FollowSetAdapterFragment)?.updateData(it)
+
+             if(sessionManager.fetchedStocksFromRemoteDB) {
+                 binding.isEmptytextView.text =
+                     getString(R.string.you_don_t_follow_any_stocks_yet_n_click_the_button_below_to_add_stocks)
+             }
 
             if (!it.isEmpty()) {
                 binding.addStockButtonBig.visibility = View.GONE

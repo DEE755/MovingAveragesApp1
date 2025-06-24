@@ -16,7 +16,7 @@ data class FollowSet(
     internal var imageUri: String? =null,
     @ColumnInfo(name="user_description") @Expose
     val userComments: String="",
-    @ColumnInfo(name="set_ids")
+    @ColumnInfo(name="set_ids")@Expose
     val set_ids : List<Int>, //(not mutable for parcelization purposes --> handled via type converter)
 
     @ColumnInfo(name="notifications_prices") @Expose

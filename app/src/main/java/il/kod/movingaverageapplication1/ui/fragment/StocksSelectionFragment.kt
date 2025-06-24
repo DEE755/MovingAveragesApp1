@@ -31,7 +31,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import androidx.paging.LoadState
 import il.kod.movingaverageapplication1.data.objectclass.Stock.Companion.stockList
+import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import kod.il.movingaverageapplication1.utils.sessionManager
+import kotlinx.coroutines.Dispatchers
 
 @AndroidEntryPoint
 class StocksSelectionFragment : Fragment() {
@@ -54,6 +57,7 @@ class StocksSelectionFragment : Fragment() {
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
     private val CSDViewModel: CustomServerDatabaseViewModel by activityViewModels()
+    private val syncManagementviewModel: SyncManagementViewModel by activityViewModels()
 
 
 
@@ -77,10 +81,12 @@ class StocksSelectionFragment : Fragment() {
                 .show()
             viewModelAllStocks.getAvailableStockCount()//local stock count
             CSDViewModel.getNbOfStocksInRemoteDB()
-            Log.d(
-                "StockSelectionFragment",
-                "there is at start ${viewModelAllStocks.availableStockCount.value}"
-            )
+           lifecycleScope.launch(Dispatchers.IO) {
+               Log.d(
+                   "StockSelectionFragment",
+                   "there is at start ${viewModelAllStocks.availableStockCount}"
+               )
+           }
 
             //CSDViewModel.getAllStocks()
 
@@ -97,9 +103,13 @@ class StocksSelectionFragment : Fragment() {
 
         binding.returntoselected.setOnClickListener {
 
+            if(sessionManager.isFirstTimeLaunch() && !sessionManager.fetchedStocksFromRemoteDB)
+                Toast.makeText(requireContext(), "Please wait for completion before leaving", Toast.LENGTH_SHORT).show()
 
-            findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
+            else{
+                findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
 
+            }
 
 
 
@@ -240,10 +250,22 @@ class StocksSelectionFragment : Fragment() {
 
 
 
-        CSDViewModel.getAllStocks().observe(viewLifecycleOwner) {
+        CSDViewModel.getAllStocks()
+        CSDViewModel.newallStocks.observe(viewLifecycleOwner) {
+
+
             if (it != null) {
                 Log.d("StocksSelectionFragment", "Observing")
+
+
+                if (sessionManager.fetchedStocksFromRemoteDB && syncManagementviewModel.areFollowedInjectedFlag==false)
+                {
+                    syncManagementviewModel.pullAndInjectFollowedStocksFromRemote()
+                    syncManagementviewModel.areFollowedInjectedFlag = true
+                }
                 lifecycleScope.launch {
+
+
                     adapter.submitData(lifecycle, it)//submit the data to the adapter
                     CSDViewModel.fetchedStocksCount = adapter.itemCount
                     CSDViewModel.calculatePercentageFetchStocks(

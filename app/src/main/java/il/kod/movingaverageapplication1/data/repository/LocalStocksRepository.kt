@@ -7,7 +7,6 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 import il.kod.movingaverageapplication1.utils.Constants
-import il.kod.movingaverageapplication1.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -45,7 +44,7 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
         stockDao.getAllStocks(Constants.DATABASE_LIMIT)
 
 
-    fun getSelectedStocks(): LiveData<List<Stock>> {
+    fun getFollowedStocksLocal(): LiveData<List<Stock>> {
         return stockDao.getSelectedStocks()
     }
 
@@ -70,6 +69,9 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
     fun getStocksByIds(vararg ids: Int): List<Stock> {
         return stockDao.getStocksByIds(ids.toList())
     }
+    fun getStocksByIdsLive(vararg ids: Int): LiveData<List<Stock>> {
+        return stockDao.getStocksByIdsLive(ids.toList())
+    }
 
     fun getStockById(id: Int): Stock {
         return stockDao.getStockById(id)
@@ -91,7 +93,7 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
     }
 
 
-    fun getAvailableStockCount():LiveData<Int> = stockDao.getAvailableStockCount()
+    fun getAvailableStockCount(): Int = stockDao.getInstantStockCount()
 
     fun getLastSymbol(): String? {
         return stockDao.getLastSymbol()

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
@@ -24,13 +25,16 @@ import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
 
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import kod.il.movingaverageapplication1.utils.setObservingSourceOfMediator
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -58,17 +62,13 @@ class FollowedStocksFragment : Fragment() {
 
     private val CSDViewModel: CustomServerDatabaseViewModel by activityViewModels()
 
+    private val syncManagementViewModel: SyncManagementViewModel by activityViewModels()
+
+
     private var priceUpdateJob: Job? = null
 
 
-
-
-
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
             //START THE NOTIFICATION SERVICE (WILL BIND IT LATER)
@@ -95,7 +95,6 @@ class FollowedStocksFragment : Fragment() {
 
         viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) {
             val isEmpty = it.isEmpty()
-
 
             val oldMenu = currentMenu
             if (oldMenu != null) {
@@ -240,6 +239,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
         }
 
 
+
             binding.addStockButtonBig.setOnClickListener {
 
                 findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
@@ -261,7 +261,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.followed_stocks_title)
 
 
-                    CSDViewModel.getFollowedStockPrice() // Explicitly trigger the request
+                    CSDViewModel.getFollowedStockPrice() // trigger the request
 
     }
 

@@ -17,15 +17,19 @@ abstract class BaseDataSource {
             val result  = call()
             val message_: String
             if(result.isSuccessful) {
+                Log.d("BaseDataSource", "Response is successful")
                 message_= result.message()?:"Success"
                 val body = result.body()
                 if( method == HttpMethod.POST) return Resource.success(message_, body?:getDummyResponse()as T)
                 else if(method == HttpMethod.GET && body != null) return  Resource.success(message_,body)
             }
+            Log.d("BaseDataSource", "Response: ${result.code()}, Message: ${result.message()}, Body: ${result.body()}")
             return Resource.error("Network call has failed for the following reason: " +
-                    "${result.message()} ${result.code()}")
+                    "${result.message()}, ${result.code()}")
+
+
         }catch (e : Exception) {
-            Log.d("BaseDataSource", "entered catch")
+            Log.d("BaseDataSource", "entered catch , error: ${e.message}")
             return Resource.error("Network call has failed for the following reason: "
              + (e.localizedMessage ?: e.toString()))
         }

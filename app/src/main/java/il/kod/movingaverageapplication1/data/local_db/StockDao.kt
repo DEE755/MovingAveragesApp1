@@ -39,6 +39,9 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
     fun getStocksByIds(ids: List<Int>): List<Stock>
 
+    @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
+    fun getStocksByIdsLive(ids: List<Int>): LiveData<List<Stock>>
+
     @Query("SELECT * FROM stocks WHERE id = :id")
     fun getStockById(id: Int) : Stock
 
@@ -48,7 +51,10 @@ interface StockDao {
     suspend fun filterStockByName(name_part: String): List<Stock>?
 
     @Query("SELECT COUNT(*) FROM stocks")
-    fun getAvailableStockCount(): LiveData<Int>
+    fun getInstantStockCount(): Int
+
+    @Query("SELECT COUNT(*) FROM stocks")
+    fun getObservableAvailableStockCount(): LiveData<Int>
 
     @Query("SELECT symbol FROM stocks ORDER BY symbol DESC LIMIT 1")
     fun getLastSymbol(): String?

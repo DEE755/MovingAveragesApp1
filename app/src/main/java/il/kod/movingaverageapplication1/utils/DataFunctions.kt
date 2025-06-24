@@ -1,7 +1,6 @@
 package kod.il.movingaverageapplication1.utils
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.paging.ExperimentalPagingApi
@@ -12,7 +11,6 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.paging.RemoteMediator.MediatorResult
 import androidx.paging.liveData
 import il.kod.movingaverageapplication1.utils.Resource
 import il.kod.movingaverageapplication1.utils.Success
@@ -22,6 +20,29 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlin.coroutines.coroutineContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.dependencyinjectionhilt.MovingAverageApplication1
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface SessionManagerEntryPoint {
+    fun getSessionManager(): SessionManager
+}
+
+// Lazy initialization of SessionManager using Hilt
+val sessionManager: SessionManager by lazy {
+    val context = MovingAverageApplication1.instance.applicationContext
+    EntryPointAccessors.fromApplication(context, SessionManagerEntryPoint::class.java).getSessionManager()
+}
+
 
 @OptIn(ExperimentalPagingApi::class)
 fun <T : Any, A> performFetchingAndSavingPaging(
@@ -108,9 +129,15 @@ fun <T> performFetchingFromServer(remoteDbFetch: suspend () ->Resource<T>) : Liv
 
         if (fetchResource.status is Error) {
             emit(Resource.error(fetchResource.status.message))
-        } else {
-            emit(Resource.success("Success", fetchResource.status.data!!))
         }
+        if (fetchResource.status is Success) {
+        val data = fetchResource.status.data
+        if (data != null) {
+            emit(Resource.success("Success", data))
+        } else {
+            emit(Resource.error("Data is null"))
+        }
+    }
     }
 
 
@@ -201,6 +228,9 @@ fun <T : Any, A> performFetchingAndSavingPaging(
                     val fetchResource = remoteDbFetch()
                     if (fetchResource.status is Success) {
                         fetchResource.status.data?.let { localDbSave(it) }
+
+                        sessionManager.fetchedStocksFromRemoteDB=true
+
                     } else if (fetchResource.status is Error) {
                         return MediatorResult.Error(Exception(fetchResource.status.message))
                     }
@@ -247,3 +277,33 @@ fun <T : Any, A> performFetchingAndSavingPaging(
         ).liveData
 
     }
+
+
+fun <T> LiveData<T>.observeOnce(observer: Observer<T>) {
+    val wrapper = object : Observer<T> {
+        override fun onChanged(t: T) {
+            removeObserver(this)
+            observer.onChanged(t)
+        }
+    }
+    observeForever(wrapper)
+}
+
+
+fun <T> toLiveData(value: T): LiveData<T> {
+    val liveData = MutableLiveData<T>()
+    liveData.value = value
+    return liveData
+}
+
+
+fun <T> setObservingSourceOfMediator(
+    newSource: LiveData<T>,
+    targetSource: MediatorLiveData<T>,
+    toRemove: LiveData<*>? = null
+) {
+    toRemove?.let { targetSource.removeSource(it) }
+    targetSource.addSource(newSource) { value ->
+        targetSource.value = value
+    }
+}
