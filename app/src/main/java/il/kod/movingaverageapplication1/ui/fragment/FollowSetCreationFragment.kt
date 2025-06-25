@@ -18,6 +18,7 @@ import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetCreationBinding
+import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
 import il.kod.movingaverageapplication1.utils.showNameInputDialog
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
@@ -38,6 +39,7 @@ class FollowSetCreationFragment : Fragment()
         private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
         private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
         private val viewModelFollowSet: FollowSetViewModel by activityViewModels()
+        private val dialogViewModel: DialogViewModel by activityViewModels()
 
 
 
@@ -102,6 +104,7 @@ class FollowSetCreationFragment : Fragment()
                     }
                 }
 
+                //TODO(replace with : dialogViewModel.show..)
                 showNameInputDialog(
                     context = requireContext(),
                             title = getString(R.string.follow_set_name),
@@ -109,8 +112,8 @@ class FollowSetCreationFragment : Fragment()
                             onNameEntered = { name -> //actions to perform after confirming the dialog
                                 val createdFollowSet = FollowSet(
                                     name = name,
-                                    imageUri = "TODO()",
-                                    userComments = "TODO()",
+                                    imageUri = "",
+                                    userComments = "",
                                     set_ids = selectedIds,
                                     -1.00
                                 )

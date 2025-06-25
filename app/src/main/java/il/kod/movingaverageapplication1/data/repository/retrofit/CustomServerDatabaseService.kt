@@ -97,7 +97,7 @@ import retrofit2.http.Query
         //TODO(TO IMPLEMENT)
 
         @GET("followset/pull")
-        suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>>
+        suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>> // return followset objects as json destructured objects
 
         @GET("stocks/pull")
         suspend fun pullUserFollowedStockFromRemoteDB(): Response<List<AdapterStockIdGson>> //returns ids only

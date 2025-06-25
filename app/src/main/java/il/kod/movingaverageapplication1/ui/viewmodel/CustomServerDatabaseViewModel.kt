@@ -24,10 +24,7 @@ import androidx.paging.cachedIn
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.utils.Constants
-import il.kod.movingaverageapplication1.utils.Error
-import il.kod.movingaverageapplication1.utils.Loading
-import il.kod.movingaverageapplication1.utils.Success
-import kotlinx.coroutines.CoroutineScope
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
@@ -39,8 +36,6 @@ class CustomServerDatabaseViewModel @Inject constructor(
     private val sessionManager: SessionManager,
 ): ViewModel() {
     var fetchedStockFlag = false
-
-    lateinit var fetchedClientUsername: String
 
     var fetchedClientId = -1
 
@@ -82,19 +77,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
     var lastSymbol: String = "A"
 
 
-    fun saveTokens(
-        token: String,
-        refresh: String,
-        username: String,
-        clientId: Int
-    ) {//insert the tokens into the encrypted shared preferences
-        sessionManager.preferences.edit {
-            putString("access_token", token)
-                .putString("refresh_token", refresh)
-                .putString("client_username", username)
-                .putInt("client_id", clientId)
-        }
-    }
+
 
 
     fun getAccessTokenFromPreferences(): String? {
@@ -103,7 +86,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
 
 
     fun updateCredentialsFromServer(userLogin: String, password: String) {
-        fetchedClientUsername = userLogin
+        sessionManager.setUsername(userLogin)
         tokensResponse = CSDRepository.login(userLogin, password)
 
     }
@@ -184,8 +167,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
         CSDRepository.getFollowedMovingAverages()
 
 
-    fun pullUserFollowSetsFromToRemoteDB() = //function to be observed by the UI to get the user follow sets at first launch only
-        CSDRepository.pullUserFollowSetsFromToRemoteDB()
+
 
 
 

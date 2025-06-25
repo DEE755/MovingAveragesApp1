@@ -45,7 +45,7 @@ class CustomServerDatabaseRepository @Inject constructor(
 
 
     fun getAllStocks(): LiveData<PagingData<Stock>> =
-        if (sessionManager.isFirstTimeLaunch()) {
+        if (!sessionManager.allStocksPackHaveBeenFetch()) {
             performFetchingAndSavingPaging(
                 { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
                 { remoteDataSource.getAllStocks() },

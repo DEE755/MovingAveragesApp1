@@ -21,10 +21,8 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
 import com.bumptech.glide.RequestManager
-import dagger.hilt.android.qualifiers.ActivityContext
 import il.kod.movingaverageapplication1.GlideApp
-import il.kod.movingaverageapplication1.MainActivity
-import il.kod.movingaverageapplication1.NotificationService
+import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.data.repository.CustomServerDatabaseRepository
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
@@ -234,8 +232,8 @@ fun provideApplicationContext(@ApplicationContext context: Context): Context {
 
     @Provides
     @Singleton
-    fun providesNotificationService(): NotificationService {
-        return NotificationService()
+    fun providesNotificationService(): NotificationsService {
+        return NotificationsService()
     }
 
 

@@ -77,17 +77,16 @@ fun showNameInputDialog(
 fun showThresholdInputDialog(
     context: Context,
     onNumberEntered: (Double) -> Unit,
-    title: String,
-    message: String
+    followSetName: String,
 ) {
     val editText = EditText(context).apply {
         inputType = android.text.InputType.TYPE_CLASS_NUMBER
     }
-    editText.hint = message
-
+    editText.hint = context.getString(R.string.set_threshold_alert, followSetName)
     AlertDialog.Builder(context)
-        .setTitle(title)
+        .setTitle(context.getString(R.string.set_threshold_alert, followSetName))
         .setView(editText)
+        .setMessage(context.getString(R.string.alert_threshold_message))
         .setPositiveButton(context.getString(R.string.ok)) { dialog, _ ->
             val number = editText.text.toString()
             if (number.isNotBlank() && number.isDigitsOnly()) {
@@ -139,4 +138,83 @@ suspend fun showCustomQuestionInputDialog(
             continuation.resume(null)
         }
         .show()
+}
+
+fun showGenericDialogInput(
+    context: Context,
+    title: String,
+    positiveButtonText: String = "Ok",
+    negativeButtonText: String = "Cancel",
+    invalidInputMessage: String = "Enter a valid input",
+    message: String = "Please enter your input here",
+    onInputEntered: (String) -> Unit
+) {
+    val editText = EditText(context)
+    editText.hint = message
+
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setView(editText)
+        .setPositiveButton(positiveButtonText) { dialog, _ ->
+            val name = editText.text.toString()
+            if (name.isNotBlank()) {
+                onInputEntered(name)
+            } else {
+                Toast.makeText(context, invalidInputMessage, Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+        .setNegativeButton(negativeButtonText) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+    }
+
+fun showLargeGenericDialogInput(
+    context: Context,
+    title: String,
+    positiveButtonText: String = "Ok",
+    negativeButtonText: String = "Cancel",
+    invalidInputMessage: String = "Enter a valid input",
+    message: String = "Please enter your input here",
+    onInputEntered: (String) -> Unit
+) {
+    val editText = EditText(context)
+    editText.hint = message
+
+    val dialog=AlertDialog.Builder(context)
+        .setTitle(title)
+        .setView(editText)
+        .setPositiveButton(positiveButtonText) { dialog, _ ->
+            val name = editText.text.toString()
+            if (name.isNotBlank()) {
+                onInputEntered(name)
+            } else {
+                Toast.makeText(context, invalidInputMessage, Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+        .setNegativeButton(negativeButtonText) { dialog, _ ->
+            dialog.dismiss()
+        }.create()
+
+        dialog.show()
+
+        dialog.window?.setLayout(1000, 1200)
+}
+
+
+    fun showGenericDialogNoInput(
+        context: Context,
+        title: String,
+        positiveButtonText: String = "Close",
+        message: String = "Please enter your input here"
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveButtonText) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
 }

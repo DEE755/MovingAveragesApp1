@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentRecyclerPopUpBinding
 
 class RecyclerDialogFragment(
@@ -49,12 +50,12 @@ class RecyclerDialogFragment(
     ) : androidx.recyclerview.widget.RecyclerView.Adapter<SimpleAdapter.ViewHolder>() {
 
         inner class ViewHolder(itemView: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-            val text: android.widget.TextView = itemView.findViewById(android.R.id.text1)
+            val text: android.widget.TextView = itemView.findViewById(R.id.action_title)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
+                .inflate(R.layout.actions_layout, parent, false)
             return ViewHolder(view)
         }
 

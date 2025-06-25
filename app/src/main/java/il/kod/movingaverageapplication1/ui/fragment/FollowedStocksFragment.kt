@@ -13,18 +13,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.NotificationService
+import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
@@ -32,9 +32,7 @@ import il.kod.movingaverageapplication1.utils.Success
 
 
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
-import kod.il.movingaverageapplication1.utils.setObservingSourceOfMediator
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -64,6 +62,8 @@ class FollowedStocksFragment : Fragment() {
 
     private val syncManagementViewModel: SyncManagementViewModel by activityViewModels()
 
+    private val dialogViewModel: DialogViewModel by activityViewModels()
+
 
     private var priceUpdateJob: Job? = null
 
@@ -73,7 +73,7 @@ class FollowedStocksFragment : Fragment() {
 
             //START THE NOTIFICATION SERVICE (WILL BIND IT LATER)
         if (sessionManager.isNotificationsServiceStarted==false)
-        { val intent = Intent(context, NotificationService::class.java)
+        { val intent = Intent(context, NotificationsService::class.java)
         context?.startService(intent)
         sessionManager.isNotificationsServiceStarted = true
         }
@@ -160,6 +160,10 @@ class FollowedStocksFragment : Fragment() {
             viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) { selectedStocks ->
                 (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.updateData(selectedStocks)
                 if (viewModelAllStocks.followedStocks.value?.isEmpty() == false) {
+                    if (!sessionManager.restoredFollowedStocksDialogHasBeenShown() && sessionManager.userHasFollowedStocksinRemoteDB)
+                    {
+                    dialogViewModel.showRestoredPreviouslyFollowedStocksDialog(requireContext(), "stock", -1 )
+                    }
                     binding.addStockButtonBig.visibility = View.GONE
                     binding.isEmptytextView.visibility = View.GONE
                     binding.addStockButtonSmall.visibility = View.VISIBLE
@@ -194,7 +198,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
 
         is Loading-> {
             //TODO()/*FIND THE FOLLOWED STOCKS BINDING AND WRITE "LOADING"*/
-            Toast.makeText(requireContext(), "Updating stock prices", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), "Updating stock prices", Toast.LENGTH_SHORT).show()
 
             }
         }
@@ -218,8 +222,8 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
 
                 is Loading -> {
                     //TODO()/*FIND THE FOLLOWED STOCKS BINDING AND WRITE "LOADING"*/
-                    Toast.makeText(requireContext(), "Updating Moving Averages", Toast.LENGTH_SHORT)
-                        .show()
+                   // Toast.makeText(requireContext(), "Updating Moving Averages", Toast.LENGTH_SHORT)
+                      //  .show()
                 }
 
                 is Success -> {
@@ -261,7 +265,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.followed_stocks_title)
 
 
-                    CSDViewModel.getFollowedStockPrice() // trigger the request
+        CSDViewModel.getFollowedStockPrice() // trigger the request
 
     }
 

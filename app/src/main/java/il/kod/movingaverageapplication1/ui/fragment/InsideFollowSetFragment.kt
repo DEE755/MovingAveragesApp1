@@ -13,18 +13,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.FragmentInsideFollowSetBinding
-import il.kod.movingaverageapplication1.utils.showThresholdInputDialog
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
+import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
+import kod.il.movingaverageapplication1.utils.sessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.toString
+
 
 @AndroidEntryPoint
 class InsideFollowSetFragment : Fragment() {
@@ -37,7 +38,7 @@ class InsideFollowSetFragment : Fragment() {
     private val viewModelAllStocks: AllStocksViewModel by activityViewModels()
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
     private val viewModelFollowSet : FollowSetViewModel by activityViewModels()
-
+    private val dialogViewModel: DialogViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,19 +54,20 @@ class InsideFollowSetFragment : Fragment() {
     ): View? {
         _binding = FragmentInsideFollowSetBinding.inflate(inflater, container, false)
         Log.d("InsideFollowSetFragment", "onCreateView called")
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
 
-        viewModelFollowSet.clickedFollowSet.value.let { followSet ->
-            Log.d("InsideFollowSetFragment", "FollowSet: $followSet")
+        viewModelFollowSet.clickedFollowSet.value.let { currentFollowSet ->
+            Log.d("InsideFollowSetFragment", "FollowSet: $currentFollowSet")
             lifecycleScope.launch {
-                val extractedIds = followSet?.extractStocksToIntArray()
+                val extractedIds = currentFollowSet?.extractStocksToIntArray()
 
                 val extractedStocks = withContext(Dispatchers.IO) {
                     viewModelAllStocks.getStocksByIds(*extractedIds ?: intArrayOf())
                 }
 
-                /* binding.recyclerView.layoutManager= GridLayoutManager(requireContext(), 4)*/
+                 //binding.recyclerView.layoutManager= GridLayoutManager(requireContext(), 4)
+
                 binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                     extractedStocks,
                     callBack = object : StockRecyclerAdapterFragment.ItemListener {
@@ -85,52 +87,75 @@ class InsideFollowSetFragment : Fragment() {
                 )
             }
 
-            binding.textView.text = followSet?.name
+            binding.textView.text = currentFollowSet?.name
 
             binding.setMoreActionsButton.setOnClickListener {
                 val items = listOf(
                     "Set an Alert for this FollowSet",
                     "Ask AI adviser about this FollowSet",
-                    "Item 3"
+                    "Write a note about this FollowSet"
                 )
                 val dialog = RecyclerDialogFragment(items) { selectedItem, dialogInstance ->
                     if (selectedItem == items[0]) {
-                        showThresholdInputDialog(
-                            requireContext(),
-                            {
-                                viewModelFollowSet.addNotification(followSet!!, it)
+                       dialogViewModel.showThresholdInputDialogVM(requireContext(),
+                           function = {thresholdValue ->
+                               viewModelFollowSet.addNotification(currentFollowSet!!, priceThreshold = thresholdValue)
+                                   Toast.makeText(
+                                   requireContext(),
+                           getString(R.string.alert_threshold_reached, thresholdValue.toString()),
+                           Toast.LENGTH_LONG
+                       ).show()
 
-                                Toast.makeText(
-                                    context,
-                                    getString(R.string.alert_threshold_reached, it.toString()),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                        _binding?.textView2?.text =
+                            getString(R.string.alert_set_at, thresholdValue.toString())},
+                            followSetName = currentFollowSet!!.name
+                       )
 
-                                binding.textView2.text =
-                                    getString(R.string.alert_set_at, it.toString())
-                            },
-                            getString(R.string.set_threshold_alert, followSet?.name),
-                            getString(R.string.alert_threshold_message)
-                        )
                     } else if (selectedItem == items[1]) {
                         findNavController().navigate(
                             R.id.action_insideFollowSetFragment_to_followSetAskAIFragment
                         )
                     }
+
+                    else if (selectedItem == items[2])
+                    {
+                        dialogViewModel.showDescriptionInputDialog(context = requireContext(),
+                            onDescriptionEntered = {
+                                description ->currentFollowSet?.userComments = description
+                                currentFollowSet?.isDirty = true
+                                //sessionManager.sync.setSomethingisDirty(true)
+                                binding.seeCommentButton.isEnabled
+                                binding.seeCommentButton.alpha=1f
+                                                   },
+
+                            object1 = currentFollowSet)
+
+                    }
                     dialogInstance.dismiss() // Dismiss the dialog
                 }
-                dialog.show(parentFragmentManager, "RecyclerDialog")
+                dialog.show(parentFragmentManager, "Select an Action for ${currentFollowSet?.name ?: "this"} FollowSet")
 
 
             }
+
+            if (currentFollowSet?.userComments.isNullOrEmpty()) {
+                binding.seeCommentButton.isEnabled=false
+                binding.seeCommentButton.alpha=.5f // Make it transparent to indicate it's disabled
+            } else {
+                binding.seeCommentButton.visibility = View.VISIBLE
+            }
+
+            binding.seeCommentButton.setOnClickListener { dialogViewModel.showDescriptionDialog(requireContext(), currentFollowSet!! ) }}
 
 
             binding.backButton.setOnClickListener {
                 findNavController().popBackStack()
             }
+
+
             return binding.root
         }
-    }
+
 
     override fun onResume() {
         super.onResume()

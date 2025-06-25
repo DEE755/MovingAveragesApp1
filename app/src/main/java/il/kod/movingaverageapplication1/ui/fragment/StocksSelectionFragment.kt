@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -103,7 +104,7 @@ class StocksSelectionFragment : Fragment() {
 
         binding.returntoselected.setOnClickListener {
 
-            if(sessionManager.isFirstTimeLaunch() && !sessionManager.fetchedStocksFromRemoteDB)
+            if( !sessionManager.allStocksPackHaveBeenFetch() && !sessionManager.userFollowedStocksHaveBeenRetrievedOrNone())
                 Toast.makeText(requireContext(), "Please wait for completion before leaving", Toast.LENGTH_SHORT).show()
 
             else{
@@ -166,7 +167,8 @@ class StocksSelectionFragment : Fragment() {
             val binding = _binding ?: return@addLoadStateListener // Ensure binding is valid
 
             // Show progress bar during loading
-            binding.progressBarpager.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.progressBarPager.isVisible = loadState.source.refresh is LoadState.Loading
+            binding.progressBarPager.progress=CSDViewModel.percentoge
             binding.loadingText.isVisible = loadState.source.refresh is LoadState.Loading
 
             // Handle empty state
@@ -258,10 +260,10 @@ class StocksSelectionFragment : Fragment() {
                 Log.d("StocksSelectionFragment", "Observing")
 
 
-                if (sessionManager.fetchedStocksFromRemoteDB && syncManagementviewModel.areFollowedInjectedFlag==false)
+                if (sessionManager.allStocksPackHaveBeenFetch() && !sessionManager.userFollowedStocksHaveBeenRetrievedOrNone())
                 {
                     syncManagementviewModel.pullAndInjectFollowedStocksFromRemote()
-                    syncManagementviewModel.areFollowedInjectedFlag = true
+                    sessionManager.preferences.edit { putBoolean("user_followed_stocks_retrieved", true) }
                 }
                 lifecycleScope.launch {
 
@@ -272,45 +274,29 @@ class StocksSelectionFragment : Fragment() {
                         CSDViewModel.fetchedStocksCount,
                         true
                     )
-                    Log.d("StocksSelectionFragment", "adapter item count: ${adapter.itemCount}")
+
+                    Log.d("StocksSelectionFragment", "adapter item count: ${adapter.itemCount}, percentage: ${CSDViewModel.percentoge}")
                 }
 
 
 
-                if (CSDViewModel.percentoge > 5 && CSDViewModel.percentoge < 95) {
 
-                    binding.loadingText.text = "Indexing large amount of data, please wait..."
-                    binding.loadingText.textSize = 12f
-                    val layoutParams =
-                        binding.progressBar.layoutParams as ViewGroup.MarginLayoutParams
-                    layoutParams.topMargin = 0 // Set the desired top margin
-                    layoutParams.width = 900
-                    binding.progressBar.layoutParams = layoutParams
+                if (CSDViewModel.percentoge > 0 && CSDViewModel.percentoge < 95) {
 
-                    binding.recyclerView.isVisible = true
+                   binding.progressBar.isVisible=true
+                    binding.progressBar.progress-= CSDViewModel.percentoge
 
 
                 } else if (CSDViewModel.percentoge >= 95 || CSDViewModel.percentoge == 0) {
                     binding.progressBar.isVisible = false
                     binding.loadingText.isVisible = false
                     binding.recyclerView.isVisible = true
+                    binding.searchView.isVisible=true
+
+                    if (CSDViewModel.percentoge>=95)
+                    Toast.makeText(requireContext(),"All stocks fetched successfully", Toast.LENGTH_SHORT).show()
                 }
 
-                if (CSDViewModel.percentoge < 95) {
-
-                    binding.progressBar.progress = CSDViewModel.percentoge
-
-
-                    //TODO(DAO UTILITY: SET DAO IN NEW UTILITY TABLE FLAG SO FETCHING WONT HAPPEN FOR NEXT TIME)_
-                    //TODO(OR FIND OUT WITH NB OF STOCKS IN DB BUT DOESNT WORK FOR NOW)
-
-                } else {
-                    binding.progressBar.isVisible = false
-                    binding.loadingText.isVisible = false
-                    binding.recyclerView.isVisible = true
-
-
-                }
             }
 
             updateCountView(CSDViewModel.fetchedStocksCount)

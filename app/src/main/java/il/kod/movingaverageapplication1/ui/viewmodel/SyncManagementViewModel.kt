@@ -21,4 +21,8 @@ class SyncManagementViewModel @Inject constructor(private val dataSyncRepository
                dataSyncRepository.pullAndConvertFollowedStocksFromRemote(viewModelScope)
 
 
+    fun pullUserFollowSetsFromToRemoteDB() = //function to be observed by the UI to get the user follow sets at first launch only
+        dataSyncRepository.pullUserFollowSetsFromToRemoteDB()
+
+
 }

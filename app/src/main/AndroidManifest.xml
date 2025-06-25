@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".NotificationService"/>
+        <service android:name=".NotificationsService"/>
 
     </application>
 

@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.SignupFragmentBinding
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
+import javax.inject.Inject
 import kotlin.getValue
 
 class SignUpFragment : Fragment()
@@ -25,6 +27,8 @@ class SignUpFragment : Fragment()
     val binding get() = _binding!!
 
     private val CSDviewModel: CustomServerDatabaseViewModel by activityViewModels()
+
+    @Inject lateinit var sessionManager: SessionManager
 
 
     override fun onCreateView(
@@ -71,26 +75,20 @@ class SignUpFragment : Fragment()
                             Log.d("LoginFragment", "Loading state")}
 
                         is Success->{
-
                             Toast.makeText(requireContext(),it.status.data?.username?:"unknown user", Toast.LENGTH_LONG).show()
                             findNavController().navigate(R.id.action_signUpFragment_to_followedStocks)
 
                             it.status.data?.let { data ->
                                 Log.d("SignupFragment", "Data received: $data")
-                                CSDviewModel.saveTokens(
+                                sessionManager.setUsername(data.username ?: "user")
+                                sessionManager.saveTokens(
                                     data.accessToken ?: "",
                                     data.refreshToken ?: "",
                                     data.username ?: "",
                                     data.userId ?: 0
                                 )
-                            Log.d("SignupFragment", "Success state")
-                                }
-                        //if 404 is in http_response, then show error message
-                            //if (CSDviewModel.http_response.value?.data.toString().contains("404")) {
-                                //Toast.makeText(requireContext(), "Username already exists", Toast.LENGTH_SHORT).show()
 
-                            //} else {
-                                //Toast.makeText(requireContext(), "Successfully Signed up as ${CSD.client_username}", Toast.LENGTH_SHORT).show()
+                                }
 
 
                                 binding.progressBar.isVisible=false

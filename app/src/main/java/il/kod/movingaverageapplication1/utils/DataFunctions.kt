@@ -1,6 +1,7 @@
 package kod.il.movingaverageapplication1.utils
 
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import androidx.paging.ExperimentalPagingApi
@@ -229,7 +230,7 @@ fun <T : Any, A> performFetchingAndSavingPaging(
                     if (fetchResource.status is Success) {
                         fetchResource.status.data?.let { localDbSave(it) }
 
-                        sessionManager.fetchedStocksFromRemoteDB=true
+                        sessionManager.preferences.edit { putBoolean("all_stocks_pack_fetch", true) } // Mark that all stocks has been fetched
 
                     } else if (fetchResource.status is Error) {
                         return MediatorResult.Error(Exception(fetchResource.status.message))

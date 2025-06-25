@@ -103,7 +103,7 @@ dependencies {
 
     //AndroidX Security
 
-        implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
 
 
 

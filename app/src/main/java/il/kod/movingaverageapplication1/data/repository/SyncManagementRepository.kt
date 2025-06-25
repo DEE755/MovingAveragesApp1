@@ -1,26 +1,20 @@
 package il.kod.movingaverageapplication1.data.repository
 
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import il.kod.movingaverageapplication1.SessionManager
-import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.objectclass.Stock
-import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
 import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Resource
-import kod.il.movingaverageapplication1.utils.observeOnce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-import kotlin.math.max
 
 
 class SyncManagementRepository @Inject constructor(
@@ -45,7 +39,7 @@ class SyncManagementRepository @Inject constructor(
        CoroutineScope(Dispatchers.IO).launch {
            localStockRepository.setUserFollowsStock(stock, follow)
            //remote Update:
-          CSDRepository.setUserFollowsStock(stock.symbol, follow, sessionManager.clientId)
+          CSDRepository.setUserFollowsStock(stock.symbol, follow, sessionManager.getClientId())
        }
     }
 
@@ -80,36 +74,12 @@ class SyncManagementRepository @Inject constructor(
 
     }
 
+    fun pullUserFollowSetsFromToRemoteDB() : LiveData<Resource<List<FollowSet>>> =
 
-    /*fun pullAndConvertFollowedStocksFromRemote(coroutineContext: CoroutineContext): LiveData<List<Stock>> {
+        CSDRepository.pullUserFollowSetsFromToRemoteDB()
 
-        val idsToConvert : LiveData<Resource<List<Int>>> = CSDRepository.pullUserFollowedStockFromRemoteDB()
 
-        val liveDataToReturn : MutableLiveData<List<Stock>> = MutableLiveData()
 
-        idsToConvert.observeOnce {
-            when( it.status){
-                is Success -> {
-                    Log.d("SyncManager", "Successfully pulled followed stock IDs from remote DB")
-                    if (it.status.data.isNullOrEmpty()) {
-                        Log.d("SyncManager", "No followed stock IDs found in remote DB")
-                    }
-                    else CoroutineScope(coroutineContext).launch {
-                        val stocks = localStockRepository.getStocksByIdsLive(*(it.status.data)!!.toIntArray())
-                        stocks.observeOnce { liveDataToReturn.postValue(it) }
-                    }
-                }
-                is Error -> {
-                    Log.e("SyncManager", "Error pulling followed stock IDs: ${it.status.message}")
-                }
-                is Loading -> {
-                    Log.d("SyncManager", "Pulling followed stock IDs from remote DB...")
-                }
-            }
-        }
-
-        return liveDataToReturn
-    }*/
 
     fun pullAndConvertFollowedStocksFromRemote(scope: CoroutineScope) {
 
@@ -124,8 +94,12 @@ class SyncManagementRepository @Inject constructor(
                     Log.d("SyncManager", "Successfully pulled followed stock IDs from remote DB")
                     if (it.status.data.isNullOrEmpty()) {
                         Log.d("SyncManager", "No followed stock IDs found in remote DB")
+
+                        sessionManager.preferences.edit { putBoolean("user_followed_stocks_retrieved", true) } // no stocks to retrieve, so we set the flag to true
+
                     }
                     else scope.launch(Dispatchers.IO) {
+                        sessionManager.userHasFollowedStocksinRemoteDB=true
                         Log.d("SyncManager", "Converting followed stock IDs to Stock objects, items: ${it.status.data?: "null"}")
                         // Convert the list of AdapterStockIdGson to a list of Int
                         val intArrayIds = it.status.data?.map{idData -> idData.stock_id}
@@ -138,6 +112,8 @@ class SyncManagementRepository @Inject constructor(
                         stocks.forEach { localStockRepository.setUserFollowsStock(it, true)
                             Log.d("SyncManager", "Added followed stock: ${it.name} (${it.symbol}) to followed stocks")
                         }
+                    }
+                    sessionManager.preferences.edit { putBoolean("user_followed_stocks_retrieved", true) // finished retrieving stocks, so we set the flag to true
                     }
                 }
                 is Error -> {

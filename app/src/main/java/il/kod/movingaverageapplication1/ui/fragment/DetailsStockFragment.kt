@@ -66,6 +66,7 @@ class DetailsStockFragment: Fragment() {
 
                 binding.addButton.text = "Currently Following"
                 binding.addButton.isEnabled=false
+                binding.addButton.alpha=.5f
 
             } else {
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.R
+import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.databinding.LoginFragmentBinding
 import il.kod.movingaverageapplication1.utils.AutoClearedValue
@@ -20,6 +21,7 @@ import il.kod.movingaverageapplication1.utils.Error
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
 import il.kod.movingaverageapplication1.utils.decodeJWT
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -29,6 +31,7 @@ class LoginFragment : Fragment() {
 
     private val CSDviewModel: CustomServerDatabaseViewModel by activityViewModels()
 
+    @Inject lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,10 +62,10 @@ class LoginFragment : Fragment() {
 
             binding.loginButton.setOnClickListener {
 
-                Log.d("LoginFragment", "Login button clicked")
+
                 val username = binding.nameInput.text.toString()
                 val password = binding.passwordInput.text.toString()
-                Log.d("LoginFragment", "Username_entered: $username, Password_entered: $password")
+
 
                 if (username.isBlank() || password.isBlank()) {
                     Toast.makeText(
@@ -93,13 +96,13 @@ class LoginFragment : Fragment() {
 
                             it.status.data?.let { data ->
                                 Log.d("LoginFragment", "Data received: $data")
-                                CSDviewModel.fetchedClientUsername = data.username ?: ""
-                                CSDviewModel.fetchedClientId= data.userId ?: -1
-                                CSDviewModel.saveTokens(
+                                sessionManager.setUsername(data.username ?: "user")
+                                sessionManager.setClientId(data.userId ?: -1)
+                                sessionManager.saveTokens(
                                     data.accessToken ?: "",
                                     data.refreshToken ?: "",
-                                    CSDviewModel.fetchedClientUsername,
-                                    CSDviewModel.fetchedClientId
+                                    sessionManager.getUsername(),
+                                    sessionManager.getClientId()
                                 )
 
 

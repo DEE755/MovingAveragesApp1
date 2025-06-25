@@ -12,7 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import il.kod.movingaverageapplication1.NotificationService
+import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import kotlinx.coroutines.launch
@@ -23,7 +23,8 @@ class FollowSetViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private var notificationService: NotificationService? = null
+    private var notificationService:
+            NotificationsService? = null
 
     private val _clickedFollowSet: MutableLiveData<FollowSet> = MutableLiveData()
     val clickedFollowSet get() = _clickedFollowSet
@@ -37,7 +38,7 @@ class FollowSetViewModel @Inject constructor(
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             Log.d("FollowSetViewModel", "onServiceConnected() CALLED")
-            val binder = service as NotificationService.LocalBinder
+            val binder = service as NotificationsService.LocalBinder
             notificationService = binder.getService()
             isBound = true
         }
@@ -51,7 +52,7 @@ class FollowSetViewModel @Inject constructor(
     fun bindService() {// This function binds the service to the ViewModel but service will start before the ViewModel is created
         val context = getApplication<Application>()
         Log.d("FollowSetViewModel", "bindService() CALLED")
-        val intent = Intent(context, NotificationService::class.java)
+        val intent = Intent(context, NotificationsService::class.java)
 
         // link to ViewModel and service and calls onBind
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
@@ -88,7 +89,7 @@ class FollowSetViewModel @Inject constructor(
     }
 
     fun addNotification(followSet: FollowSet, priceThreshold: Double) {
-
+Log.d("FollowSetViewModel", "addNotification() CALLED with priceThreshold: $priceThreshold, followSet: ${followSet.name}")
             followSet.notificationsPriceThreeshold = priceThreshold
 
 
@@ -96,8 +97,8 @@ class FollowSetViewModel @Inject constructor(
                 repository.updateFollowSet(followSet)
             }
 
-        notificationService?.onReadyListener = object : NotificationService.OnReadyListener {
-            override fun onServiceReady(service: NotificationService) {
+        notificationService?.onReadyListener = object : NotificationsService.OnReadyListener {
+            override fun onServiceReady(service: NotificationsService) {
                 service.detectAndNotifyUser(followSet)
             }
         }
@@ -110,8 +111,8 @@ class FollowSetViewModel @Inject constructor(
                         service.notifiableFollowSets?.add(followSet)
                     } else {
                         Log.d("FollowSetViewModel", "Service is not ready, setting onReadyListener")
-                        service.onReadyListener = object : NotificationService.OnReadyListener {
-                            override fun onServiceReady(service: NotificationService) {
+                        service.onReadyListener = object : NotificationsService.OnReadyListener {
+                            override fun onServiceReady(service: NotificationsService) {
                             Log.d("FollowSetViewModel", "Service is ready and it took a while to be ready")
                                 service.detectAndNotifyUser(followSet)
                                 service.notifiableFollowSets?.add(followSet)

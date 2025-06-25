@@ -15,11 +15,10 @@ import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.NotificationService
+import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
@@ -34,9 +33,12 @@ import javax.inject.Inject
 import kotlin.getValue
 import kotlin.jvm.java
 import androidx.activity.result.ActivityResultLauncher
-import androidx.lifecycle.lifecycleScope
+import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
+import il.kod.movingaverageapplication1.utils.Error
 import kod.il.movingaverageapplication1.utils.sessionManager
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -49,6 +51,7 @@ class ExistingFollowSetFragment : Fragment() {
     @Inject
     lateinit var appMenu: AppMenu
 
+
     private var _binding: FragmentFollowSetBinding? = null
 
     private val binding get() = _binding!! //to avoid writing ? after every _binding
@@ -59,6 +62,10 @@ class ExistingFollowSetFragment : Fragment() {
 
     private val viewModelFollowSet: FollowSetViewModel by activityViewModels()
 
+    private val dialogViewModel : DialogViewModel by activityViewModels()
+
+    private val syncManagementViewModel : SyncManagementViewModel by activityViewModels()
+
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
 
@@ -66,14 +73,25 @@ class ExistingFollowSetFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 
+        if (!sessionManager.tutorialFollowSetHasBeenShown())//meaning first entry in followset fragment
+        {
+        dialogViewModel.showFollowSetTutorialDialog(requireContext())
 
-        // Start the NotificationService when the fragment is created (Because first after login)
-        try {
-            val intent = Intent(requireContext(), NotificationService::class.java)
-            requireContext().startService(intent)
-            Log.d("ExistingFollowSetFragment", "NotificationService started successfully")
-        } catch (e: Exception) {
-            Log.d("ExistingFollowSetFragment", "NotificationService error starting: ${e.message}")
+            dialogViewModel.showNotificationsExplanationDialog(requireContext()
+            ) {
+                // Start the NotificationService when the fragment is created (Because first after login)
+                try {
+                    val intent = Intent(requireContext(), NotificationsService::class.java)
+                    requireContext().startService(intent)
+                    Log.d("ExistingFollowSetFragment", "NotificationService started successfully")
+                } catch (e: Exception) {
+                    Log.d(
+                        "ExistingFollowSetFragment",
+                        "NotificationService error starting: ${e.message}"
+                    )
+                }
+            }
+
         }
 
 
@@ -99,6 +117,42 @@ class ExistingFollowSetFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //trigger
+        if (1==0 && sessionManager.isFirstTimeEntryInFollowset())
+        {
+            syncManagementViewModel.pullUserFollowSetsFromToRemoteDB().observe(viewLifecycleOwner)
+        {
+            when (it.status) {
+                is Success ->
+                {
+                    it.status.data?.size?.let { size ->
+                        if (size > 0) {
+                            sessionManager.setUserhasFollowedFollowSetsInRemoteDB(true)
+                            it.status.data?.forEach { followSet ->
+                                //MIGHT NEED TO CREATE A PROPER OBJECT FOR FOLLOWSET
+                                viewModelFollowSet.addFollowSet(followSet) // Add each  fetched follow set to the local database
+                            }
+                        }
+                        dialogViewModel.showRestoredPreviouslyFollowedStocksDialog(requireContext(), "followset",
+                            it.status.data?.size ?: 0,
+                        )
+                    }
+
+
+                    sessionManager.setUserFollowedStocksHaveBeenRetrievedOrNone()
+
+                }
+                is Error -> {
+                    Log.e("ExistingFollowSetFragment", "Error pulling user follow sets: ${it.status.message}")
+                }
+                is Loading -> {
+                    Log.d("ExistingFollowSetFragment", "Loading user follow sets...")
+                }
+            }
+        }}
+
+
         val menuHost = requireActivity() as MenuHost
         menuHost.addMenuProvider(
             (appMenu.sharedMenuProvider(
@@ -198,11 +252,6 @@ class ExistingFollowSetFragment : Fragment() {
             val permission = Manifest.permission.POST_NOTIFICATIONS
             when {
                 ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED -> {
-                    Toast.makeText(
-                        requireContext(),
-                        "Notifications are active, permission already granted",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
 
                 shouldShowRequestPermissionRationale(permission) -> {
