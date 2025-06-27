@@ -1,18 +1,29 @@
-package il.kod.movingaverageapplication1.ui.fragment
+package il.kod.movingaverageapplication1.ui.fragment.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
+import il.kod.movingaverageapplication1.utils.createCombinedImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 class FollowSetAdapterFragment(
     private var followSets: List<FollowSet>,
-    private val callBack: ItemListener
+    private val callBack: ItemListener,
+    private val viewModelAllStock: AllStocksViewModel
 ) : RecyclerView.Adapter<FollowSetAdapterFragment.FollowSetViewHolder>() {
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowSetViewHolder {
         val binding = StockLayoutBinding.inflate(
@@ -34,6 +45,7 @@ class FollowSetAdapterFragment(
         init {
             binding.root.setOnClickListener(this)
             binding.root.setOnLongClickListener(this)
+            binding.pictureProgressBar.isVisible= true
         }
 
         override fun onClick(p0: View?) {
@@ -46,15 +58,52 @@ class FollowSetAdapterFragment(
         }
 
         fun bind(followSet: FollowSet) {
+
+            if (followSet.notificationsPriceThreeshold > 0.0) {
+               binding.stockPrice.text= "Alert set under ${followSet.notificationsPriceThreeshold}$"
+            }
+            else {
+                binding.stockPrice.text = "Not Alert Set"
+                binding.stockPrice.setTextColor(binding.root.context.getColor(R.color.black))
+            }
+
+
             binding.stockTitle.text = followSet.name
             binding.stockTicker.text = binding.root.context.getString(R.string.follow_set_description, followSet.size())
-            Glide.with(binding.root)
-                .load(followSet.imageUri)
-                .error(R.mipmap.button_follow_set)
-                .into(binding.stockImage)
-        }
-    }
 
+            CoroutineScope(Dispatchers.Main).launch {
+
+
+                val listOfStocks =
+                    viewModelAllStock.getStocksByIds(*(followSet.set_ids).toIntArray())
+
+
+                listOfStocks.let {
+                    if (it.size == 1) {
+                        Glide.with(binding.root)
+                            .load(it[0].logo_url)
+                            .error(R.mipmap.button_follow_set)
+                            .into(binding.stockImage)
+                             binding.pictureProgressBar.isVisible= false
+                    } else {
+                        var limit=4
+                        var listOfUri: MutableList<String> = mutableListOf()
+                        for(stock in it){
+                            listOfUri.add(
+                                stock.logo_url ?: R.mipmap.button_follow_set.toString()
+                            )
+                            --limit
+                            if (limit == 0) break
+                        }
+
+                        createCombinedImage(binding.stockImage, listOfUri, binding)
+                    }
+                }
+            }
+
+        }
+
+    }
 
     override fun onBindViewHolder(
         holder: FollowSetViewHolder,

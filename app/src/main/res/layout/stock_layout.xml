@@ -18,7 +18,16 @@
             android:id="@+id/stock_image"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/empty_stock_logo_round"
+            android:backgroundTint="@color/design_default_color_error"/>
+
+
+        <ProgressBar
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-80dp"
+            android:visibility="gone"
+            android:id="@+id/picture_progress_bar"/>
 
         <LinearLayout
             android:layout_width="match_parent"

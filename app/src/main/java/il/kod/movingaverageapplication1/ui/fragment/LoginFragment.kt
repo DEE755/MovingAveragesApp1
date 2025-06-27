@@ -57,7 +57,9 @@ class LoginFragment : Fragment() {
 
 
             if (currentTime < expirationDate)
-            {findNavController().navigate(R.id.action_login_fragment_to_selectedStocks)}
+            {
+                Log.d("LoginFragment", "Valid token")
+                findNavController().navigate(R.id.action_login_fragment_to_followedStocks)}
         }
 
             binding.loginButton.setOnClickListener {
@@ -77,7 +79,6 @@ class LoginFragment : Fragment() {
                     return@setOnClickListener //recursion to retry with correct values
                 }
                     CSDviewModel.updateCredentialsFromServer(username, password)
-                    //Log.d("LoginFragment", "values: ${CSDviewModel.client_username} ${CSDviewModel.client_password}")
 
 
 
@@ -113,7 +114,7 @@ class LoginFragment : Fragment() {
                                 getString(R.string.welcome_message, data.username),
                                 Toast.LENGTH_LONG
                             ).show()
-                            findNavController().navigate(R.id.action_navigation_graph_to_selectedStocks2)
+                            findNavController().navigate(R.id.action_login_fragment_to_followedStocks)
                             Log.d("LoginFragment", "Success state")
                             } ?: Log.d("LoginFragment", "Data is null")
                         }

@@ -1,28 +1,34 @@
-package il.kod.movingaverageapplication1.ui.fragment
+package il.kod.movingaverageapplication1.ui.fragment.followset
 
-import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.SyncManagementRepository
-import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.databinding.FragmentFollowSetCreationBinding
+import il.kod.movingaverageapplication1.ui.fragment.MultipleStockAdapterFragment
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.SyncManagementViewModel
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
 import il.kod.movingaverageapplication1.utils.showNameInputDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
-import kotlin.getValue
 
 @AndroidEntryPoint
 class FollowSetCreationFragment : Fragment()
@@ -40,6 +46,8 @@ class FollowSetCreationFragment : Fragment()
         private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
         private val viewModelFollowSet: FollowSetViewModel by activityViewModels()
         private val dialogViewModel: DialogViewModel by activityViewModels()
+        private val syncManagementViewModel: SyncManagementViewModel by activityViewModels()
+
 
 
 
@@ -66,7 +74,10 @@ class FollowSetCreationFragment : Fragment()
                     callBack = object : MultipleStockAdapterFragment.ItemListener {
 
                         override fun onItemClicked(index: Int) {
-                            val checkBox : CheckBox? =binding.recyclerView.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<CheckBox>(R.id.checkBox)
+                            val checkBox: CheckBox? =
+                                binding.recyclerView.findViewHolderForAdapterPosition(index)?.itemView?.findViewById<CheckBox>(
+                                    R.id.checkBox
+                                )
                             val clickedStock =
                                 it[index]
                             clickedStock.let {
@@ -107,19 +118,22 @@ class FollowSetCreationFragment : Fragment()
                 //TODO(replace with : dialogViewModel.show..)
                 showNameInputDialog(
                     context = requireContext(),
-                            title = getString(R.string.follow_set_name),
-                            message = getString(R.string.enter_follow_set_name),
-                            onNameEntered = { name -> //actions to perform after confirming the dialog
-                                val createdFollowSet = FollowSet(
-                                    name = name,
-                                    imageUri = "",
-                                    userComments = "",
-                                    set_ids = selectedIds,
-                                    -1.00
-                                )
-                                syncManager.pushFollowSetToRemoteDB(createdFollowSet, viewLifecycleOwner)//add to both local and remote db
+                    title = getString(R.string.follow_set_name),
+                    message = getString(R.string.enter_follow_set_name),
+                    onNameEntered = { name -> //actions to perform after confirming the dialog
+                        val createdFollowSet = FollowSet(
+                            name = name,
+                            imageUri = "",
+                            userComments = "",
+                            set_ids = selectedIds,
+                            -1.00
+                        )
 
-                                findNavController().popBackStack()
+                        viewModelFollowSet.newCreatedFollowSet =createdFollowSet
+                        viewModelFollowSet.followSetHasBeenCreated=true
+
+
+                        findNavController().popBackStack()
 
                     }
 
@@ -143,5 +157,3 @@ class FollowSetCreationFragment : Fragment()
 
 
     }
-
-

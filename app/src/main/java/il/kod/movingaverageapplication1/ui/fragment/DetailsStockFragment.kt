@@ -20,6 +20,8 @@ import il.kod.movingaverageapplication1.databinding.DetailsStockLayoutBinding
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
@@ -113,7 +115,7 @@ class DetailsStockFragment: Fragment() {
             }
             //binding.numberOfShares.text = clickedStock.value?.movingAverage.toString()
             //Glide.with(requireContext()).load(clickedStock.value?.imageUri?.toUri()).into(binding.itemImage)
-            glide.load(stock.value?.logo_url?.toUri()).into(binding.itemImage)
+            glide.load(stock.value?.logo_url?.toUri()).apply(RequestOptions.bitmapTransform(RoundedCorners(30))).into(binding.itemImage)
 
 
             binding.addButton.setOnClickListener {

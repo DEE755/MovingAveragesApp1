@@ -3,6 +3,7 @@
         import android.util.Log
         import il.kod.movingaverageapplication1.SessionManager
         import il.kod.movingaverageapplication1.data.BaseDataSource
+        import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
         import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
         import il.kod.movingaverageapplication1.data.objectclass.Stock
         import il.kod.movingaverageapplication1.data.models.AuthResponse
@@ -83,10 +84,21 @@
 
         /*    suspend fun getStockPrice(stock: Stock): Resource<String> =
                 {return }*/
-            suspend fun userFollowsStock(stockSymbol: String, follow: Boolean, clientId: Int) =
+            suspend fun userFollowsStock(stockSymbol: String, follow: Boolean) =
                 try {
-                    val response = CSDPrivateService.setUserFollowsStock(stockSymbol)
-                    Log.d("CustomServerDatabaseRemoteDataSource", "setUserFollowsStock response: $response")
+                    val response : Any
+
+                    if (follow) {
+                         response = CSDPrivateService.setUserFollowsStock(stockSymbol)
+
+                    }
+                    else{ response = CSDPrivateService.setUserUnfollowsStock(stockSymbol)
+
+                    }
+                    Log.d(
+                        "CustomServerDatabaseRemoteDataSource",
+                        "setUserFollowsStock response: $response"
+                    )
                 }
                 catch (e: HttpException) {
                     Log.e("CustomServerDatabaseRemoteDataSource", "HTTP error: ${e.code()} - ${e.message()}")
@@ -95,7 +107,14 @@
                     Log.e("CustomServerDatabaseViewModel", "Unexpected error: ${e.message}")
                 }
 
-            suspend fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet) =
+
+
+                suspend fun setUserUnfollowsFollowSet(followSet: FollowSet) {
+                    val response = CSDPrivateService.setUserUnfollowsFollowSet(followSet.back_id)
+                    Log.d("CustomServerDatabaseRemoteDataSource", "setUserUnfollowsFollowSet response: $response")
+                }
+
+            suspend fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet) : Resource<AdapterBackIDForGson> =
                 getResult({CSDPrivateService.pushFollowSetToRemoteDB(createdFollowSet)}, HttpMethod.POST)
 
             suspend fun pullUserFollowSetsFromToRemoteDB() : Resource<List<FollowSet>> =

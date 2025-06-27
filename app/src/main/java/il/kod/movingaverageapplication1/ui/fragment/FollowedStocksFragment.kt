@@ -15,13 +15,17 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
+import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
@@ -47,6 +51,7 @@ class FollowedStocksFragment : Fragment() {
 
     @Inject
     lateinit var sessionManager: SessionManager
+
 
     private var _binding: FragmentSelectedStocksBinding? = null
 
@@ -77,6 +82,10 @@ class FollowedStocksFragment : Fragment() {
         context?.startService(intent)
         sessionManager.isNotificationsServiceStarted = true
         }
+
+        if (sessionManager.allStocksPackHaveBeenFetch()){syncManagementViewModel.pullAndInjectFollowedStocksFromRemote()}
+
+
     }
 
 
@@ -132,6 +141,7 @@ class FollowedStocksFragment : Fragment() {
                     override fun onItemLongClicked(index: Int) {
                         val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
 
+                        //TODO(make use of dialogViewModel instead)
                         showConfirmationDialog(
                             context = requireContext(),
                             title = getString(R.string.deletion_stock_title),
@@ -220,11 +230,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
                     ).show()
                 }
 
-                is Loading -> {
-                    //TODO()/*FIND THE FOLLOWED STOCKS BINDING AND WRITE "LOADING"*/
-                   // Toast.makeText(requireContext(), "Updating Moving Averages", Toast.LENGTH_SHORT)
-                      //  .show()
-                }
+                is Loading -> {}
 
                 is Success -> {
                     it.status.data?.let { listOfStockMovingAveragesOnly ->
@@ -263,10 +269,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
     override fun onResume() {
         super.onResume()
         (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.followed_stocks_title)
-
-
         CSDViewModel.getFollowedStockPrice() // trigger the request
-
     }
 
 
@@ -274,21 +277,8 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
     override fun onDestroyView() {
         super.onDestroyView()
         priceUpdateJob?.cancel()
-
         _binding = null
-
-
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 

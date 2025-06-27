@@ -1,4 +1,5 @@
 package il.kod.movingaverageapplication1.data.repository.retrofit
+import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
 import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.StringAdapterForGson
@@ -75,6 +76,13 @@ import retrofit2.http.Query
             @Field("stockSymbol") stockSymbol: String
         )
 
+        @FormUrlEncoded
+        @POST("unfollows_stock")
+        suspend fun setUserUnfollowsStock(
+            @Field("stockSymbol") stockSymbol: String
+        )
+
+
         @GET("get_update_for_followed_stocksPR")
         suspend fun getFollowedStockPrice(): Response<List<Stock>>
 
@@ -84,17 +92,17 @@ import retrofit2.http.Query
 
 
 
-
-
-
-
         @POST("followset/push")
         suspend fun pushFollowSetToRemoteDB(
-            @Body followSet: FollowSet) : Response<String>
+            @Body followSet: FollowSet) : Response<AdapterBackIDForGson>
+
+        @FormUrlEncoded
+        @POST("followset/unfollow")
+        suspend fun setUserUnfollowsFollowSet(
+            @Field("followset_id") back_id: Int) : Response<Any>
 
 
 
-        //TODO(TO IMPLEMENT)
 
         @GET("followset/pull")
         suspend fun pullUserFollowSetFromRemoteDB(): Response<List<FollowSet>> // return followset objects as json destructured objects
@@ -104,9 +112,4 @@ import retrofit2.http.Query
 
 
 
-
-        @FormUrlEncoded
-        @POST("unfollows_stock")
-        suspend fun setUserUnfollowsStock(
-            @Field("symbol") symbol: String): Response<String>
     }

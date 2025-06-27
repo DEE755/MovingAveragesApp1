@@ -20,6 +20,9 @@ interface FollowSetDao {
     @Delete
     suspend fun deleteFollowSet(vararg followSet: FollowSet)
 
+    @Query("DELETE FROM follow_set WHERE followset_id = :front_id")
+    suspend fun deleteFollowSetById(front_id: Int)
+
     @Update
     suspend fun updateFollowSet(followSet: FollowSet)
 
@@ -30,5 +33,7 @@ interface FollowSetDao {
     @Query("SELECT * FROM follow_set WHERE notifications_prices IS NOT NULL AND notifications_prices > -1")
     suspend fun getFollowSetWithNotifications(): List<FollowSet>//NOT LIVE DATA BECAUSE MEANT TO USE IN A SERVICE
 
+    @Query("DELETE FROM follow_set")
+    suspend fun deleteAllFollowSets()
 
 }

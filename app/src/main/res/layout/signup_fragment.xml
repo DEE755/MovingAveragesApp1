@@ -96,7 +96,7 @@
         android:layout_gravity="center"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:id="@+id/signUpText"
+        android:id="@+id/have_an_account_text"
         android:layout_marginTop="30dp"
         android:clickable="true"
         android:focusable="true"/>

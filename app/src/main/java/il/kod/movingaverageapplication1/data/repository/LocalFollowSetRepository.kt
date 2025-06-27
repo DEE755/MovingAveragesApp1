@@ -7,6 +7,9 @@ import il.kod.movingaverageapplication1.data.local_db.FollowSetDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.utils.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class LocalFollowSetRepository(application: Application)
@@ -36,6 +39,10 @@ class LocalFollowSetRepository(application: Application)
         followSetDao.deleteFollowSet(followSet)
     }
 
+    suspend fun deleteFollowSetById(front_id: Int) {
+        followSetDao.deleteFollowSetById(front_id)
+    }
+
     suspend fun updateFollowSet(followSet: FollowSet) {
         followSetDao.updateFollowSet(followSet)
     }
@@ -45,5 +52,7 @@ class LocalFollowSetRepository(application: Application)
         allFollowSets.forEach {followSet-> followSetDao.addFollowSet(followSet) }
 
 
+     fun deleteAllFollowSets()=
+    CoroutineScope(Dispatchers.IO).launch {followSetDao.deleteAllFollowSets()}
 
 }

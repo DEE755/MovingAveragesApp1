@@ -33,8 +33,9 @@
         android:id="@+id/isEmptytextView"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+        android:textSize="25dp"
         android:gravity="center"
-        android:text="Download stocks set to continue"
+        android:text="Click to download stocks pack\n to continue"
         app:layout_constraintBottom_toTopOf="@id/addStockButtonBig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

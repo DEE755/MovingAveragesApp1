@@ -54,7 +54,7 @@ class InsideFollowSetFragment : Fragment() {
     ): View? {
         _binding = FragmentInsideFollowSetBinding.inflate(inflater, container, false)
         Log.d("InsideFollowSetFragment", "onCreateView called")
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)//TODO(LINEAR)
 
 
         viewModelFollowSet.clickedFollowSet.value.let { currentFollowSet ->
@@ -107,8 +107,12 @@ class InsideFollowSetFragment : Fragment() {
                        ).show()
 
                         _binding?.textView2?.text =
-                            getString(R.string.alert_set_at, thresholdValue.toString())},
+                            getString(R.string.alert_set_at, thresholdValue.toString())
+
+                                      },
                             followSetName = currentFollowSet!!.name
+
+
                        )
 
                     } else if (selectedItem == items[1]) {

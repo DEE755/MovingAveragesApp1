@@ -18,6 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.AiQuestion
@@ -75,7 +77,7 @@ class AskAIFragment: Fragment() {
                 "Follow to get live updates"
             }
 
-            glide.load(stock?.logo_url?.toUri()).into(binding.itemImage)
+            glide.load(stock?.logo_url?.toUri()).apply(RequestOptions.bitmapTransform(RoundedCorners(30))).into(binding.itemImage)
 
 
 

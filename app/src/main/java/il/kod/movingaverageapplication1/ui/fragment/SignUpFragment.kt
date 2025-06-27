@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
@@ -20,15 +21,17 @@ import il.kod.movingaverageapplication1.utils.Success
 import javax.inject.Inject
 import kotlin.getValue
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment()
 {
+    @Inject lateinit var sessionManager: SessionManager
 
     var _binding: SignupFragmentBinding? = null
     val binding get() = _binding!!
 
     private val CSDviewModel: CustomServerDatabaseViewModel by activityViewModels()
 
-    @Inject lateinit var sessionManager: SessionManager
+
 
 
     override fun onCreateView(
@@ -103,7 +106,7 @@ class SignUpFragment : Fragment()
                 }
             }
 
-    binding.signUpText.setOnClickListener {
+    binding.haveAnAccountText.setOnClickListener {
 
     findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
 

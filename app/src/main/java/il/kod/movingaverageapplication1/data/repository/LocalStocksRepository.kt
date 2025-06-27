@@ -7,7 +7,10 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.local_db.StockDao
 import il.kod.movingaverageapplication1.data.local_db.StocksDatabase
 import il.kod.movingaverageapplication1.utils.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -108,5 +111,9 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
 
 
     fun observePrice(id: Int):  Flow<Double> = stockDao.observePrice(id)
+
+
+     fun resetSelectedStocks()=
+        CoroutineScope(Dispatchers.IO).launch{stockDao.resetSelectedStocks()}
 
 }

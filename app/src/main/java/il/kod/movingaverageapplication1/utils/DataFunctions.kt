@@ -30,7 +30,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
+import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.dependencyinjectionhilt.MovingAverageApplication1
+import il.kod.movingaverageapplication1.utils.Loading
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -200,13 +203,19 @@ fun <T> performPostingToServer(remoteDbPost: suspend () ->Resource<T>) : LiveDat
 
         if (receivedResource.status is Error) {
             emit(Resource.error(receivedResource.status.message))
-        } else {
-            if (receivedResource.status is Success && "500" in receivedResource.status.message) {
+        }
+
+        else if (receivedResource.status is Loading){emit(Resource.loading())}
+
+        else {
+            Log.d("performPostingToServer", "Received resource: ${receivedResource.status.data}")
+            if (receivedResource.status is Success && "500" in receivedResource.status.message) {//false positive for success
                 emit(Resource.error("Server error: ${receivedResource.status.message}"))
             } else {
+                Log.d("performPostingToServer", "Success: ${receivedResource.status.data}")
                 emit(Resource.success("Success", receivedResource.status.data!!))
             }
-            //emit(Resource.success("Success", receivedResource.status.data!!))
+
         }
     }
 
@@ -277,6 +286,38 @@ fun <T : Any, A> performFetchingAndSavingPaging(
             pagingSourceFactory = pagingSourceFactory
         ).liveData
 
+    }
+
+
+fun <A,T> performPostingToRemoteAndSavingToLocalDB(objectToSave : A, localDBSave: suspend (A) -> Unit, remoteDbPost: suspend () ->Resource<T>) : LiveData<Resource<T>> =
+
+    liveData(Dispatchers.IO) {
+
+
+
+        emit(Resource.loading())//tell the lave data observer that we are loading
+
+        val receivedResource = remoteDbPost()
+
+        if (receivedResource.status is Error) {
+            emit(Resource.error(receivedResource.status.message))
+        }
+
+        else if (receivedResource.status is Loading){emit(Resource.loading())}
+
+        else {//success
+
+            Log.d("performPostingToServer", "Received resource: ${receivedResource.status.data}")
+            if (receivedResource.status is Success && "500" in receivedResource.status.message) {//false positive for success
+                emit(Resource.error("Server error: ${receivedResource.status.message}"))
+            } else {
+                if ( receivedResource.status.data is AdapterBackIDForGson && objectToSave is FollowSet){objectToSave.back_id= (receivedResource.status.data as AdapterBackIDForGson).back_id} //set the back_id of the FollowSet to the one received from the server
+                localDBSave(objectToSave)
+                Log.d("performPostingToServer", "Success: ${receivedResource.status.data}")
+                emit(Resource.success("Success", receivedResource.status.data!!))
+            }
+
+        }
     }
 
 

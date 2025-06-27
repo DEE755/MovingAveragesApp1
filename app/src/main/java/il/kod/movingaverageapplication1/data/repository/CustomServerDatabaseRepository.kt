@@ -3,6 +3,7 @@ package il.kod.movingaverageapplication1.data.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
 import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
@@ -29,6 +30,7 @@ class CustomServerDatabaseRepository @Inject constructor(
     private val sessionManager: SessionManager
 
 ) {
+
     fun login(
         username: String,
         password: String
@@ -49,7 +51,7 @@ class CustomServerDatabaseRepository @Inject constructor(
             performFetchingAndSavingPaging(
                 { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
                 { remoteDataSource.getAllStocks() },
-                { allStocks -> localDataSource.saveAllStocks(allStocks) }
+                { allStocks -> localDataSource.saveAllStocks(allStocks)  }
             )
         } else {
             FetchFromLocalPaging { localDataSource.getAllStocks() }
@@ -73,9 +75,12 @@ class CustomServerDatabaseRepository @Inject constructor(
     fun getFollowedMovingAverages() : LiveData<Resource<List<Stock>>> =
         performFetchingFromServer { remoteDataSource.getFollowedMovingAverages() }
 
-    suspend fun setUserFollowsStock(stockSymbol: String, follow: Boolean, clientId: Int) =
-        remoteDataSource.userFollowsStock(stockSymbol, follow, clientId)
+    suspend fun setUserFollowsStock(stockSymbol: String, follow: Boolean) =
+        remoteDataSource.userFollowsStock(stockSymbol, follow)
 
+
+    suspend fun setUserUnfollowsFollowSet(followSet: FollowSet) =
+        remoteDataSource.setUserUnfollowsFollowSet(followSet)
 
     fun askAI(stock: Stock, question: String) =
         performPostingToServer { remoteDataSource.askAI(stock, question) }
@@ -90,8 +95,8 @@ class CustomServerDatabaseRepository @Inject constructor(
         }
 
 
-    fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet)  =
-        performPostingToServer{remoteDataSource.pushFollowSetToRemoteDB(createdFollowSet)}
+    suspend fun pushFollowSetToRemoteDB(createdFollowSet: FollowSet)   =
+        remoteDataSource.pushFollowSetToRemoteDB(createdFollowSet)
 
 
     fun pullUserFollowSetsFromToRemoteDB() : LiveData<Resource<List<FollowSet>>> =
@@ -101,13 +106,6 @@ class CustomServerDatabaseRepository @Inject constructor(
            localDbSave =  {followSetList->localFollowSetRepository.saveAllFollowSets(followSetList)})
 
 
-    /*fun pullUserFollowedStockFromRemoteDB() : LiveData<Resource<List<Stock>>> =
-        performFetchingAndSaving (
-            localDbFetch = { localDataSource.getAllStocks() },
-            {remoteDataSource.pullUserFollowedStockFromRemoteDB()},
-
-            {stockList -> localDataSource.saveAllStocks(stockList) }
-    )*/
 
     fun pullUserFollowedStockFromRemoteDB(): LiveData<Resource<List<AdapterStockIdGson>>> =
         performFetchingFromServer {

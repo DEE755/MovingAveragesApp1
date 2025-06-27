@@ -15,6 +15,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
+import il.kod.movingaverageapplication1.utils.Error
+import il.kod.movingaverageapplication1.utils.Loading
+import il.kod.movingaverageapplication1.utils.Success
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +27,19 @@ import javax.inject.Inject
 class FollowSetViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
+
+    var newCreatedFollowSet : FollowSet? = null
+    var followSetHasBeenCreated: Boolean = false
+
+    //To update UI after setting an alert
+    var setAlertLastValue: Double? = null
+    val setAlertFollowSetID: Int? = null
+
+
+
+    var setUserFollowsStockAnswer ="not inserted yet"
+
+    var dummyFollowSet : FollowSet? = null
 
     private var notificationService:
             NotificationsService? = null
@@ -31,7 +49,7 @@ class FollowSetViewModel @Inject constructor(
 
     var repository = LocalFollowSetRepository(application)
 
-    var existingFollowSet: LiveData<List<FollowSet>> = repository.getAllUserFollowSet()
+    lateinit var existingFollowSet: LiveData<List<FollowSet>>
 
     private var isBound = false
 
@@ -65,10 +83,10 @@ class FollowSetViewModel @Inject constructor(
         }
     }
 
-    fun getAllFollowSet() = existingFollowSet
+
 
     fun onItemClicked(index: Int): FollowSet? {
-        return getAllFollowSet().value?.get(index)
+        return existingFollowSet.value?.get(index)
     }
 
     fun addFollowSet(followSet: FollowSet) {
@@ -85,17 +103,24 @@ class FollowSetViewModel @Inject constructor(
     }
 
     fun getFollowSetAt(index: Int): FollowSet? {
-        return getAllFollowSet().value?.get(index)
+        return existingFollowSet.value?.get(index)
     }
+
+    fun getAllFollowSet() {
+        existingFollowSet=repository.getAllUserFollowSet()
+    }
+
+    fun updateFollowSet(followSet: FollowSet) =
+        viewModelScope.launch {
+            repository.updateFollowSet(followSet)
+        }
+
 
     fun addNotification(followSet: FollowSet, priceThreshold: Double) {
 Log.d("FollowSetViewModel", "addNotification() CALLED with priceThreshold: $priceThreshold, followSet: ${followSet.name}")
             followSet.notificationsPriceThreeshold = priceThreshold
+              this.updateFollowSet(followSet)
 
-
-            viewModelScope.launch {
-                repository.updateFollowSet(followSet)
-            }
 
         notificationService?.onReadyListener = object : NotificationsService.OnReadyListener {
             override fun onServiceReady(service: NotificationsService) {

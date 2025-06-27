@@ -218,3 +218,26 @@ fun showLargeGenericDialogInput(
             }
             .show()
 }
+
+fun showGenericDialogNoInput2choices(
+    context: Context,
+    title: String,
+    positiveButtonText: String = "Yes",
+    negativeButtonText: String = "No",
+    message: String,
+    onYes: () -> Unit = {},
+    onNo: () -> Unit = {}
+) {
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setMessage(message)
+        .setNegativeButton(negativeButtonText) { dialog, _ ->
+            onNo()
+            dialog.dismiss()
+        }
+        .setPositiveButton(positiveButtonText) { dialog, _ ->
+            onYes()
+            dialog.dismiss()
+        }
+        .show()
+}

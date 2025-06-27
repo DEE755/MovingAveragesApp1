@@ -1,16 +1,18 @@
 package il.kod.movingaverageapplication1
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
+import il.kod.movingaverageapplication1.data.repository.LocalFollowSetRepository
 import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SessionManager @Inject constructor(val preferences: SharedPreferences, val localStocksRepository: LocalStocksRepository) {
-
-
+class SessionManager @Inject constructor(val preferences: SharedPreferences, val localStocksRepository: LocalStocksRepository, val localFollowSetRepository: LocalFollowSetRepository, @ApplicationContext val context: Context) {
 
 
     fun getUsername()= preferences.getString("username", null) ?: "user"
@@ -59,7 +61,7 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
         preferences.edit {
             putString("access_token", token)
                 .putString("refresh_token", refresh)
-                .putString("client_username", username)
+                .putString("username", username)
                 .putInt("client_id", clientId)
         }
     }
@@ -74,16 +76,8 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
         }
 
 
-    fun isFirstTimeEntryInFollowset(): Boolean {
-        val alreadyLaunched = preferences.getBoolean("follow_set_has_been_launch", false)
-        Log.d("SessionManager", "alreadylaunched: $alreadyLaunched")
 
-        return !alreadyLaunched
-    }
 
-    fun setFollowsetFragmentHasBeenLaunched() {
-        preferences.edit { putBoolean("follow_set_has_been_launch", true) }
-    }
 
     fun allStocksPackHaveBeenFetch(): Boolean {
         val alreadyFetch = preferences.getBoolean("all_stocks_pack_fetch", false)
@@ -98,17 +92,22 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
 
     }
 
-    fun setUserFollowedStocksHaveBeenRetrievedOrNone() {
-        preferences.edit { putBoolean("user_followed_stocks_retrieved", true) }
+    fun setUserFollowedStocksHaveBeenRetrievedOrNone(bool: Boolean) {
+        preferences.edit { putBoolean("user_followed_stocks_retrieved", bool) }
     }
     //////////////////////////
 
 
-    fun userFollowSetsHaveBeenRetrievedOrNone(): Boolean {
-        val alreadyFetched = preferences.getBoolean("user_followedSets_retrieved", false)
-        return alreadyFetched
 
-    }
+    //FOLLOWED SETS RETRIEVAL
+    fun setUserFollowSetsHaveBeenRetrievedOrNone(bool: Boolean) =
+         preferences.edit{putBoolean("user_followedSets_retrieved", bool)}
+
+
+    fun userFollowSetsHaveBeenRetrievedOrNone(): Boolean =
+       preferences.getBoolean("user_followedSets_retrieved", false)
+
+
 
 
     //AUTO UPDATE FOLLOWED STOCKS DIALOG
@@ -155,11 +154,24 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
 
 
 
-
     fun logOutClient() {
-        preferences.edit { clear() }
+        //remove all user related data but keep application and device related data (like stocks pack and tutorials)
+        setUserFollowSetsHaveBeenRetrievedOrNone(false)
+        localFollowSetRepository.deleteAllFollowSets()
+        localStocksRepository.resetSelectedStocks()
+        clearAppCache(context)
 
-}
+        preferences.edit {
+            remove("access_token")
+                .remove("refresh_token")
+                .remove("client_id")
+                .remove("username")
+                .remove("user_followed_stocks_retrieved")
+                .remove("user_followedSets_retrieved")
+                .remove("user_followed_stocks_retrieved_dialog_shown")
+        }
+
+    }
 
 
 
@@ -174,12 +186,30 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
 
     }
 
-    fun setUserhasFollowedFollowSetsInRemoteDB(bool: Boolean) {
+    fun setUserhasFollowedFollowSetsInRemoteDB() {
 
-        userHasFollowedFollowSetsInRemoteDB = bool
-
-
+        userHasFollowedFollowSetsInRemoteDB = true
     }
+
+
+
+    fun clearAppCache(context: Context) {
+        try {
+            context.cacheDir.deleteRecursively()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun startNotificationsServiceifGranted() {
+        isNotificationsServiceStarted = true
+    }
+
+    fun NotificationsServiceIsGranted() =
+        preferences.getBoolean("notifications_service_granted", false)
+
+    fun setNotificationsServiceGranted(bool: Boolean) =
+        preferences.edit { putBoolean("notifications_service_granted", bool) }
 
 
 }

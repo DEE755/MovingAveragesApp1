@@ -13,14 +13,17 @@ data class FollowSet(
     @ColumnInfo(name="name") @Expose
     var name: String,
     @ColumnInfo(name="image_uri") @Expose
-    internal var imageUri: String? =null,
+    internal var imageUri: String? ="",
     @ColumnInfo(name="user_description") @Expose
-    var userComments: String="",
+    var userComments: String?="",
     @ColumnInfo(name="set_ids")@Expose
     val set_ids : List<Int>, //(not mutable for parcelization purposes --> handled via type converter)
 
     @ColumnInfo(name="notifications_prices") @Expose
     var notificationsPriceThreeshold : Double,
+
+    @ColumnInfo(name="followset_id") @Expose
+    var back_id: Int = -1,
 
     @ColumnInfo(name="isDirty")@Expose(serialize = false, deserialize = false)
     var isDirty: Boolean = false

@@ -4,10 +4,13 @@ import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.navigation.findNavController
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 import com.google.gson.Gson
@@ -36,6 +39,20 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar?.title = getString(R.string.menu_title)
+
+
+//custom behavior for the android back button
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val navController = findNavController(R.id.nav_host_fragment)
+                if (!navController.popBackStack()) {
+                    finish()
+                }
+                navController.popBackStack()
+            }
+        })
+
+
     }
 
 
@@ -52,6 +69,8 @@ class MainActivity : AppCompatActivity() {
         sessionManager.preferences.edit {putBoolean("has_been_launched", true)
         }
     }
+
+
 
     }
 

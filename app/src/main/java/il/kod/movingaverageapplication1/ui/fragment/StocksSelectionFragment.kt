@@ -97,27 +97,25 @@ class StocksSelectionFragment : Fragment() {
 
 //if a new stock is added to the unselectedlist, it will be added to the recycler view
 //TODO(MAKE THOSE 2 AGAIN BUT WITH PAGINATION):
-        setupRecyclerView(R.id.action_stockSelection3_to_detailsItemFragment)
+        setupRecyclerView()
         //viewModelAllStocks.unselectedStock.observe(viewLifecycleOwner) {setupRecyclerView(it,  R.id.action_stockSelection3_to_detailsItemFragment)}
 
 
 
         binding.returntoselected.setOnClickListener {
 
-            if( !sessionManager.allStocksPackHaveBeenFetch() && !sessionManager.userFollowedStocksHaveBeenRetrievedOrNone())
+            if( !(sessionManager.allStocksPackHaveBeenFetch() && sessionManager.userFollowedStocksHaveBeenRetrievedOrNone()))
                 Toast.makeText(requireContext(), "Please wait for completion before leaving", Toast.LENGTH_SHORT).show()
 
             else{
                 findNavController().navigate(R.id.action_stockSelection3_to_selectedStocks)
-
             }
-
 
 
         }
 
 
-        binding.searchView.apply {
+        binding.searchView.apply { //TODO(fix this when searching + click on stock --> crash)
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
@@ -150,12 +148,12 @@ class StocksSelectionFragment : Fragment() {
     }
 
 
-    fun setupRecyclerView(actionId: Int) {
-        val adapter = StockPagingAdapterFragment(
+    fun setupRecyclerView() {
+        val adapter = StockPagingAdapterFragment( //TODO(CHANGE ITEM TO STOCK)
             callBack = object : StockPagingAdapterFragment.ItemListener {
                 override fun onItemClicked(stock: Stock) {
                     viewModelDetailStock.setStock(stock)
-                    findNavController().navigate(actionId)
+                    findNavController().navigate(R.id.action_stockSelection3_to_detailsItemFragment)
                 }
 
                 override fun onItemLongClicked(stock: Stock) {}
@@ -213,22 +211,20 @@ class StocksSelectionFragment : Fragment() {
                         }
                 }
 
-                override fun onItemLongClicked(index: Int) {
+                override fun onItemLongClicked(index: Int) { //TODO(CHANGE THE WAY OF DELETION)
                     val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
 
-
                     val viewHolder = binding.recyclerView.findViewHolderForAdapterPosition(index)
-                    viewHolder?.itemView?.findViewById<View>(R.id.stock_card_view)?.setBackgroundColor(
-                        ContextCompat.getColor(requireContext(), R.color.red)
-                    )
+                    viewHolder?.itemView?.findViewById<View>(R.id.stock_card_view)/*?.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.red))*/
 
 
+                    //TODO(put in viewlmodel)
                     showConfirmationDialog(
                         context = requireContext(),
                         title = getString(R.string.deletion_stock_title),
                         message = getString(R.string.delete_stock_message, clickedStock?.name),
                         onYes = {
-                            //TODO(FIX THIS ITS NOT DOING ANYTHING -->CHANGE THE COLOR)
 
                             viewModelAllStocks.setUserFollowsStockData(clickedStock!!, false)
                             (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.notifyItemRemoved(
@@ -257,7 +253,6 @@ class StocksSelectionFragment : Fragment() {
 
 
             if (it != null) {
-                Log.d("StocksSelectionFragment", "Observing")
 
 
                 if (sessionManager.allStocksPackHaveBeenFetch() && !sessionManager.userFollowedStocksHaveBeenRetrievedOrNone())
@@ -265,8 +260,8 @@ class StocksSelectionFragment : Fragment() {
                     syncManagementviewModel.pullAndInjectFollowedStocksFromRemote()
                     sessionManager.preferences.edit { putBoolean("user_followed_stocks_retrieved", true) }
                 }
-                lifecycleScope.launch {
 
+                lifecycleScope.launch {
 
                     adapter.submitData(lifecycle, it)//submit the data to the adapter
                     CSDViewModel.fetchedStocksCount = adapter.itemCount
@@ -293,7 +288,7 @@ class StocksSelectionFragment : Fragment() {
                     binding.recyclerView.isVisible = true
                     binding.searchView.isVisible=true
 
-                    if (CSDViewModel.percentoge>=95)
+                    if (CSDViewModel.percentoge==100)
                     Toast.makeText(requireContext(),"All stocks fetched successfully", Toast.LENGTH_SHORT).show()
                 }
 

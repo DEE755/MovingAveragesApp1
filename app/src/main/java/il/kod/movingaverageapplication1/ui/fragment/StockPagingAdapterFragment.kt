@@ -8,6 +8,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
@@ -39,7 +41,8 @@ class StockPagingAdapterFragment(
             binding.stockPrice.isVisible=false
 
             glide.load(stock.logo_url)
-                .error(R.mipmap.ic_launcher)
+                .error(R.mipmap.empty_stock_logo)
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
                 .into(binding.stockImage)
         }
 

@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DialogViewModel @Inject constructor(private val sessionManager: SessionManager): ViewModel()
 {
-    private val username= sessionManager.getUsername()
+     val username= sessionManager.getUsername()
 
 
     fun showDescriptionInputDialog(
@@ -67,7 +67,7 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
             )
     }
 
-    fun showNotificationsExplanationDialog(context: Context, onYes: () -> Unit )
+    fun showTutorialFollowsetDialog(context: Context )
     {
         showNotificationDialog(
             context = context,
@@ -76,9 +76,7 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
                     "You can create sets from stocks you already follow, and then manage them together.\n" +
                     "You'll be able track your favorite stocks performance together or ask our AI adviser about investing those stocks together, etc..\n\n" +
                     "Start by clicking the main button to create your first FollowSet.",
-            onYes = {
-                onYes()
-            }
+            onYes = {}
         )
     }
 
@@ -95,14 +93,14 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
     }
 
 
-    fun showFollowSetTutorialDialog(context: Context) =
+    fun showNotificationExplanationDialog(context: Context, onYes: () -> Unit) =
         showNotificationDialog(
             context = context,
             title = "Notifications Permission",
             message = "Dear ${username}, we kindly ask you to allow notifications for our app, so you can receive important updates about your stocks and FollowSets.\n" +
                     "You can always change this in the app settings later.\n\n" +
                     "Click 'Allow' to enable notifications now.",
-            {}
+            {onYes()}
         )
 
 
@@ -112,7 +110,8 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
     context, "Previously Followed Stocks",
     "${username}, you were previously following " +
             "${if (size==-1) "some" else size} ${object1}${if (size == 1) "" else "s"}., "+
-            "we retrieved them for you and you can now see them in the list.",
+            "we retrieved them for you and you can now see them in the list."+
+        "If you add any followSet they will as well be added to the FollowSets list.",
         {}
     )
 
@@ -120,7 +119,7 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
         showGenericDialogNoInput(
             context = context,
             title = "${followSet.name}${username}'s comments",
-            message = followSet.userComments,
+            message = followSet.userComments!!,
         )
     }
 

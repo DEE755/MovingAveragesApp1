@@ -67,5 +67,9 @@ interface StockDao {
 
     @Query("SELECT current_price FROM stocks WHERE id = :id LIMIT 1")
     fun observePrice(id : Int) : Flow<Double>
+
+    @Query("UPDATE stocks SET isSelected=0 WHERE isSelected = 1")
+    suspend fun resetSelectedStocks()
+
 }
 

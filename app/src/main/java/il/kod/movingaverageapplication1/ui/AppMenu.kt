@@ -3,23 +3,29 @@ package il.kod.movingaverageapplication1.ui
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
+
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
 import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import il.kod.movingaverageapplication1.utils.showGenericDialogNoInput2choices
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AppMenu @Inject constructor(private val sessionManager: SessionManager) : Fragment() {
+
 
     fun sharedMenuProvider(
         isListEmpty: Boolean = false, navController: NavController,
@@ -61,17 +67,18 @@ class AppMenu @Inject constructor(private val sessionManager: SessionManager) : 
                     }
 
                     R.id.action_logout -> {
-                        showConfirmationDialog(
+                        showGenericDialogNoInput2choices(
                             context = context,
                             title = "Logout",
-                            message = "Are you sure you want to log out?",
-                            onYes = {
+                            message = "Currently logged as ${sessionManager.getUsername()}.\n\nDo you want to log out?",
+                            onYes = {Toast.makeText(context, "Logged Out! Goodbye ${sessionManager.getUsername()}", Toast.LENGTH_SHORT).show()
                                 sessionManager.logOutClient()
                                 navController.navigate(R.id.signUpFragment)
-                                Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show()
                             },
                             onNo = {}
                         )
+
+
 
 
                         true

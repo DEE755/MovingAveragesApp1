@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.fragment.ExistingFollowSetFragment"
+    tools:context=".ui.fragment.followset.ExistingFollowSetFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
 
 
 
@@ -13,7 +15,19 @@
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         tools:listitem="@layout/stock_layout"
-        android:id="@+id/recyclerView" />
+        android:id="@+id/recyclerView"
+        android:visibility="visible"/>
+
+    <ProgressBar
+        android:id="@+id/progressWheel"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

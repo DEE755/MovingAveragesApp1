@@ -64,6 +64,8 @@ class AllStocksViewModel @Inject constructor(
     }
 
 
+
+
     fun filterStocksByName(name_part: String?) {
 
         viewModelScope.launch {
