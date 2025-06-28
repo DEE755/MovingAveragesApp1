@@ -15,13 +15,14 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 
 class StockPagingAdapterFragment(
-    private val callBack: ItemListener,
+    private val callBack: StockClickListener,
     private val glide: RequestManager
 ) : PagingDataAdapter<Stock, StockPagingAdapterFragment.ItemViewHolder1>(DIFF_CALLBACK) {
 
-    interface ItemListener {
-        fun onItemClicked(stock: Stock)
-        fun onItemLongClicked(stock: Stock)
+    interface StockClickListener {
+        fun onStockClicked(stock: Stock)
+        fun onStockLongClicked(stock: Stock)
+        fun onItemSwiped(stock: Stock)
     }
 
     inner class ItemViewHolder1(private val binding: StockLayoutBinding) :
@@ -47,13 +48,14 @@ class StockPagingAdapterFragment(
         }
 
         override fun onClick(p0: View?) {
-            currentStock?.let { callBack.onItemClicked(it) }
+            currentStock?.let { callBack.onStockClicked(it) }
         }
 
         override fun onLongClick(p0: View?): Boolean {
-            currentStock?.let { callBack.onItemLongClicked(it) }
+            currentStock?.let { callBack.onStockLongClicked(it) }
             return true
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder1 {

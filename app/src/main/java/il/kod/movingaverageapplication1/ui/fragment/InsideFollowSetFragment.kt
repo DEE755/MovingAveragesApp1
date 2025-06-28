@@ -20,7 +20,6 @@ import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
-import kod.il.movingaverageapplication1.utils.sessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,8 +69,8 @@ class InsideFollowSetFragment : Fragment() {
 
                 binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                     extractedStocks,
-                    callBack = object : StockRecyclerAdapterFragment.ItemListener {
-                        override fun onItemClicked(index: Int) {
+                    callBack = object : StockRecyclerAdapterFragment.SearchedStockClickListener {
+                        override fun onSearchedStockClicked(index: Int) {
                             val clickedStock = extractedStocks[index]
                             clickedStock.let {
                                 viewModelDetailStock.setStock(clickedStock)
@@ -81,7 +80,7 @@ class InsideFollowSetFragment : Fragment() {
                             }
                         }
 
-                        override fun onItemLongClicked(index: Int) {}
+                        override fun onSearchedStockLongClicked(index: Int) {}
                     },
                     glide = glide
                 )

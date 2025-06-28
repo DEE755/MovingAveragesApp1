@@ -99,6 +99,7 @@ class CustomServerDatabaseViewModel @Inject constructor(
     fun getAllStocks() {
         Log.d("CustomServerDatabaseViewModel", "Fetching all stocks")
      newallStocks=   CSDRepository.getAllStocks()
+
     }
 
     /* suspend fun getStocksStartingFromSymbol(symbol: String) {

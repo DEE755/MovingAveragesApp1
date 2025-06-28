@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -15,13 +14,13 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.ui.fragment.StockRecyclerAdapterFragment.ItemViewHolder
 
 
-class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: ItemListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>()
+class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: SearchedStockClickListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>()
 {
 
 
-    interface ItemListener {
-        fun onItemClicked(index: Int)
-        fun onItemLongClicked(index: Int)
+    interface SearchedStockClickListener {
+        fun onSearchedStockClicked(index: Int)
+        fun onSearchedStockLongClicked(index: Int)
     }
 
     inner class ItemViewHolder(private val binding: StockLayoutBinding) :
@@ -34,13 +33,13 @@ class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val 
         }
 
         override fun onClick(p0: View?) {
-            callBack.onItemClicked(adapterPosition)
+            callBack.onSearchedStockClicked(bindingAdapterPosition)
 
 
         }
 
         override fun onLongClick(p0: View?): Boolean {
-            callBack.onItemLongClicked(adapterPosition)
+            callBack.onSearchedStockLongClicked(bindingAdapterPosition)
             return false
         }
 

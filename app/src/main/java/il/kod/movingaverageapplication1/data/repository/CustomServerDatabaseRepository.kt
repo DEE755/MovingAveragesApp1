@@ -1,9 +1,9 @@
 package il.kod.movingaverageapplication1.data.repository
 
+import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import il.kod.movingaverageapplication1.SessionManager
-import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
 import il.kod.movingaverageapplication1.data.models.AdapterStockIdGson
 import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.data.models.AuthResponse
@@ -17,6 +17,8 @@ import kod.il.movingaverageapplication1.utils.performFetchingFromServerEveryTenS
 import kod.il.movingaverageapplication1.utils.performPostingToServer
 import javax.inject.Inject
 import javax.inject.Singleton
+
+import il.kod.movingaverageapplication1.utils.lockOrientation
 
 //we can use that to call both the local and remote data sources in same functions
 //for now it seems it's needed only for the remote data source
@@ -48,6 +50,7 @@ class CustomServerDatabaseRepository @Inject constructor(
 
     fun getAllStocks(): LiveData<PagingData<Stock>> =
         if (!sessionManager.allStocksPackHaveBeenFetch()) {
+
             performFetchingAndSavingPaging(
                 { localDataSource.getAllStocks() }, // return LiveData<PagingData<Stock>>
                 { remoteDataSource.getAllStocks() },

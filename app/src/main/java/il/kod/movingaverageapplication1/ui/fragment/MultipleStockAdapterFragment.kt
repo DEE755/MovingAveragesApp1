@@ -28,11 +28,11 @@ class MultipleStockAdapterFragment(
         }
 
         override fun onClick(p0: View?) {
-            callBack.onItemClicked(adapterPosition)
+            callBack.onItemClicked(bindingAdapterPosition)
         }
 
         override fun onLongClick(p0: View?): Boolean {
-            callBack.onItemLongClicked(adapterPosition)
+            callBack.onItemLongClicked(bindingAdapterPosition)
             return true
         }
 

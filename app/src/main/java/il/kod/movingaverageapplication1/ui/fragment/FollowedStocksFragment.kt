@@ -15,17 +15,13 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.NotificationsService
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
-import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.FragmentSelectedStocksBinding
-import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 import il.kod.movingaverageapplication1.ui.AppMenu
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
@@ -128,8 +124,8 @@ class FollowedStocksFragment : Fragment() {
 
             binding.recyclerView.adapter = StockRecyclerAdapterFragment(
                 emptyList(),
-                callBack = object : StockRecyclerAdapterFragment.ItemListener {
-                    override fun onItemClicked(index: Int) {
+                callBack = object : StockRecyclerAdapterFragment.SearchedStockClickListener {
+                    override fun onSearchedStockClicked(index: Int) {
 
                         viewModelAllStocks.followedStocks.value?.get(index)
                             ?.let { selectedStock ->
@@ -138,7 +134,7 @@ class FollowedStocksFragment : Fragment() {
                             }
                     }
 
-                    override fun onItemLongClicked(index: Int) {
+                    override fun onSearchedStockLongClicked(index: Int) {
                         val clickedStock = viewModelAllStocks.followedStocks.value?.get(index)
 
                         //TODO(make use of dialogViewModel instead)
