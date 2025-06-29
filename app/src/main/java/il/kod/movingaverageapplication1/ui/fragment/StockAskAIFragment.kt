@@ -104,6 +104,7 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                                 CSDviewModel.askAI(clickedStock, question)
                             } else {
                                 Toast.makeText(requireContext(), "Please enter a valid question", Toast.LENGTH_SHORT).show()
+                                return@launch
                             }
 
                             CSDviewModel.AI_Answer.observe(viewLifecycleOwner) {
@@ -115,6 +116,8 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                                     is Error -> {
                                         Toast.makeText(requireContext(), it.status.message, Toast.LENGTH_SHORT).show()
                                         binding.progressBar.isVisible = false
+                                        binding.askAiText.text="Error: ${it.status.message}"
+
                                     }
                                     is Success -> {
                                         binding.progressBar.isVisible = false

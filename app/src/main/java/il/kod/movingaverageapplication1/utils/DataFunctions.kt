@@ -98,7 +98,6 @@ fun <T,A> performFetchingAndSaving(localDbFetch: () -> LiveData<T>,
 
     liveData(Dispatchers.IO) {
 
-        Log.d("performFetchingAndSaving","called")
         emit(Resource.loading())//tell the live data observer that we are loading
 
         val source = localDbFetch().map { Resource.success("Success",it) }

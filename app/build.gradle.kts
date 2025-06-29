@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")

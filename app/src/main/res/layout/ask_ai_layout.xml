@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -64,22 +65,8 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray" />
 
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:layout_gravity="center"
-                android:text="Moving Average"
-                android:id="@+id/ma_view"
-                android:textColor="@android:color/holo_orange_light"
-                android:layout_marginTop="8dp">
 
-            </TextView>
-            <View
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray" />
+
 
 
             <TextView
@@ -111,20 +98,11 @@
 
            <androidx.recyclerview.widget.RecyclerView
                android:layout_width="match_parent"
-               android:layout_height="400dp"
+               android:layout_height="0dp"
                android:id="@+id/question_recycler_view"
-               android:visibility="visible"/>
+               android:visibility="visible"
+               android:layout_weight="1"/>
 
-            <ImageView
-                android:id="@+id/item_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_weight="0"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="10dp"
-                android:scaleType="fitCenter"
-                android:layout_gravity="center"
-                />
 
 
             <TextView
@@ -133,30 +111,38 @@
                 android:layout_marginBottom="200dp"
                 android:layout_height="100dp"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:text="Warning! This is a AI based answered text and we are not responsible for any loss or damage caused by the use of this information. Please do your own research before making any investment decisions."
                 android:textColor="@android:color/holo_red_light"
                 android:textStyle="bold"
-                android:background="@color/cardview_dark_background"
+                app:layout_constraintBottom_toTopOf="@id/answerHtml"
                 android:visibility="gone"
                 />
 
 
-
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="0"
+                android:scaleType="fitCenter" />
 
             <Button
                 android:id="@+id/return_button"
-                android:layout_width="200dp"
+                android:layout_width="196dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="-200dp"
-                android:text="Back"
+                android:layout_marginTop="0dp"
                 android:backgroundTint="#F810AEC3"
-                />
+                android:text="Back"
+                app:layout_constraintTop_toBottomOf="@id/item_image" />
 
 
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

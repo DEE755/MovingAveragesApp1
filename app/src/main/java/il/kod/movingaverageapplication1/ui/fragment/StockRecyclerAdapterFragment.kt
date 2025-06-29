@@ -14,7 +14,12 @@ import il.kod.movingaverageapplication1.data.objectclass.Stock
 import il.kod.movingaverageapplication1.ui.fragment.StockRecyclerAdapterFragment.ItemViewHolder
 
 
-class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val callBack: SearchedStockClickListener, private val glide: RequestManager) : RecyclerView.Adapter<ItemViewHolder>()
+class StockRecyclerAdapterFragment(
+    private var stocks: List<Stock>,
+    private val callBack: SearchedStockClickListener,
+    private val glide: RequestManager,
+    private val showPrices: Boolean = true
+) : RecyclerView.Adapter<ItemViewHolder>()
 {
 
 
@@ -48,7 +53,7 @@ class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val 
 
             binding.stockTitle.text = stock.name
             binding.stockTicker.text = stock.symbol
-            if (stock.current_price==0.00 || stock.ma_25.isNaN() || stock.ma_25==0.00) {
+            if (stock.current_price== 0.00 || showPrices== false) {
                 binding.stockPrice.visibility = View.GONE
 
 
@@ -61,7 +66,11 @@ class StockRecyclerAdapterFragment(private var stocks: List<Stock>, private val 
 
 
             Log.d("StockAdapterFragment", "name: ${stock.name},image: ${stock.logo_url}")
-            glide.load(stock.logo_url).error(R.mipmap.ic_launcher).apply(RequestOptions.bitmapTransform(RoundedCorners(30))).into(binding.stockImage)
+            glide
+                .load(stock.logo_url).error(R.mipmap.ic_launcher)
+                .apply(RequestOptions
+                    .bitmapTransform(RoundedCorners(30)))
+                .into(binding.stockImage)
 
 
         }

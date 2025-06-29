@@ -126,7 +126,10 @@ class FollowSetCreationFragment : Fragment()
                             imageUri = "",
                             userComments = "",
                             set_ids = selectedIds,
-                            -1.00
+                            combinedBitmap = null,
+                            notificationsPriceThreeshold = -1.00,
+                            back_id = -1,
+                            isDirty = false
                         )
 
                         viewModelFollowSet.newCreatedFollowSet =createdFollowSet

@@ -12,7 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.R
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
 import il.kod.movingaverageapplication1.databinding.AskAiFollowSetBinding
 import il.kod.movingaverageapplication1.ui.fragment.QuestionRecyclerAdapterFragment
@@ -59,6 +62,14 @@ class FollowSetAskAIFragment: Fragment() {
 
         viewModelFollowSet.clickedFollowSet.value.let { followSet ->
             binding.followSetTitle.text = followSet?.name
+            if (followSet?.combinedBitmap!=null){
+            glide
+                .load(followSet.combinedBitmap)
+                .error(il.kod.movingaverageapplication1.R.drawable.login)
+                .apply(RequestOptions
+                    .bitmapTransform(RoundedCorners(30)))
+                .into(binding.itemImage)
+}
             var completeSymbols: String = ""
 
 

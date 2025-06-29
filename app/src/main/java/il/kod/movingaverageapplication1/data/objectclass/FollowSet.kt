@@ -14,6 +14,10 @@ data class FollowSet(
     var name: String,
     @ColumnInfo(name="image_uri") @Expose
     internal var imageUri: String? ="",
+
+    @ColumnInfo (name="combined_bitmap") @Expose(serialize = false, deserialize = false)
+    internal var combinedBitmap: android.graphics.Bitmap? = null,
+
     @ColumnInfo(name="user_description") @Expose
     var userComments: String?="",
     @ColumnInfo(name="set_ids")@Expose

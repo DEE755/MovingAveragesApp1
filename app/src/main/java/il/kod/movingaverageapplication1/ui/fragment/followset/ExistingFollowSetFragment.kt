@@ -228,7 +228,7 @@ class ExistingFollowSetFragment : Fragment() {
                     )
                 }
             }
-            ,viewModelAllStocks
+            ,viewModelAllStocks, viewModelFollowSet
         )
 
         if (viewModelFollowSet.newCreatedFollowSet!=null){

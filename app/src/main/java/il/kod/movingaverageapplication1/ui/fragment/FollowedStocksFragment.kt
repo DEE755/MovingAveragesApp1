@@ -256,7 +256,6 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
                 findNavController().navigate(R.id.action_selectedStocks_to_stockSelection3)
             }
 
-
             return binding.root
 
     }

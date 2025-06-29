@@ -10,6 +10,7 @@ import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
+import il.kod.movingaverageapplication1.ui.viewmodel.FollowSetViewModel
 import il.kod.movingaverageapplication1.utils.createCombinedImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 class FollowSetAdapterFragment(
     private var followSets: List<FollowSet>,
     private val callBack: ItemListener,
-    private val viewModelAllStock: AllStocksViewModel
+    private val viewModelAllStock: AllStocksViewModel,
+    private val viewModelFollowSet: FollowSetViewModel
 ) : RecyclerView.Adapter<FollowSetAdapterFragment.FollowSetViewHolder>() {
 
 
@@ -96,7 +98,15 @@ class FollowSetAdapterFragment(
                             if (limit == 0) break
                         }
 
-                        createCombinedImage(binding.stockImage, listOfUri, binding)
+                        val combinedBitmap=createCombinedImage(binding.stockImage, listOfUri, binding)
+
+                        if (combinedBitmap != null) {
+                            followSet.combinedBitmap = combinedBitmap
+                            viewModelFollowSet.updateFollowSet(followSet)
+                            binding.stockImage.setImageBitmap(combinedBitmap)
+                        } else {
+                            binding.stockImage.setImageResource(R.mipmap.button_follow_set)
+                        }
                     }
                 }
             }

@@ -15,12 +15,15 @@ package il.kod.movingaverageapplication1.utils
              import com.bumptech.glide.request.transition.Transition
              import il.kod.movingaverageapplication1.R
              import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
+             import androidx.core.graphics.createBitmap
 
 fun createCombinedImage( // for 4,3, or 2 images
     imageView: ImageView,
     uris: List<String>, // List 2-4 uris
     binding: StockLayoutBinding
-) {
+): Bitmap {
+
+    var combinedBitmap : Bitmap = createBitmap(1, 1) // Default bitmap to avoid null
 
     binding.pictureProgressBar.isVisible=true
 
@@ -82,16 +85,23 @@ fun createCombinedImage( // for 4,3, or 2 images
                     ) {
                         bitmaps.add(resource)
                         if (bitmaps.size == 4 && bitmaps.all { it != null }) {
-                            val combinedBitmap = combineBitmaps(bitmaps, 200)
+                            combinedBitmap = combineBitmaps(bitmaps, 200)
+
                             imageView.setImageBitmap(combinedBitmap)
+
                         }
                     }
+
 
                     override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {}
                 })
         }
     }
+
+    return combinedBitmap // Return a default bitmap if no images are loaded
 }
+
+
 
 private fun combineBitmaps(bitmaps: List<Bitmap?>, targetSquareSide: Int): Bitmap {
     val resizedBitmaps = bitmaps.map { bitmap ->
@@ -118,7 +128,7 @@ private fun combineBitmaps(bitmaps: List<Bitmap?>, targetSquareSide: Int): Bitma
 
     // Create a rounded version of the combined bitmap
     val roundedBitmap =
-        Bitmap.createBitmap(targetSquareSide * 2, targetSquareSide * 2, Bitmap.Config.ARGB_8888)
+        createBitmap(targetSquareSide * 2, targetSquareSide * 2)
     val roundedCanvas = Canvas(roundedBitmap)
 
     val paint = android.graphics.Paint().apply {
