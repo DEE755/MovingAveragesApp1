@@ -21,7 +21,6 @@ import android.content.Context
 class NotificationHandler  @Inject constructor(
     @ApplicationContext private val context: Context
 ){
-
     @SuppressLint("MissingPermission")
     fun showNotification(title: String, message: String) {
         val channelId = "default_channel_id"
@@ -46,6 +45,4 @@ class NotificationHandler  @Inject constructor(
 
         NotificationManagerCompat.from(context).notify(1, notification)
     }
-
-
 }
