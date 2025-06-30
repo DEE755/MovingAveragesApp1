@@ -23,7 +23,7 @@ fun createCombinedImage( // for 4,3, or 2 images
     binding: StockLayoutBinding
 ): Bitmap {
 
-    var combinedBitmap : Bitmap = createBitmap(1, 1) // Default bitmap to avoid null
+    var combinedBitmap : Bitmap = BitmapFactory.decodeResource(binding.stockImage.context.resources, R.drawable.followseticon) ?: createBitmap(200, 200) // Default bitmap to avoid null
 
     binding.pictureProgressBar.isVisible=true
 

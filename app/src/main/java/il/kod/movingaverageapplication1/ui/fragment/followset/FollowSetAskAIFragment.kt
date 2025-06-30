@@ -12,12 +12,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.R
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
-import il.kod.movingaverageapplication1.databinding.AskAiFollowSetBinding
+import il.kod.movingaverageapplication1.databinding.AskAiFollowSetLayoutBinding
 import il.kod.movingaverageapplication1.ui.fragment.QuestionRecyclerAdapterFragment
 import il.kod.movingaverageapplication1.ui.viewmodel.AiQuestionsViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
@@ -37,7 +36,7 @@ class FollowSetAskAIFragment: Fragment() {
     @Inject
     lateinit var glide: RequestManager
 
-    var _binding : AskAiFollowSetBinding?= null
+    var _binding : AskAiFollowSetLayoutBinding?= null
     val binding get()=_binding!!
 
     //private val viewModelAllStocks: il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel by activityViewModels()
@@ -53,7 +52,7 @@ class FollowSetAskAIFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = AskAiFollowSetBinding.inflate(inflater, container, false)
+        _binding = AskAiFollowSetLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -65,7 +64,7 @@ class FollowSetAskAIFragment: Fragment() {
             if (followSet?.combinedBitmap!=null){
             glide
                 .load(followSet.combinedBitmap)
-                .error(il.kod.movingaverageapplication1.R.drawable.login)
+                .error(il.kod.movingaverageapplication1.R.drawable.button_follow_set_background)
                 .apply(RequestOptions
                     .bitmapTransform(RoundedCorners(30)))
                 .into(binding.itemImage)

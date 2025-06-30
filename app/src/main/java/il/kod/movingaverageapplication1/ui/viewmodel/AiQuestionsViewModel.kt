@@ -40,7 +40,7 @@ class AiQuestionsViewModel @Inject constructor(
     )
 
     val aiQuestion2: AiQuestion =
-        AiQuestion("Company Global Information", "What is the history of this stock?", "", null)
+        AiQuestion("Stock History", "What is the history of this stock?", "", null)
 
 
     val aiCustomQuestion: AiQuestion = AiQuestion("Custom Question", "Ask your own question", "", null)

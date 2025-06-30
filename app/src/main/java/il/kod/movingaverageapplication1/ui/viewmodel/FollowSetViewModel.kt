@@ -31,9 +31,7 @@ class FollowSetViewModel @Inject constructor(
     var newCreatedFollowSet : FollowSet? = null
     var followSetHasBeenCreated: Boolean = false
 
-    //To update UI after setting an alert
-    var setAlertLastValue: Double? = null
-    val setAlertFollowSetID: Int? = null
+    val followSetsToUpdate: MutableList<FollowSet> = mutableListOf()
 
 
 

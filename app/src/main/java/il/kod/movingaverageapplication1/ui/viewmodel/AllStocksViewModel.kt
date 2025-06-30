@@ -1,8 +1,6 @@
 package il.kod.movingaverageapplication1.ui.viewmodel
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +23,7 @@ class AllStocksViewModel @Inject constructor(
 
     val followedStocks : LiveData<List<Stock>> = localRepository.getFollowedStocksLocal()
     val filteredStocksList: MutableLiveData<List<Stock>> = MutableLiveData()
-    var availableStockCount: Int =0
+    var availableStockCountLocal: Int =0
     var searchStockCount: Int = 0
 
     var isOnQuerySearch: Boolean = false
@@ -78,7 +76,7 @@ class AllStocksViewModel @Inject constructor(
 
     fun getAvailableStockCount() {
         viewModelScope.launch(Dispatchers.IO) {
-           availableStockCount= localRepository.getAvailableStockCount()
+           availableStockCountLocal= localRepository.getAvailableStockCount()
             }
         }
 

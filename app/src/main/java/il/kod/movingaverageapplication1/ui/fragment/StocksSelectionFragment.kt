@@ -56,9 +56,6 @@ class StocksSelectionFragment : Fragment() {
     private val syncManagementviewModel: SyncManagementViewModel by activityViewModels()
 
 
-    //lateinit var currentObserver: Observer<List<Stock>>
-
-
     override fun onCreateView(
 
         inflater: LayoutInflater,
@@ -74,7 +71,7 @@ class StocksSelectionFragment : Fragment() {
             viewModelAllStocks.getAvailableStockCount()//local stock count
             CSDViewModel.getNbOfStocksInRemoteDB()
 
-        Log.d("StockSelectionFragment", "there is at start ${viewModelAllStocks.availableStockCount}")
+        Log.d("StockSelectionFragment", "there is at start ${viewModelAllStocks.availableStockCountLocal}")
 
         /////////////////////////////////////////////
 
@@ -253,6 +250,7 @@ class StocksSelectionFragment : Fragment() {
                         updateCountView(CSDViewModel.fetchedStocksCount)
                         binding.progressBarPager.isVisible = false
                         binding.loadingText.isVisible = false
+                        sessionManager.setUserFollowedStocksHaveBeenRetrievedOrNone(true)
 
                     }
                 }
@@ -285,6 +283,7 @@ class StocksSelectionFragment : Fragment() {
                     ).show()
                         updateRecyclerVisibilityAccordingly()
                     requireActivity().unlockOrientation()
+
                 }
 
                 }

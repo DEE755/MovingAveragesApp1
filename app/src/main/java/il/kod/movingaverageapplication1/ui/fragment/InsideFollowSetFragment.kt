@@ -39,6 +39,7 @@ class InsideFollowSetFragment : Fragment() {
     private val viewModelFollowSet : FollowSetViewModel by activityViewModels()
     private val dialogViewModel: DialogViewModel by activityViewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
@@ -86,7 +87,7 @@ class InsideFollowSetFragment : Fragment() {
                 )
             }
 
-            binding.textView.text = currentFollowSet?.name
+            //binding.textView.text = currentFollowSet?.name
 
             binding.setMoreActionsButton.setOnClickListener {
                 val items = listOf(
@@ -163,7 +164,7 @@ class InsideFollowSetFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
-            getString(R.string.following_set_title, binding.textView.text)
+            getString(R.string.following_set_title, viewModelFollowSet.clickedFollowSet.value?.name)
     }
 
     override fun onDestroyView() {

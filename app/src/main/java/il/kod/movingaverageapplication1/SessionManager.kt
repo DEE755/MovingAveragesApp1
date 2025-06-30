@@ -42,6 +42,8 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
 
     var userHasFollowedFollowSetsInRemoteDB : Boolean = false
 
+
+
     //var somethingIsDirty : Boolean = false
 
       //  fun setSomethingIsDirty(value: Boolean) {
@@ -96,6 +98,7 @@ class SessionManager @Inject constructor(val preferences: SharedPreferences, val
         preferences.edit { putBoolean("user_followed_stocks_retrieved", bool) }
     }
     //////////////////////////
+
 
 
 

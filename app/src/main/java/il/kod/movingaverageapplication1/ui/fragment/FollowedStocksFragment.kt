@@ -166,6 +166,8 @@ class FollowedStocksFragment : Fragment() {
             viewModelAllStocks.followedStocks.observe(viewLifecycleOwner) { selectedStocks ->
                 (binding.recyclerView.adapter as? StockRecyclerAdapterFragment)?.updateData(selectedStocks)
                 if (viewModelAllStocks.followedStocks.value?.isEmpty() == false) {
+
+                    // If There is in the db fetch stock but we didn't tell yet the user:
                     if (!sessionManager.restoredFollowedStocksDialogHasBeenShown() && sessionManager.userHasFollowedStocksinRemoteDB)
                     {
                     dialogViewModel.showRestoredPreviouslyFollowedStocksDialog(requireContext(), "stock", -1 )
@@ -177,6 +179,10 @@ class FollowedStocksFragment : Fragment() {
                     binding.addStockButtonBig.visibility = View.VISIBLE
                     binding.isEmptytextView.visibility = View.VISIBLE
                     binding.addStockButtonSmall.visibility = View.GONE
+                    if (sessionManager.allStocksPackHaveBeenFetch())
+                    {
+                        binding.isEmptytextView.text = "Add stocks to continue"
+                    }
                 }
             }
 
@@ -243,6 +249,8 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
                 }
             }
         }
+
+
 
 
 

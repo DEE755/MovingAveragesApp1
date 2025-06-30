@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.databinding.StockLayoutBinding
@@ -85,7 +87,9 @@ class FollowSetAdapterFragment(
                         Glide.with(binding.root)
                             .load(it[0].logo_url)
                             .error(R.mipmap.button_follow_set)
+                            .apply(RequestOptions().transform(RoundedCorners(30)))
                             .into(binding.stockImage)
+
                              binding.pictureProgressBar.isVisible= false
                     } else {
                         var limit=4
@@ -102,7 +106,8 @@ class FollowSetAdapterFragment(
 
                         if (combinedBitmap != null) {
                             followSet.combinedBitmap = combinedBitmap
-                            viewModelFollowSet.updateFollowSet(followSet)
+                            //viewModelFollowSet.followSetsToUpdate.add(followSet)
+
                             binding.stockImage.setImageBitmap(combinedBitmap)
                         } else {
                             binding.stockImage.setImageResource(R.mipmap.button_follow_set)

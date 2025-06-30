@@ -26,7 +26,7 @@ import il.kod.movingaverageapplication1.data.objectclass.AiQuestion
 import il.kod.movingaverageapplication1.ui.viewmodel.DetailStockViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.CustomServerDatabaseViewModel
 import il.kod.movingaverageapplication1.data.objectclass.Stock
-import il.kod.movingaverageapplication1.databinding.AskAiLayoutBinding
+import il.kod.movingaverageapplication1.databinding.AskAiFollowSetLayoutBinding
 import il.kod.movingaverageapplication1.ui.viewmodel.AiQuestionsViewModel
 import il.kod.movingaverageapplication1.utils.Loading
 import il.kod.movingaverageapplication1.utils.Success
@@ -43,7 +43,7 @@ class AskAIFragment: Fragment() {
     @Inject
     lateinit var glide: RequestManager
 
-    var _binding : AskAiLayoutBinding?= null
+    var _binding : AskAiFollowSetLayoutBinding?= null
     val binding get()=_binding!!
 
     //private val viewModelAllStocks: il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel by activityViewModels()
@@ -58,7 +58,7 @@ class AskAIFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = AskAiLayoutBinding.inflate(inflater, container, false)
+        _binding = AskAiFollowSetLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -68,14 +68,10 @@ class AskAIFragment: Fragment() {
         val clickedStock  = viewModelDetailStock.clickedStock.value
         clickedStock.let {stock->
 
-            binding.stockSymbol.text ="${stock?.symbol}"
+            binding.stockSymbols.text ="${stock?.symbol}"
 
-            binding.stockCompany.text =stock?.name
-            binding.stockPrice.text = if (stock?.current_price != null) {
-                "Current prices: ${stock.current_price}"
-            } else {
-                "Follow to get live updates"
-            }
+            binding.followSetTitle.text =stock?.name
+
 
             glide.load(stock?.logo_url?.toUri()).apply(RequestOptions.bitmapTransform(RoundedCorners(30))).into(binding.itemImage)
 

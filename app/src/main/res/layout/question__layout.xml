@@ -31,23 +31,23 @@
                 android:layout_height="wrap_content"
                 android:text="Question Title"
                 android:layout_gravity="center"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="17sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                />
             <TextView
                 android:id="@+id/questionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Question Text"
                 android:layout_gravity="center"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/material_dynamic_secondary60"
+
                 android:textStyle="italic"
                 android:textSize="14sp" />
 
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 

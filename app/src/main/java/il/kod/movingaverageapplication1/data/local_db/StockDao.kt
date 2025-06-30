@@ -32,6 +32,8 @@ interface StockDao {
     @Query("SELECT * FROM stocks WHERE isSelected = 1")
      fun getSelectedStocks(): LiveData<List<Stock>>
 
+    @Query("SELECT COUNT(*) FROM stocks WHERE isSelected = 1")
+    fun getSelectedStockCount(): Int
 
     @Query("SELECT * FROM stocks WHERE isSelected = 0")
      fun getUnselectedStocks(): LiveData<List<Stock>>

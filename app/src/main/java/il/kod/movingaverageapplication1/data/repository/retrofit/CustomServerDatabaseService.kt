@@ -40,14 +40,9 @@ import retrofit2.http.Query
 
 
         //STOCKS
-
-        //get all stocks /run once in a while + button to update stocks + maybe AI that tell you if there is more stocks that should be added
         @GET("/getall_remoteDB_stocks/")
         suspend fun getAllStocks(@Query("limit") limit: Int
         ): Response<List<Stock>>
-
-        @GET("/get_stocks_from_to/")
-        suspend fun getStocksStartingFromSymbol(@Query("symbol") symbol: String): Response<List<Stock>>
 
 
 

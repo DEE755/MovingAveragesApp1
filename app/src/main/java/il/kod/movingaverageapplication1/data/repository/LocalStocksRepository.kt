@@ -98,9 +98,7 @@ class LocalStocksRepository @Inject constructor(private val application: Applica
 
     fun getAvailableStockCount(): Int = stockDao.getInstantStockCount()
 
-    fun getLastSymbol(): String? {
-        return stockDao.getLastSymbol()
-    }
+    fun getSelectedStockCount():Int = stockDao.getSelectedStockCount()
 
     fun updateStockPrice(symbol: String, currentPrice: Double) : Unit =
         stockDao.updateStockPrice(symbol,currentPrice)

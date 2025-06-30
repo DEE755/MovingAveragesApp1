@@ -194,7 +194,7 @@ class AppModule {
     @Provides
     @Singleton
     fun providesAppMenu(@ApplicationContext context: Context): AppMenu {
-        return AppMenu(providesSessionManager(context))
+        return AppMenu(providesSessionManager(context), provideLocalStocksRepository(context))
     }
 
     @Provides

@@ -115,6 +115,9 @@
         <action
             android:id="@+id/action_insideFollowSetFragment_to_followSetAskAIFragment"
             app:destination="@id/followSetAskAIFragment" />
+        <action
+            android:id="@+id/action_insideFollowSetFragment_to_recyclerDialogFragment"
+            app:destination="@id/recyclerDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
@@ -139,5 +142,13 @@
         android:id="@+id/followSetAskAIFragment"
         android:name="il.kod.movingaverageapplication1.ui.fragment.followset.FollowSetAskAIFragment"
         android:label="FollowSetAskAIFragment" />
+    <dialog
+        android:id="@+id/recyclerDialogFragment"
+        android:name="il.kod.movingaverageapplication1.ui.fragment.RecyclerDialogFragment"
+        android:label="RecyclerDialogFragment" >
+        <action
+            android:id="@+id/action_recyclerDialogFragment_to_insideFollowSetFragment"
+            app:destination="@id/insideFollowSetFragment" />
+    </dialog>
 
 </navigation>

@@ -1,30 +1,32 @@
 package il.kod.movingaverageapplication1.ui
 
-import android.app.Service
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.os.IBinder
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 
 import androidx.navigation.NavController
 import dagger.hilt.android.AndroidEntryPoint
 
 import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
+import il.kod.movingaverageapplication1.data.repository.LocalStocksRepository
+import il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel
 import il.kod.movingaverageapplication1.ui.viewmodel.DialogViewModel
-import il.kod.movingaverageapplication1.utils.showConfirmationDialog
+import il.kod.movingaverageapplication1.utils.showGenericDialogNoInput
 import il.kod.movingaverageapplication1.utils.showGenericDialogNoInput2choices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AppMenu @Inject constructor(private val sessionManager: SessionManager) : Fragment() {
+class AppMenu @Inject constructor(private val sessionManager: SessionManager, val localStocksRepository: LocalStocksRepository) : Fragment() {
 
 
     fun sharedMenuProvider(
@@ -34,17 +36,26 @@ class AppMenu @Inject constructor(private val sessionManager: SessionManager) : 
         return object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_main_activity, menu)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (localStocksRepository.getSelectedStockCount() == 0) {
+                        val item = menu.findItem(R.id.action_follow_list)
+                        item.icon?.alpha = 50
+                    }
+                    }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_follow_list -> {
                         if (isListEmpty) {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.select_stocks_first),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            showGenericDialogNoInput(
+                                context = context,
+                                title = "No Stocks Selected",
+                                    positiveButtonText = "Close",
+                                message = context.getString((R.string.select_stocks_first)))
+
+
                         } else {
                             navController.navigate(R.id.followSetFragment)
                             Toast.makeText(

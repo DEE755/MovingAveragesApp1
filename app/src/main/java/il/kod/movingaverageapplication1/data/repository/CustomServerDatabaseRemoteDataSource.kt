@@ -63,16 +63,7 @@
                     CSDPublicService.getAllStocks(Constants.DATABASE_LIMIT)
                 })
 
-            suspend fun getStocksStartingFromSymbol(symbol: String): Resource<List<Stock>> {
-                Log.d(
-                    "CustomServerDatabaseRemoteDataSource",
-                    "getStocksStartingFromSymbol called with symbol: $symbol"
-                )
-                return getResult({
 
-                    CSDPublicService.getStocksStartingFromSymbol(symbol)
-                })
-            }
 
 
             suspend fun getNbOfStocksInRemoteDB(): Int =

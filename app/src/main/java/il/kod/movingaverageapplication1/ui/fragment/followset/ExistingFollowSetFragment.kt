@@ -353,6 +353,13 @@ class ExistingFollowSetFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = "Following Sets"
     }
 
+    override fun onStop() {
+
+        super.onStop()
+
+
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
