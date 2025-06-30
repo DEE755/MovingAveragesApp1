@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class SessionManager @Inject constructor(val preferences: SharedPreferences, val localStocksRepository: LocalStocksRepository, val localFollowSetRepository: LocalFollowSetRepository, @ApplicationContext val context: Context) {
 
 
-    fun getUsername()= preferences.getString("username", null) ?: "user"
+    fun getUsername()= preferences.getString("username", null) ?: context.getString(R.string.default_user)
 
     fun setUsername(username: String) {
         preferences.edit { putString("username", username) }

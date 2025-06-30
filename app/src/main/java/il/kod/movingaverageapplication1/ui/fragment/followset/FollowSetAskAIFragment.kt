@@ -16,6 +16,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
+import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.databinding.AskAiFollowSetLayoutBinding
 import il.kod.movingaverageapplication1.ui.fragment.QuestionRecyclerAdapterFragment
 import il.kod.movingaverageapplication1.ui.viewmodel.AiQuestionsViewModel
@@ -39,7 +40,7 @@ class FollowSetAskAIFragment: Fragment() {
     var _binding : AskAiFollowSetLayoutBinding?= null
     val binding get()=_binding!!
 
-    //private val viewModelAllStocks: il.kod.movingaverageapplication1.ui.viewmodel.AllStocksViewModel by activityViewModels()
+
     private val viewModelDetailStock: DetailStockViewModel by activityViewModels()
     private val CSDviewModel: CustomServerDatabaseViewModel by activityViewModels()
     private val questionsViewModel: AiQuestionsViewModel by viewModels()
@@ -69,7 +70,7 @@ class FollowSetAskAIFragment: Fragment() {
                     .bitmapTransform(RoundedCorners(30)))
                 .into(binding.itemImage)
 }
-            var completeSymbols: String = ""
+            var completeSymbols: String = getString(R.string.empty_symbols_string)
 
 
            lifecycleScope.launch {
@@ -78,7 +79,7 @@ class FollowSetAskAIFragment: Fragment() {
 
 
                 stocks.forEach {
-                    completeSymbols += "${it.symbol}, "
+                    completeSymbols += getString(R.string.symbol_separator, it.symbol)
                     //TODO(LIMIT TO 4 and add ... or "and more" if more than 4)}
                 }
 
@@ -99,12 +100,12 @@ class FollowSetAskAIFragment: Fragment() {
                                 val question =
                                     if (index == questionsViewModel.allQuestionsFollowSet.size - 1) {
                                         val input = showCustomQuestionInputDialog(
-                                            title = "Ask a Custom Question about those stocks",
-                                            message = "Write your question here",
+                                            title = getString(R.string.ask_custom_question_about_stocks),
+                                            message = getString(R.string.write_question_here),
                                             context = requireContext()
                                         )
-                                        input?.let { it + "\n" + questionsViewModel.passResponsibilityWarnings }
-                                            ?: ""
+                                        input?.let { it + getString(R.string.linebreak_separator) + questionsViewModel.passResponsibilityWarnings }
+                                            ?: getString(R.string.default_empty_question)
                                     } else {
                                         questionsViewModel.allQuestionsFollowSet[index].question
                                     }
@@ -120,7 +121,7 @@ class FollowSetAskAIFragment: Fragment() {
                                 } else {
                                     Toast.makeText(
                                         requireContext(),
-                                        "Please enter a valid question",
+                                        getString(R.string.enter_valid_question),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }

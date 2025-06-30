@@ -72,7 +72,7 @@ class LoginFragment : Fragment() {
                 if (username.isBlank() || password.isBlank()) {
                     Toast.makeText(
                         requireContext(),
-                        "Username and password cannot be empty",
+                        getString(R.string.username_password_empty),
                         Toast.LENGTH_SHORT
                     ).show()
                     Log.d("LoginFragment", "Username and password cannot be empty")
@@ -97,7 +97,7 @@ class LoginFragment : Fragment() {
 
                             it.status.data?.let { data ->
                                 Log.d("LoginFragment", "Data received: $data")
-                                sessionManager.setUsername(data.username ?: "user")
+                                sessionManager.setUsername(data.username ?: getString(R.string.user_default))
                                 sessionManager.setClientId(data.userId ?: -1)
                                 sessionManager.saveTokens(
                                     data.accessToken ?: "",

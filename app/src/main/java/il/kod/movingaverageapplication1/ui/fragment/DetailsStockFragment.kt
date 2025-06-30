@@ -66,7 +66,7 @@ class DetailsStockFragment: Fragment() {
             val selecStock=stock.value
             if (selecStock.isSelected){
 
-                binding.addButton.text = "Currently Following"
+                binding.addButton.text = getString(R.string.currently_following)
                 binding.addButton.isEnabled=false
                 binding.addButton.alpha=.5f
 
@@ -80,13 +80,13 @@ class DetailsStockFragment: Fragment() {
                 binding.maView.visibility = View.GONE
             } else {
                 binding.maView.visibility = View.VISIBLE
-                val title="Moving Averages:"
-                val ma25="25: ${BigDecimal(selecStock.ma_25).setScale(2, RoundingMode.HALF_UP).toDouble()}"
-                val ma50="50: ${BigDecimal(selecStock.ma_50).setScale(2, RoundingMode.HALF_UP).toDouble()}"
-                val ma150="150: ${BigDecimal(selecStock.ma_150).setScale(2, RoundingMode.HALF_UP).toDouble()}"
-                val ma200="200: ${BigDecimal(selecStock.ma_200).setScale(2, RoundingMode.HALF_UP).toDouble()}"
+                val title = getString(R.string.moving_averages_title)
+                val ma25 = getString(R.string.ma_25_display, BigDecimal(selecStock.ma_25).setScale(2, RoundingMode.HALF_UP).toDouble())
+                val ma50 = getString(R.string.ma_50_display, BigDecimal(selecStock.ma_50).setScale(2, RoundingMode.HALF_UP).toDouble())
+                val ma150 = getString(R.string.ma_150_display, BigDecimal(selecStock.ma_150).setScale(2, RoundingMode.HALF_UP).toDouble())
+                val ma200 = getString(R.string.ma_200_display, BigDecimal(selecStock.ma_200).setScale(2, RoundingMode.HALF_UP).toDouble())
 
-               val full="$title\n\t\t\t\t\t\t$ma25\n\t\t\t\t\t\t$ma50\n\t\t\t\t\t\t$ma150\n\t\t\t\t\t\t$ma200"
+               val full = getString(R.string.ma_full_display, title, ma25, ma50, ma150, ma200)
 
                 // Create a SpannableString to style the text
                val spannableString = SpannableString(full)
@@ -107,14 +107,12 @@ class DetailsStockFragment: Fragment() {
             }
 
 
-            binding.stockCompany.text =stock.value?.name?:"N/A"
+            binding.stockCompany.text = stock.value?.name ?: getString(R.string.na)
             binding.stockPrice.text = if (stock.value?.current_price != 0.00) {
-                "Live price: ${stock.value?.current_price}"
+                                getString(R.string.live_price, stock.value?.current_price.toString())
             } else {
-                "Follow to get live updates"
+                             getString(R.string.follow_to_get_updates)
             }
-            //binding.numberOfShares.text = clickedStock.value?.movingAverage.toString()
-            //Glide.with(requireContext()).load(clickedStock.value?.imageUri?.toUri()).into(binding.itemImage)
             glide.load(stock.value?.logo_url?.toUri()).apply(RequestOptions.bitmapTransform(RoundedCorners(30))).into(binding.itemImage)
 
 
@@ -124,7 +122,7 @@ class DetailsStockFragment: Fragment() {
                 viewModelAllStocks.setUserFollowsStockData(stock.value!!, true)
 
                 findNavController().popBackStack()
-                Toast.makeText(requireContext(), "${stock.value?.name} was Added to selected stocks", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.stock_added_to_selected, stock.value?.name ?: ""), Toast.LENGTH_SHORT).show()
 
             }
             binding.askAi.setOnClickListener {

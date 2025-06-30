@@ -87,11 +87,11 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                         lifecycleScope.launch {
                             val question = if (index == questionsViewModel.allQuestions.size - 1) {
                                 val input = showCustomQuestionInputDialog(
-                                    title = "Ask a Custom Question",
-                                    message = "Write your question here",
+                                    title = getString(R.string.ask_custom_question),
+                                    message = getString(R.string.write_question_here),
                                     context = requireContext()
                                 )
-                                input?.let { it + "\n" + questionsViewModel.passResponsibilityWarnings } ?: ""
+                                input?.let { it + getString(R.string.linebreak_separator) + questionsViewModel.passResponsibilityWarnings } ?: getString(R.string.default_empty_question)
                             } else {
                                 questionsViewModel.allQuestions[index].question
                             }
@@ -99,7 +99,7 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                             if (question.isNotBlank() && question.length > 3) {
                                 CSDviewModel.askAI(clickedStock, question)
                             } else {
-                                Toast.makeText(requireContext(), "Please enter a valid question", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.enter_valid_question), Toast.LENGTH_SHORT).show()
                                 return@launch
                             }
 
@@ -112,7 +112,7 @@ binding.questionRecyclerView.layoutManager=LinearLayoutManager(requireContext())
                                     is Error -> {
                                         Toast.makeText(requireContext(), it.status.message, Toast.LENGTH_SHORT).show()
                                         binding.progressBar.isVisible = false
-                                        binding.askAiText.text="Error: ${it.status.message}"
+                                        binding.askAiText.text = getString(R.string.error_prefix, it.status.message)
 
                                     }
                                     is Success -> {

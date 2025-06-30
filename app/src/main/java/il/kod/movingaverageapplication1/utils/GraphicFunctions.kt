@@ -35,14 +35,14 @@ fun createCombinedImage( // for 4,3, or 2 images
     var arrangedUris: MutableList<String> = uris.toMutableList()
 
     if (uris.size == 3) {
-        arrangedUris.add("placeholder_uri")
+        arrangedUris.add(context.getString(R.string.placeholder_uri))
     } else if (uris.size == 2) {
-        arrangedUris.add("placeholder_uri")
-        arrangedUris.add("placeholder_uri")
+        arrangedUris.add(context.getString(R.string.placeholder_uri))
+        arrangedUris.add(context.getString(R.string.placeholder_uri))
     }
 
     arrangedUris.forEach { uri ->
-        if (uri == "placeholder_uri") {
+        if (uri == context.getString(R.string.placeholder_uri)) {
             val placeholderBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.login)
             if (placeholderBitmap != null) {
                 bitmaps.add(placeholderBitmap)

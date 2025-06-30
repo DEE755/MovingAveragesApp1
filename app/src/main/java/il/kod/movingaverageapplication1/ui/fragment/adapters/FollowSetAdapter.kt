@@ -64,10 +64,11 @@ class FollowSetAdapterFragment(
         fun bind(followSet: FollowSet) {
 
             if (followSet.notificationsPriceThreeshold > 0.0) {
-               binding.stockPrice.text= "Alert set under ${followSet.notificationsPriceThreeshold}$"
+               binding.stockPrice.text = binding.root.context.getString(
+                   R.string.alert_set_under, followSet.notificationsPriceThreeshold)
             }
             else {
-                binding.stockPrice.text = "Not Alert Set"
+                binding.stockPrice.text = binding.root.context.getString(R.string.no_alert_set)
                 binding.stockPrice.setTextColor(binding.root.context.getColor(R.color.black))
             }
 

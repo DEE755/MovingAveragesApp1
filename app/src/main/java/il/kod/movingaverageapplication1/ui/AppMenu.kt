@@ -51,8 +51,8 @@ class AppMenu @Inject constructor(private val sessionManager: SessionManager, va
                         if (isListEmpty) {
                             showGenericDialogNoInput(
                                 context = context,
-                                title = "No Stocks Selected",
-                                    positiveButtonText = "Close",
+                                title = context.getString(R.string.no_stocks_selected),
+                                    positiveButtonText = context.getString(R.string.close),
                                 message = context.getString((R.string.select_stocks_first)))
 
 
@@ -80,9 +80,9 @@ class AppMenu @Inject constructor(private val sessionManager: SessionManager, va
                     R.id.action_logout -> {
                         showGenericDialogNoInput2choices(
                             context = context,
-                            title = "Logout",
-                            message = "Currently logged as ${sessionManager.getUsername()}.\n\nDo you want to log out?",
-                            onYes = {Toast.makeText(context, "Logged Out! Goodbye ${sessionManager.getUsername()}", Toast.LENGTH_SHORT).show()
+                            title = context.getString(R.string.logout),
+                            message = context.getString(R.string.logout_message, sessionManager.getUsername()),
+                            onYes = {Toast.makeText(context, context.getString(R.string.logged_out_message, sessionManager.getUsername()), Toast.LENGTH_SHORT).show()
                                 sessionManager.logOutClient()
                                 navController.navigate(R.id.signUpFragment)
                             },

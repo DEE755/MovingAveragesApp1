@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,18 +8,16 @@
     tools:context=".ui.fragment.LoginFragment"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/login"
-    >
+    android:background="@drawable/login">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please Sign Up to Continue"
+        android:text="@string/please_sign_up_to_continue"
         android:textSize="30sp"
         android:layout_gravity="center"
-        android:layout_marginTop="60dp"
-        >
-    </TextView>
+        android:layout_marginTop="60dp" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
@@ -55,7 +52,6 @@
             android:textSize="18sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,12 +61,11 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password"
+            android:hint="@string/enter_password_again"
             android:id="@+id/passwordConfirmationInput"
             android:inputType="textPassword"
             android:textSize="18sp"/>
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <Button
         android:id="@+id/signUpButton"
@@ -81,9 +76,7 @@
         android:backgroundTint="#F810AEC3"
         android:text="@string/sign_up"
         android:textColor="#F8074750"
-        android:textSize="16sp"
-
-        />
+        android:textSize="16sp" />
 
     <ProgressBar
         android:layout_width="300dp"
@@ -91,8 +84,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="30dp"
         android:id="@+id/progressBar"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"

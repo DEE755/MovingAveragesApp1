@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="120dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:adnroid="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     app:cardUseCompatPadding="true"
     app:contentPadding="10dp"
     app:cardCornerRadius="10dp">
@@ -17,7 +17,8 @@
             android:id="@+id/questionImafe"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/outline_bolt_24" />
+            android:src="@drawable/outline_bolt_24"
+            android:contentDescription="@string/question_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,27 +30,23 @@
                 android:id="@+id/questionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Question Title"
+                android:text="@string/question_title"
                 android:layout_gravity="center"
                 android:textColor="@android:color/white"
                 android:textSize="17sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
             <TextView
                 android:id="@+id/questionText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Question Text"
+                android:text="@string/question_text"
                 android:layout_gravity="center"
                 android:textColor="@color/material_dynamic_secondary60"
-
                 android:textStyle="italic"
                 android:textSize="14sp" />
-
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.cardview.widget.CardView>

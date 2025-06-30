@@ -1,4 +1,4 @@
- <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -6,33 +6,28 @@
     android:layout_height="match_parent"
     tools:context="il.kod.movingaverageapplication1.MainActivity">
 
-      <androidx.appcompat.widget.Toolbar
-          android:id="@+id/toolbar"
-          android:title="@string/follow_set"
-          app:layout_constraintLeft_toLeftOf="parent"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintRight_toRightOf="parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:title="@string/follow_set"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:paddingTop="30dp"
+        android:background="?attr/colorOnTertiaryFixed"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-          android:layout_height="100dp"
-          android:layout_width="match_parent"
-          android:paddingTop="30dp"
-          android:background="?attr/colorOnTertiaryFixed"
-          app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-
-      </androidx.appcompat.widget.Toolbar>
-
-     <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
-         xmlns:app="http://schemas.android.com/apk/res-auto"
-         android:id="@+id/nav_host_fragment"
-         android:name="androidx.navigation.fragment.NavHostFragment"
-         android:layout_width="0dp"
-         android:layout_height="0dp"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:navGraph="@navigation/navigation_graph"   />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:navGraph="@navigation/navigation_graph" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

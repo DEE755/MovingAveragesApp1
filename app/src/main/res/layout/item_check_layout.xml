@@ -16,6 +16,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/main_item_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -24,7 +25,7 @@
             android:id="@+id/item_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Main item Title"
+            android:text="@string/main_item_title"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="18sp"

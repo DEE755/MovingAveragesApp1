@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import il.kod.movingaverageapplication1.R
 import il.kod.movingaverageapplication1.SessionManager
 import il.kod.movingaverageapplication1.data.objectclass.FollowSet
 import il.kod.movingaverageapplication1.data.objectclass.Stock
@@ -26,23 +27,23 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
         object1 : Any? = null
     ) {
         val objectName: String= when (object1) {
-            is FollowSet -> "${object1.name} FollowSet"
-            is Stock ->"${object1.name} stock"
-            else -> "this object"
+            is FollowSet -> context.getString(R.string.followset_display_name, object1.name)
+            is Stock -> context.getString(R.string.stock_display_name, object1.name)
+            else -> context.getString(R.string.this_object)
         }
 
         showLargeGenericDialogInput(
             context = context,
-            title = "Enter Description for $objectName",
-            message = "Enter your comments for $objectName :",
+            title = context.getString(R.string.enter_description_title, objectName),
+            message = context.getString(R.string.enter_description_message, objectName),
             onInputEntered = { description ->
                 if (description.isNotBlank()) {
                     onDescriptionEntered(description)
                 } else {
-                    Toast.makeText(context, "Description cannot be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.description_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 }
             },
-            invalidInputMessage = "Please enter a valid description",
+            invalidInputMessage = context.getString(R.string.enter_valid_description),
 
             )
     }
@@ -53,16 +54,16 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
     ) {
         showGenericDialogInput(
             context = context,
-            title = "FollowSet Name",
-            message = "Please enter a name for your FollowSet:",
+            title = context.getString(R.string.followset_name_title),
+            message = context.getString(R.string.enter_followset_name_message),
             onInputEntered = { name ->
                 if (name.isNotBlank()) {
                     onNameEntered(name)
                 } else {
-                    Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.name_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 }
             },
-            invalidInputMessage = "Please enter a valid name",
+            invalidInputMessage = context.getString(R.string.valid_name_prompt),
 
             )
     }
@@ -71,11 +72,8 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
     {
         showNotificationDialog(
             context = context,
-            title = "About FollowSets Functionality",
-            message = "Hi, ${username}! You entered the FollowSet functionality.\n " +
-                    "You can create sets from stocks you already follow, and then manage them together.\n" +
-                    "You'll be able track your favorite stocks performance together or ask our AI adviser about investing those stocks together, etc..\n\n" +
-                    "Start by clicking the main button to create your first FollowSet.",
+            title = context.getString(R.string.about_followsets_title),
+            message = context.getString(R.string.about_followsets_message, username),
             onYes = {}
         )
     }
@@ -96,10 +94,8 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
     fun showNotificationExplanationDialog(context: Context, onYes: () -> Unit) =
         showNotificationDialog(
             context = context,
-            title = "Notifications Permission",
-            message = "Dear ${username}, we kindly ask you to allow notifications for our app, so you can receive important updates about your stocks and FollowSets.\n" +
-                    "You can always change this in the app settings later.\n\n" +
-                    "Click 'Allow' to enable notifications now.",
+            title = context.getString(R.string.notifications_permission_title),
+            message = context.getString(R.string.notifications_permission_message, username),
             {onYes()}
         )
 
@@ -107,18 +103,19 @@ class DialogViewModel @Inject constructor(private val sessionManager: SessionMan
 
     fun showRestoredPreviouslyFollowedStocksDialog(context: Context, object1: String, size:Int) =
     showNotificationDialog(
-    context, "Previously Followed Stocks",
-    "${username}, you were previously following " +
-            "${if (size==-1) "some" else size} ${object1}${if (size == 1) "" else "s"}., "+
-            "we retrieved them for you and you can now see them in the list."+
-        "If you add any followSet they will as well be added to the FollowSets list.",
+    context, context.getString(R.string.previously_followed_stocks),
+    context.getString(R.string.retrieved_stocks_message, 
+        username,
+        if (size==-1) context.getString(R.string.some) else size.toString(),
+        object1,
+        if (size == 1) context.getString(R.string.empty_string) else context.getString(R.string.stocks_plural_suffix)),
         {}
     )
 
     fun showDescriptionDialog(context: Context, followSet: FollowSet) {
         showGenericDialogNoInput(
             context = context,
-            title = "${followSet.name}${username}'s comments",
+            title = context.getString(R.string.followset_comments_title, followSet.name, username),
             message = followSet.userComments!!,
         )
     }

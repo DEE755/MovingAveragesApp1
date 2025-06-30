@@ -82,7 +82,7 @@ class ExistingFollowSetFragment : Fragment() {
                 startNotificationService()
             } else {
                 Log.d("ExistingFollowSetFragment", "Notification permission denied")
-                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -134,8 +134,8 @@ class ExistingFollowSetFragment : Fragment() {
                                 if (data.isNotEmpty()) {
                                     sessionManager.setUserhasFollowedFollowSetsInRemoteDB()
                                     data.forEach { followSet ->
-                                        followSet.userComments = ""
-                                        followSet.imageUri=""
+                                        followSet.userComments = getString(R.string.default_empty_user_comments)
+                                        followSet.imageUri = getString(R.string.default_empty_image_uri)
                                         viewModelFollowSet.addFollowSet(followSet)
                                     }
 
@@ -268,7 +268,7 @@ class ExistingFollowSetFragment : Fragment() {
                     is Loading -> {
 
                         viewModelFollowSet.setUserFollowsStockAnswer =
-                            "Adding follow set... please wait"
+                            getString(R.string.adding_follow_set_wait)
 
                         binding.progressWheel.visibility=View.VISIBLE
 
@@ -330,7 +330,7 @@ class ExistingFollowSetFragment : Fragment() {
                 }
 
                 shouldShowRequestPermissionRationale(permission) -> {
-                    Toast.makeText(requireContext(), "Notification permission required", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), getString(R.string.notification_permission_required), Toast.LENGTH_LONG).show()
                     requestPermissionLauncher.launch(permission)
                 }
 
@@ -338,10 +338,9 @@ class ExistingFollowSetFragment : Fragment() {
                     requestPermissionLauncher.launch(permission)
                 }
             }
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Notifications are active by default",
+        } else {                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.notifications_active_default),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -350,7 +349,7 @@ class ExistingFollowSetFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Following Sets"
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = getString(R.string.following_sets_title)
     }
 
     override fun onStop() {

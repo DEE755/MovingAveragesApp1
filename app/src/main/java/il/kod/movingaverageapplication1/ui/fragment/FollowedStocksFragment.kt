@@ -170,7 +170,7 @@ class FollowedStocksFragment : Fragment() {
                     // If There is in the db fetch stock but we didn't tell yet the user:
                     if (!sessionManager.restoredFollowedStocksDialogHasBeenShown() && sessionManager.userHasFollowedStocksinRemoteDB)
                     {
-                    dialogViewModel.showRestoredPreviouslyFollowedStocksDialog(requireContext(), "stock", -1 )
+                    dialogViewModel.showRestoredPreviouslyFollowedStocksDialog(requireContext(), getString(R.string.stock_lowercase), -1 )
                     }
                     binding.addStockButtonBig.visibility = View.GONE
                     binding.isEmptytextView.visibility = View.GONE
@@ -181,7 +181,7 @@ class FollowedStocksFragment : Fragment() {
                     binding.addStockButtonSmall.visibility = View.GONE
                     if (sessionManager.allStocksPackHaveBeenFetch())
                     {
-                        binding.isEmptytextView.text = "Add stocks to continue"
+                        binding.isEmptytextView.text = getString(R.string.add_stocks_to_continue)
                     }
                 }
             }
@@ -204,7 +204,7 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
         is Error -> {
             Log.d("FollowedStocksFragment", "Error fetching stock prices: ${it.status.message}")
 
-            Toast.makeText(requireContext(), "Problem Fetching Prices", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.problem_fetching_prices), Toast.LENGTH_SHORT).show()
         }
 
 
@@ -226,8 +226,8 @@ CSDViewModel.updatedStockPrice.observe(viewLifecycleOwner)
                         "Error fetching moving averages: ${it.status.message}"
                     )
                     Toast.makeText(
-                        requireContext(),
-                        "Problem Fetching Moving Averages",
+                            requireContext(),
+                            getString(R.string.problem_fetching_moving_averages),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

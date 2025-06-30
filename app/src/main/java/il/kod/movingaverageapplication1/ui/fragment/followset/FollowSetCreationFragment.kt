@@ -115,12 +115,15 @@ class FollowSetCreationFragment : Fragment()
                     }
                 }
 
-                //TODO(replace with : dialogViewModel.show..)
+                if (selectedIds.isEmpty()) {
+                    android.widget.Toast.makeText(requireContext(), getString(R.string.please_select_at_least_one_stock), android.widget.Toast.LENGTH_SHORT).show()
+                } else {
                 showNameInputDialog(
                     context = requireContext(),
                     title = getString(R.string.follow_set_name),
                     message = getString(R.string.enter_follow_set_name),
-                    onNameEntered = { name -> //actions to perform after confirming the dialog
+                    onNameEntered = { name -> 
+                        
                         val createdFollowSet = FollowSet(
                             name = name,
                             imageUri = "",
@@ -142,6 +145,7 @@ class FollowSetCreationFragment : Fragment()
 
                 )
 
+                }
             }
 
             binding.cancelButton.setOnClickListener {

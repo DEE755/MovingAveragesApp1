@@ -54,11 +54,11 @@ class SignUpFragment : Fragment()
                 val passwordConfirmation = binding.passwordConfirmationInput.text.toString()
 
                 if (username.isBlank() || password.isBlank()) {
-                    Toast.makeText(requireContext(), "Username and password cannot be empty", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), getString(R.string.username_password_empty), Toast.LENGTH_LONG).show()
                     return@setOnClickListener //recursion to retry with correct values
                 }
                 else if (password != passwordConfirmation) {
-                    Toast.makeText(requireContext(), "Confirmation and password are not identical", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), getString(R.string.confirmation_password_not_identical), Toast.LENGTH_LONG).show()
                     return@setOnClickListener //recursion to retry with correct values
                 }
 
@@ -78,12 +78,12 @@ class SignUpFragment : Fragment()
                             Log.d("LoginFragment", "Loading state")}
 
                         is Success->{
-                            Toast.makeText(requireContext(),it.status.data?.username?:"unknown user", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(),it.status.data?.username ?: getString(R.string.unknown_user), Toast.LENGTH_LONG).show()
                             findNavController().navigate(R.id.action_signUpFragment_to_followedStocks)
 
                             it.status.data?.let { data ->
                                 Log.d("SignupFragment", "Data received: $data")
-                                sessionManager.setUsername(data.username ?: "user")
+                                sessionManager.setUsername(data.username ?: getString(R.string.user_default))
                                 sessionManager.saveTokens(
                                     data.accessToken ?: "",
                                     data.refreshToken ?: "",
@@ -99,7 +99,7 @@ class SignUpFragment : Fragment()
                             }
 
 
-                        is Error -> {Toast.makeText(requireContext(), "ERROR, TRY AGAIN", Toast.LENGTH_SHORT).show()
+                        is Error -> {Toast.makeText(requireContext(), getString(R.string.error_try_again), Toast.LENGTH_SHORT).show()
                             binding.progressBar.isVisible=false
                             binding.loadingText.isVisible=false
                             Log.d("LoginFragment", "Error state")}}

@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="0dp"
-                android:text="Return"
+                android:text="@string/return_text"
                 android:backgroundTint="#F810AEC3"/>
 
 

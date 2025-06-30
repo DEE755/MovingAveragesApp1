@@ -1,6 +1,9 @@
         package il.kod.movingaverageapplication1.data.repository
 
+        import android.content.Context
         import android.util.Log
+        import dagger.hilt.android.qualifiers.ApplicationContext
+        import il.kod.movingaverageapplication1.R
         import il.kod.movingaverageapplication1.SessionManager
         import il.kod.movingaverageapplication1.data.BaseDataSource
         import il.kod.movingaverageapplication1.data.models.AdapterBackIDForGson
@@ -23,9 +26,10 @@
         //used to call the cloud database service and envelop the data inside a pattern with success/failure responses
         class CustomServerDatabaseRemoteDataSource @Inject constructor(
             private val CSDPublicService: CustomServerDatabaseServiceNoToken,
-            private val CSDPrivateService: CustomServerDatabaseServiceWithToken
+            private val CSDPrivateService: CustomServerDatabaseServiceWithToken,
+            @ApplicationContext private val context: Context
 
-        ) : BaseDataSource() {
+        ) : BaseDataSource(context) {
 
             private val promptPrecision : String ="Please provide a detailed answer with relevant data and insights. If nothing in this prompt is not at all related to the stock(s), don't answer about it, just kindly answer something like 'This question is not related to this stock or company, I can only answer questions about stocks or companies'."
 
@@ -126,7 +130,7 @@
                 val completeQuestion = "$question about the stock ${stock.name}?"
                 val response = CSDPublicService.ask_ai(completeQuestion+"\n" +promptPrecision)
 
-                val reply = formatText(response.body()?.reply ?: "No reply found")
+                val reply = formatText(response.body()?.reply ?: context.getString(R.string.no_reply_found))
                 Response.success(reply)
             }, HttpMethod.POST)
 
@@ -139,7 +143,7 @@
                 Log.d("CustomServerDatabaseRemoteDataSource", "askAIFollowSet called with question: $completeQuestion")
                 val response = CSDPublicService.ask_ai(completeQuestion+"\n" +promptPrecision)
 
-                val reply = formatText(response.body()?.reply ?: "No reply found")
+                val reply = formatText(response.body()?.reply ?: context.getString(R.string.no_reply_found))
                 Response.success(reply)
             }, HttpMethod.POST)
 

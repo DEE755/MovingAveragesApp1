@@ -40,7 +40,7 @@ fun showNotificationDialog(
     val builder = AlertDialog.Builder(context)
     builder.setTitle(title)
     builder.setMessage(message)
-    builder.setPositiveButton("I Understand") { dialog, _ ->
+    builder.setPositiveButton(context.getString(R.string.i_understand)) { dialog, _ ->
         onYes()
         dialog.dismiss()
     }
@@ -116,7 +116,7 @@ suspend fun showCustomQuestionInputDialog(
     android.app.AlertDialog.Builder(context)
         .setTitle(title)
         .setView(editText)
-        .setPositiveButton("Ask") { dialog, _ ->
+        .setPositiveButton(context.getString(R.string.ask)) { dialog, _ ->
             val input = editText.text.toString()
             if (input.isNotBlank()) {
                 continuation.resume(input)
@@ -143,10 +143,10 @@ suspend fun showCustomQuestionInputDialog(
 fun showGenericDialogInput(
     context: Context,
     title: String,
-    positiveButtonText: String = "Ok",
-    negativeButtonText: String = "Cancel",
-    invalidInputMessage: String = "Enter a valid input",
-    message: String = "Please enter your input here",
+    positiveButtonText: String = context.getString(R.string.default_ok),
+    negativeButtonText: String = context.getString(R.string.default_cancel),
+    invalidInputMessage: String = context.getString(R.string.default_invalid_input),
+    message: String = context.getString(R.string.default_input_message),
     onInputEntered: (String) -> Unit
 ) {
     val editText = EditText(context)
@@ -173,10 +173,10 @@ fun showGenericDialogInput(
 fun showLargeGenericDialogInput(
     context: Context,
     title: String,
-    positiveButtonText: String = "Ok",
-    negativeButtonText: String = "Cancel",
-    invalidInputMessage: String = "Enter a valid input",
-    message: String = "Please enter your input here",
+    positiveButtonText: String = context.getString(R.string.default_ok),
+    negativeButtonText: String = context.getString(R.string.default_cancel),
+    invalidInputMessage: String = context.getString(R.string.default_invalid_input),
+    message: String = context.getString(R.string.default_input_message),
     onInputEntered: (String) -> Unit
 ) {
     val editText = EditText(context)
@@ -207,8 +207,8 @@ fun showLargeGenericDialogInput(
     fun showGenericDialogNoInput(
         context: Context,
         title: String,
-        positiveButtonText: String = "Close",
-        message: String = "Please enter your input here"
+        positiveButtonText: String = context.getString(R.string.default_close),
+        message: String = context.getString(R.string.default_input_message)
     ) {
         AlertDialog.Builder(context)
             .setTitle(title)
@@ -222,8 +222,8 @@ fun showLargeGenericDialogInput(
 fun showGenericDialogNoInput2choices(
     context: Context,
     title: String,
-    positiveButtonText: String = "Yes",
-    negativeButtonText: String = "No",
+    positiveButtonText: String = context.getString(R.string.default_yes),
+    negativeButtonText: String = context.getString(R.string.default_no),
     message: String,
     onYes: () -> Unit = {},
     onNo: () -> Unit = {}

@@ -91,9 +91,9 @@ class InsideFollowSetFragment : Fragment() {
 
             binding.setMoreActionsButton.setOnClickListener {
                 val items = listOf(
-                    "Set an Alert for this FollowSet",
-                    "Ask AI adviser about this FollowSet",
-                    "Write a note about this FollowSet"
+                    getString(R.string.set_alert_followset),
+                    getString(R.string.ask_ai_advisor_followset),
+                    getString(R.string.write_note_followset)
                 )
                 val dialog = RecyclerDialogFragment(items) { selectedItem, dialogInstance ->
                     if (selectedItem == items[0]) {

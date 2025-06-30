@@ -91,10 +91,9 @@ class StocksSelectionFragment : Fragment() {
 
         //SETUP RETURN BUTTON
         binding.returntoselected.setOnClickListener {
-            if (!(sessionManager.allStocksPackHaveBeenFetch() && sessionManager.userFollowedStocksHaveBeenRetrievedOrNone()))
-                Toast.makeText(
-                    requireContext(),
-                    "Please wait for completion before leaving",
+            if (!(sessionManager.allStocksPackHaveBeenFetch() && sessionManager.userFollowedStocksHaveBeenRetrievedOrNone()))                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.please_wait_completion),
                     Toast.LENGTH_SHORT
                 ).show()
             else {
@@ -259,10 +258,10 @@ class StocksSelectionFragment : Fragment() {
                     {
                         binding.progressBarNoview.isVisible = false
                         binding.loadingText.isVisible= true
-                        binding.loadingText.text = "Error loading stocks"
+                        binding.loadingText.text = getString(R.string.error_loading_stocks)
                     val errorState = loadState.source.refresh as? LoadState.Error
                     errorState?.let {
-                        Toast.makeText(requireContext(), "Error: ${it.error.message}", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), getString(R.string.error_colon, it.error.message), Toast.LENGTH_SHORT)
                             .show()
                     }
                     }
@@ -271,24 +270,23 @@ class StocksSelectionFragment : Fragment() {
                     updateRecyclerVisibilityAccordingly()
                     binding.progressBarNoview.isVisible = false
                     binding.loadingText.isVisible= true
-                    binding.loadingText.text = "Loading stocks...Progress: ${CSDViewModel.percentage}%"
+                    binding.loadingText.text = getString(R.string.loading_stocks_progress, CSDViewModel.percentage.toString())
                     binding.progressBarPager.isVisible=true
                     if (CSDViewModel.percentage == 1) {requireActivity().lockOrientation() }//DOWNLOAD STARTED
 
                     if (CSDViewModel.percentage == 98) {//DOWNLOAD IS ABOUT TO FINISH
-                    Toast.makeText(
-                        requireContext(),
-                        "All stocks fetched successfully",
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.all_stocks_fetched),
                         Toast.LENGTH_SHORT
                     ).show()
                         updateRecyclerVisibilityAccordingly()
                     requireActivity().unlockOrientation()
+                    }
 
-                }
-
-                }
                 }
             }
+        }
 
 
             CSDViewModel.fetchedStocksCount = pagingAdapter.itemCount
@@ -363,13 +361,11 @@ class StocksSelectionFragment : Fragment() {
 
         fun updateCountView(count: Int) {
             if (!this.isAdded) return // Ensure the Fragment is attached to an activity
-            var countText: String
-            if (count == 0) {
-                countText = "No stocks available"
-            } else if (count == 1) {
-                countText = "One Stock available"
+            val countText = when (count) {
+                0 -> getString(R.string.no_stocks_available)
+                1 -> getString(R.string.one_stock_available)
+                else -> getString(R.string.stocks_available, count)
             }
-           else {countText = "$count Stocks Available"}
 
             (requireActivity() as AppCompatActivity).supportActionBar?.title =countText
         }
@@ -385,7 +381,7 @@ class StocksSelectionFragment : Fragment() {
 
         }
     fun resetSearchView() {
-        binding.searchView.setQuery("", true)
+        binding.searchView.setQuery(getString(R.string.default_empty_question), true)
         viewModelAllStocks.isOnQuerySearch = false
         updateRecyclerVisibilityAccordingly()
     }
