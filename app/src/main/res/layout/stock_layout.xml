@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/stock_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="10dp"
+    app:cardCornerRadius="10dp"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/stock_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/empty_stock_logo_round"
+            android:backgroundTint="@color/design_default_color_error"
+            android:contentDescription="@string/stock_image_description"/>
+
+        <ProgressBar
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-80dp"
+            android:visibility="gone"
+            android:id="@+id/picture_progress_bar"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="20sp">
+
+            <TextView
+                android:id="@+id/stock_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stock_title_placeholder"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="@string/stock_ticker_placeholder"
+                android:id="@+id/stock_ticker"
+                android:layout_marginTop="6dp"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="@string/stock_price_placeholder"
+                android:id="@+id/stock_price"
+                android:textColor="@android:color/holo_green_light"
+                android:layout_marginTop="6dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

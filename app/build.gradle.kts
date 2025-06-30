@@ -1,12 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
-
-    id ("kotlin-parcelize")
-
+    id("kotlin-parcelize")
     id("kotlin-kapt")
-
+    id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -24,12 +21,7 @@ android {
     }
 
     buildFeatures {
-        compose = true
         viewBinding = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3" // Matches Compose version
     }
 
     buildTypes {
@@ -41,10 +33,12 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -57,38 +51,67 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    // Jetpack Compose dependencies
-    implementation("androidx.compose.ui:ui:1.7.8")
-    implementation("androidx.compose.material:material:1.7.8")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.8")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
+
+    // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
-
-    // Debugging tools for Compose
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.8")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.8")
+    implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.androidx.paging.common.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Glide
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation ("androidx.activity:activity-ktx:1.10.1")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    // Activity
+    implementation("androidx.activity:activity-ktx:1.10.1")
+
+    // Lifecycle
+    val lifecycle_version = "2.6.1"
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
 
 
+    // Room
     val room_version = "2.6.1"
-
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
 
+
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    //AndroidX Security
+
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
+
+
+
+    //Paging
+    implementation("androidx.paging:paging-runtime:3.2.1")
+
+    implementation("androidx.room:room-paging:2.6.1")
 
 }
-
-

@@ -1,39 +1,77 @@
 package il.kod.movingaverageapplication1.data.local_db
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import il.kod.movingaverageapplication1.data.Stock
+import il.kod.movingaverageapplication1.data.objectclass.Stock
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StockDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addStock(stock: Stock)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addStock(stock: Stock)
 
     @Delete
-    fun deleteStock(vararg stock: Stock)
+    suspend fun deleteStock(vararg stock: Stock)
 
     @Update
-    fun updateStock(stock: Stock)
+    suspend fun updateStock(stock: Stock)
 
-    @Query("SELECT * FROM stocks ORDER BY name ASC")
-    fun getAllStocks() : LiveData<List<Stock>>
+    @Query("SELECT DISTINCT * FROM stocks ORDER BY name ASC LIMIT :limit")
+     fun getAllStocks(limit: Int) : PagingSource<Int, Stock>
 
 
     @Query("SELECT * FROM stocks WHERE id LIKE :id")
-    fun getItem(id :Int) : Stock
+     fun getStock(id :Int) : Stock
 
     @Query("SELECT * FROM stocks WHERE isSelected = 1")
-    fun getSelectedStocks(): LiveData<List<Stock>>
+     fun getSelectedStocks(): LiveData<List<Stock>>
 
+    @Query("SELECT COUNT(*) FROM stocks WHERE isSelected = 1")
+    fun getSelectedStockCount(): Int
 
     @Query("SELECT * FROM stocks WHERE isSelected = 0")
-    fun getUnselectedStocks(): LiveData<List<Stock>>
+     fun getUnselectedStocks(): LiveData<List<Stock>>
 
+    @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
+    fun getStocksByIds(ids: List<Int>): List<Stock>
+
+    @Query("SELECT * FROM stocks WHERE id IN (:ids) ")
+    fun getStocksByIdsLive(ids: List<Int>): LiveData<List<Stock>>
+
+    @Query("SELECT * FROM stocks WHERE id = :id")
+    fun getStockById(id: Int) : Stock
+
+
+    @Query("SELECT * FROM stocks WHERE name LIKE '%' || :name_part || '%' " +
+            "OR symbol LIKE '%' || :name_part || '%' ORDER BY name LIMIT 10000")
+    suspend fun filterStockByName(name_part: String): List<Stock>?
+
+    @Query("SELECT COUNT(*) FROM stocks")
+    fun getInstantStockCount(): Int
+
+    @Query("SELECT COUNT(*) FROM stocks")
+    fun getObservableAvailableStockCount(): LiveData<Int>
+
+    @Query("SELECT symbol FROM stocks ORDER BY symbol DESC LIMIT 1")
+    fun getLastSymbol(): String?
+
+    @Query("UPDATE stocks SET current_price=:currentPrice WHERE symbol=:symbol")
+    fun updateStockPrice(symbol: String, currentPrice: Double): Unit
+
+    @Query("UPDATE stocks SET ma_50=:ma50, ma_25=:ma25, ma_150=:ma150, ma_200=:ma200 WHERE symbol=:symbol")
+    fun updateMovingAverages(symbol: String, ma50: Double, ma25: Double, ma150: Double, ma200: Double): Unit
+
+    @Query("SELECT current_price FROM stocks WHERE id = :id LIMIT 1")
+    fun observePrice(id : Int) : Flow<Double>
+
+    @Query("UPDATE stocks SET isSelected=0 WHERE isSelected = 1")
+    suspend fun resetSelectedStocks()
 
 }
 

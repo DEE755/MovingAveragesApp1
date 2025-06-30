@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="il.kod.movingaverageapplication1" />
+                  <option name="mobileSdkAppId" value="1:213549667529:android:a1f137a463dbe39c966918" />
+                  <option name="projectId" value="kod-stocks" />
+                  <option name="projectNumber" value="213549667529" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

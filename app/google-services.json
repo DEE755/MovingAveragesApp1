@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "213549667529",
+    "project_id": "kod-stocks",
+    "storage_bucket": "kod-stocks.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213549667529:android:a1f137a463dbe39c966918",
+        "android_client_info": {
+          "package_name": "il.kod.movingaverageapplication1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL9swAavuoydgcmolk9SMwsu5e2ItCFHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
